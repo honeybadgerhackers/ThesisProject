@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "Genteng",
+    "current_rating": 5,
+    "favorite_count": 98,
+    "start": "983 Graceland Terrace",
+    "end": "50 Badeau Point"
+  },
+  {
+    "id": 2,
+    "name": "Garibaldi",
+    "current_rating": 4,
+    "favorite_count": 10,
+    "start": "956 Karstens Street",
+    "end": "98179 Rieder Park"
+  },
+  {
+    "id": 3,
+    "name": "Mosteiros",
+    "current_rating": 4,
+    "favorite_count": 77,
+    "start": "22580 Dixon Avenue",
+    "end": "340 Acker Parkway"
+  },
+  {
+    "id": 4,
+    "name": "Batan",
+    "current_rating": 4,
+    "favorite_count": 40,
+    "start": "7 Maywood Drive",
+    "end": "9 Brentwood Drive"
+  },
+  {
+    "id": 5,
+    "name": "Parapat",
+    "current_rating": 2,
+    "favorite_count": 93,
+    "start": "515 Chive Terrace",
+    "end": "48130 Carioca Terrace"
+  },
+  {
+    "id": 6,
+    "name": "San Quintin",
+    "current_rating": 3,
+    "favorite_count": 94,
+    "start": "30699 Delaware Alley",
+    "end": "73 Ridgeview Plaza"
+  },
+  {
+    "id": 7,
+    "name": "Wassu",
+    "current_rating": 4,
+    "favorite_count": 3,
+    "start": "861 Fremont Court",
+    "end": "2740 Nelson Place"
+  },
+  {
+    "id": 8,
+    "name": "Starigrad",
+    "current_rating": 4,
+    "favorite_count": 62,
+    "start": "162 Sunbrook Crossing",
+    "end": "1 Dovetail Parkway"
+  },
+  {
+    "id": 9,
+    "name": "Verkhniy Yasenov",
+    "current_rating": 3,
+    "favorite_count": 67,
+    "start": "103 Randy Pass",
+    "end": "1678 Walton Road"
+  },
+  {
+    "id": 10,
+    "name": "Mengenkrajan",
+    "current_rating": 2,
+    "favorite_count": 25,
+    "start": "932 Melody Trail",
+    "end": "8317 Thompson Terrace"
+  }
+]

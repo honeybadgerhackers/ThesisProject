@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Bike Map",
+    "description": "Thesis Project",
+    "orientation": "portrait",
+    "sdkVersion": "22.0.0",
+    "icon": "./src/assets/bikeIcon.png",
+    "loading": {
+      "icon": "./src/assets/bikemap_log.png",
+      "hideExponentText": false
+    }
+  }
+}
