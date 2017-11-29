@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { Dimensions } from 'react-native';
-import { StackNavigator, TabNavigator, TabBarBottom } from 'react-navigation';
+import { TabNavigator, TabBarBottom, StackNavigator } from 'react-navigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import store from './src';
 import HomeScreen from './src/screens/homescreen';
 import MapScreen from './src/screens/mapscreen';
@@ -9,7 +10,7 @@ import MapScreen from './src/screens/mapscreen';
 const HomeStack = StackNavigator({
   Home: {
     screen: HomeScreen
-  },
+  }
 });
 
 const MapStack = StackNavigator({
@@ -21,10 +22,30 @@ const MapStack = StackNavigator({
 const RootNavigator = TabNavigator(
   {
     Home: {
-      screen: HomeStack
+      screen: HomeStack,
+      navigationOptions: {
+      tabBarLabel: 'Home',
+      tabBarIcon: ({ tintColor, focused }) => (
+        <Ionicons
+          name={focused ? 'ios-home' : 'ios-home-outline'}
+          size={26}
+          style={{ color: tintColor }}
+        />
+      ),
+    },
     },
     Map: {
-      screen: MapStack
+      screen: MapStack,
+      navigationOptions: {
+      tabBarLabel: 'Map',
+      tabBarIcon: ({ tintColor, focused }) => (
+        <Ionicons
+          name={focused ? 'ios-map' : 'ios-map-outline'}
+          size={26}
+          style={{ color: tintColor }}
+        />
+      ),
+    },
     }
   },
   {

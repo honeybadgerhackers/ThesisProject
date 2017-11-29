@@ -4,7 +4,6 @@
 // } from './types';
 
 export const selectTrip = (trip, cb) => {
-  console.log(trip.name);
   cb();
   return {
     type: 'TRIP_SELECTED',

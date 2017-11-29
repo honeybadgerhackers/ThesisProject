@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, Button, Alert } from 'react-native';
+import { View } from 'react-native';
+import { connect } from 'react-redux';
 import { MapView } from 'expo';
 
 
-export default class Map extends Component {
-  state={
-    mapRegion: { latitude: 37.78825, 
-      longitude: -122.4324, 
-      latitudeDelta: 0.0922, 
-      longitudeDelta: 0.0421 }
-  };
+class Map extends Component {
 
   handleMapRegionChange = mapRegion => {
-    this.setState({ mapRegion });
+    this.setState({ mapRegion }); 
   };
 
-  render() {
+  render() { 
+    console.log(this.props.trip);
     return (
-    <View>
-      <MapView 
-        style={{ alignSelf: 'stretch', height: 545 }} 
-        // region={this.state.mapRegion} 
-        // onRegionChange={this._handleMapRegionChange}
-      />
-    </View>);
-  }
+      <View> 
+        <MapView
+          provider={'google'}
+          showsMyLocationButton
+          style={{ alignSelf: 'stretch', height: 545 }}
+          region={this.props.trip.location} 
+        />
+      </View> 
+    );
+  } 
 }
+
+function mapStateToProps(state) {
+  return {
+    trip: state.activeTrip
+  };
+}
+
+export default connect(mapStateToProps)(Map);

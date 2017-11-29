@@ -1,64 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import mapIcon from '../assets/mapIcon.png'; 
 import { selectTrip } from '../actions/trip-actions';
 
-class Trip extends Component {
-  
-  onTripSelect() {
-    return this.props.navigation.navigate('MapScreen');
-  }
+const Trip = ({ trips, navigate }) => {  
+  const onTripSelect = () => {
+    navigate('Map');
+  };
 
-  createTrip() {
-    return this.props.trips.map(trip => (
+  const createTrip = () => trips.map(trip => (
       <TouchableOpacity
         key={trip.id}
-        onPress={() => this.props.selectTrip(trip, this.onTripSelect()}
+        onPress={() => selectTrip(trip, onTripSelect)}
         style={styles.container}
       >
         <View style={styles.textContainer}>
-        <Text style={styles.title}>{trip.name}</Text>
-        <Text style={styles.subtitle}>{trip.start}</Text>
-        <Text style={styles.subtitle}>to</Text>
-        <Text style={styles.subtitle}>{trip.end}</Text>
+          <Text style={styles.title}>{trip.name}</Text>
+          <Text style={styles.subtitle}>{trip.start}</Text>
+          <Text style={styles.subtitle}>to</Text>
+          <Text style={styles.subtitle}>{trip.end}</Text>
         </View>
         <Image source={mapIcon} style={styles.imageStyle} />
       </TouchableOpacity>
     ));
-  }
 
-  render() {
-    return (
-      <View>
-        {this.createTrip()}
-      </View>
-    );
-  }
-}
+  return <View>{createTrip()}</View>;  
+};
 
 function mapStateToProps(state) {
   return {
-    trips: state.trips
+    trips: state.trips 
   };
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({ selectTrip }, dispatch);
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Trip);
+export default connect(mapStateToProps, mapDispatchToProps)(Trip);
 
-// const styles = {
-//   imageStyle: {
-//     alignSelf: 'flex-end',
-//     marginTop: 40,
-//     // marginRight: 10,
-//     width: 100,
-//     height: 100
-//   }
-// };
 const styles = StyleSheet.create({
   imageStyle: {
     alignSelf: 'flex-end',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform, Image } from 'react-native';
+import { View, Text, ScrollView, Platform, Image, TouchableOpacity } from 'react-native';
 import Expo from 'expo';
 import icon from '../assets/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
@@ -14,7 +14,6 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    title: 'Bike Map',
     headerStyle: {
       height: Platform.OS === 'android' ? 54 + STATUS_BAR_HEIGHT : 54,
       backgroundColor: '#2196F3'
@@ -23,20 +22,15 @@ class HomeScreen extends Component {
       marginTop: Platform.OS === 'android' ? STATUS_BAR_HEIGHT : 0,
       color: 'white'
     },
-    headerLeft: 
-      <Image
-        source={icon}
-        style={styles.imageStyle}
-      />
-
+    headerLeft: <Image source={icon} style={styles.imageStyle} />
   });
 
   state = {
     appIsReady: false
-  }
+  };
 
   componentWillMount() {
-    this._loadAssetsAsync(); 
+    this._loadAssetsAsync();
   }
 
   async _loadAssetsAsync() {
@@ -46,13 +40,14 @@ class HomeScreen extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
-    <View style={{ flex: 1, backgroundColor: '#ddd' }}>
+      <View style={{ flex: 1, backgroundColor: '#ddd' }}>
         <ScrollView>
-          <Trip />
+          <Trip navigate={navigate} />
         </ScrollView>
-    </View>
-    );
+      </View>
+      );
   }
 }
 
@@ -62,6 +57,9 @@ const styles = {
     marginLeft: 10,
     width: 40,
     height: 40
+  },
+  testing: {
+    marginTop: 100
   }
 };
 

@@ -5,15 +5,27 @@
     "current_rating": 5,
     "favorite_count": 98,
     "start": "983 Graceland Terrace",
-    "end": "50 Badeau Point"
+    "end": "50 Badeau Point",
+    "location": {
+      "latitude": 35.26802,
+      "longitude": -90.90063,
+      "latitudeDelta": 0.1,
+      "longitudeDelta": 0.1
+    } 
   },
   {
     "id": 2,
-    "name": "Garibaldi",
+    "name": "Garibaldi", 
     "current_rating": 4,
     "favorite_count": 10,
     "start": "956 Karstens Street",
-    "end": "98179 Rieder Park"
+    "end": "98179 Rieder Park",
+    "location": {
+      "latitude": -37.58711,
+      "longitude": 132.00593,
+      "latitudeDelta": 0.1,
+      "longitudeDelta": 0.1
+    } 
   },
   {
     "id": 3,
