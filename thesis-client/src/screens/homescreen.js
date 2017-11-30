@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Platform, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Platform, Image } from 'react-native';
+import { connect } from 'react-redux';
 import Expo from 'expo';
+import { selectTrip } from '../actions/trip-actions';
 import icon from '../assets/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
@@ -40,16 +42,30 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation;
+    const { navigation: { navigate }, trips, showTripLocation } = this.props;
     return (
-      <View style={{ flex: 1, backgroundColor: '#ddd' }}>
+      <View style={styles.homeScreenView}>
         <ScrollView>
-          <Trip navigate={navigate} />
+          <Trip navigate={navigate} trips={trips} showTripLocation={showTripLocation} />
         </ScrollView>
       </View>
-      );
+    );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    trips: state.trips
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    showTripLocation: (trip, cb) => {
+      dispatch(selectTrip(trip, cb)); 
+    }
+  };
+};
 
 const styles = {
   imageStyle: {
@@ -60,7 +76,12 @@ const styles = {
   },
   testing: {
     marginTop: 100
+  },
+  homeScreenView: {
+    flex: 1,
+    backgroundColor: '#ddd'
   }
+
 };
 
-export default HomeScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

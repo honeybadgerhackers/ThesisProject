@@ -1,20 +1,17 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import mapIcon from '../assets/mapIcon.png'; 
-import { selectTrip } from '../actions/trip-actions';
 
-const Trip = ({ trips, navigate }) => {  
-  const onTripSelect = () => {
+const Trip = ({ navigate, trips, showTripLocation }) => {  
+  const goToMap = () => {
     navigate('Map');
   };
 
   const createTrip = () => trips.map(trip => (
       <TouchableOpacity
         key={trip.id}
-        onPress={() => selectTrip(trip, onTripSelect)}
-        style={styles.container}
+        onPress={() => showTripLocation(trip, goToMap)}
+        style={styles.container} 
       >
         <View style={styles.textContainer}>
           <Text style={styles.title}>{trip.name}</Text>
@@ -24,25 +21,13 @@ const Trip = ({ trips, navigate }) => {
         </View>
         <Image source={mapIcon} style={styles.imageStyle} />
       </TouchableOpacity>
-    ));
+  ));
 
   return <View>{createTrip()}</View>;  
 };
 
-function mapStateToProps(state) {
-  return {
-    trips: state.trips 
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ selectTrip }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Trip);
-
 const styles = StyleSheet.create({
-  imageStyle: {
+  imageStyle: { 
     alignSelf: 'flex-end',
     marginTop: 30,
     width: 100,
@@ -68,3 +53,6 @@ const styles = StyleSheet.create({
     color: '#565656'
   }
 });
+
+export default Trip;
+

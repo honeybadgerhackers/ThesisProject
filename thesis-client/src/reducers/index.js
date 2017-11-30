@@ -5,4 +5,4 @@ import activeTrip from './active-trip-reducer.js';
 export default combineReducers({
   trips,
   activeTrip
-});
+}); 
