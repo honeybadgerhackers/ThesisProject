@@ -5,3 +5,4 @@ export const selectTrip = (trip, cb) => {
     payload: trip
   };
 };
+
