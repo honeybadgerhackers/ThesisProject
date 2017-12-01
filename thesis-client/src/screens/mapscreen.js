@@ -5,10 +5,10 @@ import Map from '../components/map-component';
 
 class MapScreen extends Component {
   render() {
-    const { trip } = this.props;
+    const { activeTrip } = this.props;
     return (
       <View>
-        <Map trip={trip} />
+        <Map activeTrip={activeTrip} />
       </View>
     );
   }
@@ -16,7 +16,7 @@ class MapScreen extends Component {
 
 function mapStateToProps(state) {
   return {
-    trip: state.activeTrip
+    activeTrip: state.activeTrip
   };
 }
 

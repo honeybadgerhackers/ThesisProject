@@ -4,10 +4,10 @@ import axios from 'axios';
 
 const getTripsAsync = function* () {
   try {
-    console.log('Attempting to get trips from API');
-    const tripsRequest = yield call(axios.get, 'https://18.216.220.101:8091/route');
-    console.log(tripsRequest);
-    yield put({ type: 'GET_TRIPS_SUCCEEDED', response: tripsRequest });
+    console.log('Attempting to get trips from API'); 
+    const tripsRequest = yield call(axios.get, 'http://18.216.220.101:8091/route');
+    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest.data });
+    console.log('Saga Trips loaded');
   } catch (error) {
     console.log(error);
   }
@@ -17,6 +17,7 @@ const getTripsAsync = function* () {
 const watchGetTrips = function* () {
   console.log('redux saga is running the getTrips action');
   yield takeEvery('GET_TRIPS', getTripsAsync);
+  console.log('Getting Trips');
 };
 
 //combine watcher sagas to root saga

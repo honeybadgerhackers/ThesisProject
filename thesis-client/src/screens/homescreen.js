@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, ScrollView, Platform, Image } from 'react-native';
 import { connect } from 'react-redux';
 import Expo from 'expo';
-import { selectTrip } from '../actions/trip-actions';
+import { selectTrip } from '../actions/activeTrip-action';
+import { getTrips } from '../actions/getTrip-action';
 import icon from '../assets/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
@@ -33,6 +34,7 @@ class HomeScreen extends Component {
 
   componentWillMount() {
     this._loadAssetsAsync();
+    this.props.getAllTrips();
   }
 
   async _loadAssetsAsync() {
@@ -43,6 +45,7 @@ class HomeScreen extends Component {
 
   render() {
     const { navigation: { navigate }, trips, showTripLocation } = this.props;
+    console.log(trips[0]);
     return (
       <View style={styles.homeScreenView}>
         <ScrollView>
@@ -55,7 +58,7 @@ class HomeScreen extends Component {
 
 function mapStateToProps(state) {
   return {
-    trips: state.trips
+    trips: state.trips.trips 
   };
 }
 
@@ -63,6 +66,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showTripLocation: (trip, cb) => {
       dispatch(selectTrip(trip, cb)); 
+    },
+    getAllTrips: () => {
+      dispatch(getTrips());
     }
   };
 };
