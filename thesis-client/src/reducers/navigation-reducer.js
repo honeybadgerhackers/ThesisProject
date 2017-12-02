@@ -12,7 +12,7 @@ const stateForLoggedOut = LoginStack.router.getStateForAction(
 const stateForLoggedIn = LoginStack.router.getStateForAction(ActionForLoggedIn);
 
 const initialState = { stateForLoggedOut, stateForLoggedIn };
-console.log(initialState);
+// console.log(initialState);
 const navigationReducer = (state = initialState, action) => {
   switch (action.type) {
     case '@@redux/INIT':
@@ -59,8 +59,8 @@ const navigationReducer = (state = initialState, action) => {
       //             break;
       //         */
     default:
-    console.log('current state', state.stateForLoggedIn.routes);
-    console.log('action', action.type);
+    // console.log('current state', state.stateForLoggedIn.routes);
+    // console.log('action', action.type);
     return {
       ...state,
       stateForLoggedIn: LoginStack.router.getStateForAction(

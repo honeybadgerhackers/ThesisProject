@@ -16,7 +16,7 @@ const RootNavigator = TabNavigator(
             name={focused ? 'ios-home' : 'ios-home-outline'}
             size={26}
             style={{ color: tintColor }}
-          />
+          /> 
         )
       }
     },

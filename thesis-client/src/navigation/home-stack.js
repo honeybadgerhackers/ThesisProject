@@ -5,7 +5,7 @@ const HomeStack = StackNavigator({
   Home: {
     screen: HomeScreen
   }
-});
+}, { headerMode: 'screen' });
 
 export default HomeStack;
 

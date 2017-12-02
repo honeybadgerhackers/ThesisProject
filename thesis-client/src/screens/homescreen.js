@@ -17,17 +17,7 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    headerStyle: {
-      height: Platform.OS === 'android' ? 54 + STATUS_BAR_HEIGHT : 54,
-      backgroundColor: 'white'
-    },
-    headerTitleStyle: {
-      marginTop: Platform.OS === 'android' ? STATUS_BAR_HEIGHT : 0,
-      color: 'white'
-    },
-    headerLeft: <Image source={icon} style={styles.imageStyle} />,
-    headerTitle: <Text style={styles.headerTitle}>Bike Map</Text>,
-    headerRight: <Image source={icon} style={styles.imageStyle2} />
+    header: null
   });
 
   state = {

@@ -21,6 +21,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@mapbox/polyline": "^0.2.0",
     "axios": "^0.17.1",
     "expo": "^22.0.2",
     "prop-types": "^15.6.0",

@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Map from '../components/map-component';
+import RobMap from '../components/location';
 
 class MapScreen extends Component {
+  static navigationOptions = () => ({
+    header: null
+  });
+
   render() {
     const { activeTrip } = this.props;
-    return (
-      <View>
-        {/* <View style={styles.statsToolbar}>
-          <View style={styles.stats} />
-          <View style={styles.stats} />
-          <View style={styles.stats} />
-        </View> */}
-        <Map activeTrip={activeTrip} />
-      </View>
-    ); 
+    return (// <View>
+      //   <View style={styles.statsToolbar} />
+      //   {/* <Map activeTrip={activeTrip} /> */}
+      // </View>
+      <RobMap />
+    );
   }
 }
 
@@ -25,14 +26,14 @@ function mapStateToProps(state) {
   };
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   statsToolbar: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    height: 100,
+    // flex: 1,
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // backgroundColor: 'black',
+    height: 70,
   },
   stats: {
     flex: 1,
