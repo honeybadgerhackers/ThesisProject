@@ -11,46 +11,84 @@ const Trip = ({ navigate, trips, showTripLocation }) => {
       <TouchableOpacity
         key={trip.id}
         onPress={() => showTripLocation(trip, goToMap)}
-        style={styles.container} 
       >
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{trip.name}</Text>
-          <Text style={styles.subtitle}>{trip.start}</Text>
-          <Text style={styles.subtitle}>to</Text>
-          <Text style={styles.subtitle}>{trip.end}</Text>
+        <View style={styles.container}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{trip.route_name}</Text>
+            <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
+            <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
+          </View>
+          <View style={styles.imageContainer}>
+            <Text style={styles.imageContainerText}>{trip.type}</Text>
+            <Image source={mapIcon} style={styles.imageStyle} />
+            <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
+          </View>
         </View>
-        <Image source={mapIcon} style={styles.imageStyle} />
       </TouchableOpacity>
-  ));
+    ));
 
   return <View>{createTrip()}</View>;  
 };
 
 const styles = StyleSheet.create({
-  imageStyle: { 
-    alignSelf: 'flex-end',
-    marginTop: 30,
-    width: 100,
-    height: 100
-  },
   container: {
+    flex: 1,
     flexDirection: 'row',
-    borderBottomColor: 'black'
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    backgroundColor: 'grey',
+    height: 150,
+    borderWidth: 2
   },
   textContainer: {
-    flexDirection: 'column',
-    flex: 1,
-    marginLeft: 10
+    flex: 3,
+    backgroundColor: 'grey',
+    height: 148
   },
   title: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 40
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 30
   },
   subtitle: {
-    marginTop: 4,
+    marginTop: 10,
     fontSize: 15,
-    color: '#565656'
+    color: 'white',
+    textAlign: 'center'
+  },
+  imageContainer: {
+    flex: 1,
+    backgroundColor: 'grey',
+    height: 148,
+    width: 50
+  },
+  imageContainerText: {
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'white',
+    marginTop: 30
+  },
+  imageStyle: {
+    alignSelf: 'center',
+    marginTop: 5,
+    height: 75,
+    width: 75
+  },
+  favoriteCount: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  startingAddress: {
+    marginTop: 10,
+    fontSize: 15,
+    color: 'white',
+    textAlign: 'center'
   }
 });
 
