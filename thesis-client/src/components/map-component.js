@@ -7,7 +7,7 @@ const Map = ({ activeTrip }) =>
       <MapView
         provider={'google'}
         showsMyLocationButton
-        style={{ alignSelf: 'stretch', height: 545 }}
+        style={{ alignSelf: 'stretch', height: 400 }}
         region={activeTrip.location} 
       />
     </View>;
