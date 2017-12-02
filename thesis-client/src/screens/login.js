@@ -1,66 +1,91 @@
 import React from 'react';
-import { StyleSheet, Image, View } from 'react-native';
-import { LinearGradient } from 'expo';
-import FacebookLogin from '../components/facebook-login';
+import { Alert } from 'react-native';
+import { AuthSession } from 'expo';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import LoginView from '../components/login-component';
+import { loginUser } from '../actions/user-actions';
+import { FB_APP_ID, facebookAuthUri, SERVER_URI } from '../../config';
 
-const styles = StyleSheet.create({
-  box: {
-    flex: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  boxImage: {
-    flex: 5.5,
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
-  boxButton: {
-    flex: 4.5,
-    justifyContent: 'center'
-  },
-  image: {
-    flex: 0.5,
-    resizeMode: 'contain'
-  }
-});
-
-export default class Login extends React.Component {
+class LoginContainer extends React.Component {
   static navigationOptions = {
     title: 'Login',
-    header: null
+    header: null,
   };
 
-  render = () => ( 
-    <View style={[styles.box]}>
-      <LinearGradient
-        colors={['rgba(0,96,255,0.09)', 'transparent']}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          height: 300
-        }}
-      />
-      <View style={[styles.boxImage]}>
-        <Image
-          style={styles.image}
-          source={require('../assets/bikemap_log.png')}
-        />
-      </View>
-      <View style={[styles.boxButton]}>
-        <FacebookLogin />
-      </View>
-      <LinearGradient
-        colors={['transparent', 'rgba(0,96,255,0.06)']}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 100
-        }}
-      />
-    </View>
+  static propTypes = {
+    loginUser: PropTypes.func.isRequired,
+  };
+
+  state = {
+    disableButton: false,
+  }
+
+  _handlePressAsync = async () => {
+    const redirectUrl = AuthSession.getRedirectUrl();
+    this.setState({ disableButton: true });
+    // ! You need to add this url to your authorized redirect urls on your Facebook app ! //
+    console.log({ redirectUrl });
+
+    const { type, params: { code } } = await AuthSession.startAsync({
+      authUrl: facebookAuthUri(FB_APP_ID, encodeURIComponent(redirectUrl)),
+    });
+
+    if (type !== 'success') {
+      Alert.alert('Error', 'Uh oh, something went wrong');
+      this.setState({ disableButton: false });
+      return;
+    }
+
+    const userInfoResponse = await fetch(SERVER_URI, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        code,
+        redirectUrl,
+      }),
+    });
+
+    const userData = await userInfoResponse.json();
+    if (userData.type !== 'success!') {
+      Alert.alert('Error', 'Unable to retrieve user data');
+      this.setState({ disableButton: false });
+      return;
+    }
+    const {
+      email, first_name, last_name,
+      picture: { data: { url } },
+      accessToken: { access_token, expires_in },
+    } = userData;
+    const user = {
+      first: first_name,
+      last: last_name,
+      profilePic: url,
+      token: access_token,
+      tokenExpires: expires_in,
+      email,
+    };
+    console.log(user);
+
+    this.setState({ disableButton: false });
+    this.props.loginUser(user);
+  };
+
+  render = () => (
+    <LoginView 
+      disableButton={this.state.disableButton} 
+      _handlePressAsync={this._handlePressAsync} 
+    />
   );
 }
+
+const mapDispatchToProps = {
+  loginUser,
+};
+
+const Login = connect(null, mapDispatchToProps)(LoginContainer);
+
+export default Login;
