@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "expo": "^22.0.2",
+    "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.0",
     "react": "16.0.0-beta.5",
     "react-native": "^0.49.5",
