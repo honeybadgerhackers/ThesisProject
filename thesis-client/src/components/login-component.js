@@ -39,7 +39,7 @@ const LoginView = ({ _handlePressAsync, disableButton }) => (
     <View style={[styles.boxImage]}>
       <Image
         style={styles.image}
-        source={require('../assets/bikemap_log.png')}
+        source={require('../assets/bikemap_logo.png')}
       />
     </View>
     <View style={[styles.boxButton]}>
