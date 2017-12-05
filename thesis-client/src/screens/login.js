@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { AuthSession } from 'expo';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import jwtDecode from 'jwt-decode';
 import LoginView from '../components/login-component';
 import { loginUser } from '../actions/user-actions';
 import { FB_APP_ID, facebookAuthUri, SERVER_URI } from '../../config';
@@ -37,7 +38,7 @@ class LoginContainer extends React.Component {
       return;
     }
 
-    const userInfoResponse = await fetch(SERVER_URI, {
+    const userInfoResponse = await fetch(`${SERVER_URI}/authorize`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -48,27 +49,30 @@ class LoginContainer extends React.Component {
         redirectUrl,
       }),
     });
-
+    console.log(userInfoResponse, typeof userInfoResponse);
     const userData = await userInfoResponse.json();
     if (userData.type !== 'success!') {
       Alert.alert('Error', 'Unable to retrieve user data');
       this.setState({ disableButton: false });
       return;
     }
-    const {
-      email, first_name, last_name,
-      picture: { data: { url } },
-      accessToken: { access_token, expires_in },
-    } = userData;
-    const user = {
-      first: first_name,
-      last: last_name,
-      profilePic: url,
-      token: access_token,
-      tokenExpires: expires_in,
-      email,
-    };
+    console.log(userData);
+    const user = jwtDecode(userData.id_token);
+    user.accessToken = userData.access_token;
     console.log(user);
+    // const {
+    //   email, first_name, last_name,
+    //   picture: { data: { url } },
+    //   accessToken: { access_token, expires_in },
+    // } = userData;
+    // const user = {
+    //   first: first_name,
+    //   last: last_name,
+    //   profilePic: url,
+    //   token: access_token,
+    //   tokenExpires: expires_in,
+    //   email,
+    // };
 
     this.setState({ disableButton: false });
     this.props.loginUser(user);
