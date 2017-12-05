@@ -64,10 +64,8 @@ class LoginContainer extends React.Component {
       this.setState({ disableButton: false });
       return;
     }
-    console.log(userData);
+
     const user = jwtDecode(userData.id_token);
-    // user.accessToken = userData.access_token;
-    console.log(user);
 
     this.setState({ disableButton: false });
     this.props.loginUser(user);
