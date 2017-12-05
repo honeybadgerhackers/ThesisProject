@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import { AuthSession } from 'expo';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -20,6 +20,14 @@ class LoginContainer extends React.Component {
 
   state = {
     disableButton: false,
+  }
+
+  _onValueChange = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log(`AsyncStorage error: ${error.message}`);
+    }
   }
 
   _handlePressAsync = async () => {
@@ -58,21 +66,8 @@ class LoginContainer extends React.Component {
     }
     console.log(userData);
     const user = jwtDecode(userData.id_token);
-    user.accessToken = userData.access_token;
+    // user.accessToken = userData.access_token;
     console.log(user);
-    // const {
-    //   email, first_name, last_name,
-    //   picture: { data: { url } },
-    //   accessToken: { access_token, expires_in },
-    // } = userData;
-    // const user = {
-    //   first: first_name,
-    //   last: last_name,
-    //   profilePic: url,
-    //   token: access_token,
-    //   tokenExpires: expires_in,
-    //   email,
-    // };
 
     this.setState({ disableButton: false });
     this.props.loginUser(user);
