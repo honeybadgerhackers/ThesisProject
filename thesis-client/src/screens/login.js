@@ -74,9 +74,9 @@ class LoginContainer extends React.Component {
   };
 
   render = () => (
-    <LoginView 
-      disableButton={this.state.disableButton} 
-      _handlePressAsync={this._handlePressAsync} 
+    <LoginView
+      disableButton={this.state.disableButton}
+      _handlePressAsync={this._handlePressAsync}
     />
   );
 }
