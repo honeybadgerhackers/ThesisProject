@@ -28,7 +28,6 @@ const mapDispatchToProps = {
 };
 
 function mapStateToProps(state) {
-  console.log('inside login container', state.loginButton.enabled);
   return {
     disableButton: state.loginButton.enabled,
   };

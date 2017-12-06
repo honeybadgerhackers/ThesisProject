@@ -1,9 +1,9 @@
-import { ENABLE_BUTTON, DISABLE_BUTTON } from '../constants';
+import { ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
 
 export const disableLoginButton = () => ({
-  type: DISABLE_BUTTON,
+  type: DISABLE_LOGIN,
 });
 
 export const enableLoginButton = () => ({
-  type: ENABLE_BUTTON,
+  type: ENABLE_LOGIN,
 });

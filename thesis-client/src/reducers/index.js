@@ -5,7 +5,6 @@ import user from './user-reducer';
 import navigation from './navigation-reducer';
 import loginButton from './login-button-reducer';
 
-
 export default combineReducers({
   trips,
   activeTrip,

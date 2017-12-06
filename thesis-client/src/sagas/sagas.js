@@ -1,90 +1,51 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { AuthSession } from 'expo';
+import { Alert } from 'react-native';
 import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_BUTTON, DISABLE_BUTTON } from '../constants';
-import { FB_APP_ID, facebookAuthUri, SERVER_URI } from '../../config';
+import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
+import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
+import { SERVER_URI } from '../../config';
 
 //worker saga - calls API and returns response_handlePressAsync = async () => {
-  /*
-const _handlePressAsync = async () => {
-  TODO this.setState({ disableButton: true });
-  const redirectUrl = AuthSession.getRedirectUrl();
-  // ! You need to add this url to your authorized redirect urls on your Facebook app ! //
-  console.log({ redirectUrl });
-
-  const { type, params: { code } } = await AuthSession.startAsync({
-    authUrl: facebookAuthUri(FB_APP_ID, encodeURIComponent(redirectUrl)),
-  });
-
-  if (type !== 'success') {
-  TODO  Alert.alert('Error', 'Uh oh, something went wrong');
-  TODO   this.setState({ disableButton: false });
-    return;
-  }
-
-  const userInfoResponse = await fetch(`${SERVER_URI}/authorize`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      code,
-      redirectUrl,
-    }),
-  });
-
-  const userData = await userInfoResponse.json();
-  if (userData.type !== 'success!') {
-  TODO  Alert.alert('Error', 'Unable to retrieve user data');
-  TODO  this.setState({ disableButton: false });
-    return;
-  }
-
-  const user = jwtDecode(userData.id_token);
-
-  TODO this.setState({ disableButton: false });
-  this.props.loginUser(user);
-};
-
-*/
-
 const authorizeUser = function* () {
-  // ? Break out to another function?
-  const redirectUrl = AuthSession.getRedirectUrl();
+  const redirectUrl = getRedirectUrl;
   try {
-    console.log('User fills out facebook forms');
+    yield put({ type: DISABLE_LOGIN });
 
-    // ? Break out AuthSession.startAsync to API calls utility?
+    const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
 
-    const { type, params: { code } } = yield all([
-      yield call(AuthSession.startAsync, {authUrl: facebookAuthUri(FB_APP_ID, encodeURIComponent(redirectUrl))}),
-      yield put({ type: DISABLE_BUTTON }),
-    ]);
+    if (type === 'success' && !error) {
+      const {
+        type: apiType,
+        id_token,
+        access_token,
+      } = yield call(dbPOST, '/authorize', { code, redirectUrl });
 
-    if (type !== 'success') {
-      yield put({ type: LOGIN_ERROR });
+      if (apiType === 'success!') {
+
+        const user = jwtDecode(id_token);
+
+        yield all([
+          yield put({ type: LOGIN, user }),
+          yield call(storeItem, access_token, STORAGE_KEY),
+          yield put({ type: ENABLE_LOGIN }),
+        ]);
+      }  else {
+        throw new Error('Database call failed', type);
+      }
+    } else {
+      throw new Error('Facebook login failed', type);
     }
 
-    // ? Check for failure
-    const { type: apiType, id_token, access_token }  = yield call(dbPOST, '/authorize', { code, redirectUrl });
-
-    if (apiType !== 'success!') {
-      yield put({ type: LOGIN_ERROR });
-    }
-
-    const user = jwtDecode(id_token);
-
-    yield all([
-      yield put({ type: LOGIN, user }),
-      yield call(storeItem, access_token, STORAGE_KEY),
-    ]);
   } catch (error) {
-    console.log(error);
-    yield put({ type: LOGIN_ERROR, error});
+    console.log('error', error);
+    Alert.alert('Cancelled');
+    yield all([
+        yield put({ type: LOGIN_ERROR, error }),
+        yield put({ type: ENABLE_LOGIN }),
+    ]);
   }
 };
 
@@ -103,8 +64,10 @@ const getTripsAsync = function* () {
 const loginFlow = function* () {
   while (true) {
     yield take(INITIATE_LOGIN);
+
     const task = yield fork(authorizeUser);
     const action = yield take([LOGOUT, LOGIN_ERROR]);
+
     if (action.type === LOGOUT) {
       yield cancel(task);
     }

@@ -37,6 +37,5 @@ export async function dbPOST(endpoint, data) {
     'body': JSON.stringify(data),
   });
   const parsed = await responseData.json();
-  console.log(parsed);
   return parsed;
 }
