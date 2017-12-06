@@ -5,12 +5,11 @@ import Redirect from '../screens/redirect';
 const LoginStack = StackNavigator(
   {
     login: {
-      screen: Login
+      screen: Login,
     },
-    // ! Replace me!
     home: {
-      screen: Redirect
-    }
+      screen: Redirect,
+    },
   },
   { headerMode: 'screen' }
 );

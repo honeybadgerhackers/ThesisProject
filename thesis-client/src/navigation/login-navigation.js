@@ -12,17 +12,17 @@ class LoginNavigation extends React.Component {
       last: PropTypes.string,
       profilePic: PropTypes.string,
       token: PropTypes.string,
-      email: PropTypes.string
+      email: PropTypes.string,
     }),
     navigationState: PropTypes.shape({
       index: PropTypes.number,
-      routes: PropTypes.array
+      routes: PropTypes.array,
     }).isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    isLoggedIn: null
+    isLoggedIn: null,
   };
 
   componentDidMount() {
@@ -44,9 +44,9 @@ class LoginNavigation extends React.Component {
   };
   render() {
     const { navigationState, dispatch, isLoggedIn } = this.props;
-    const state = isLoggedIn
-      ? navigationState.stateForLoggedIn
-      : navigationState.stateForLoggedOut;
+    const state = isLoggedIn ?
+      navigationState.stateForLoggedIn :
+      navigationState.stateForLoggedOut;
     return (
       <LoginStack navigation={addNavigationHelpers({ dispatch, state })} />
     );
@@ -55,7 +55,7 @@ class LoginNavigation extends React.Component {
 
 const mapStateToProps = state => ({
     isLoggedIn: state.user,
-    navigationState: state.navigation
+    navigationState: state.navigation,
   });
 
 export default connect(mapStateToProps)(LoginNavigation);

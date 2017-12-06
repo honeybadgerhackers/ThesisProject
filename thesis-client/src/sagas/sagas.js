@@ -1,10 +1,10 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
+import { all, call, put, takeEvery } from 'redux-saga/effects';
 //worker saga - calls API and returns response
 
 const getTripsAsync = function* () {
   try {
-    console.log('Attempting to get trips from API'); 
+    console.log('Attempting to get trips from API');
     const tripsRequest = yield call(axios.get, 'http://18.216.220.101:8091/route');
     yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest.data });
     console.log('Saga Trips loaded');
