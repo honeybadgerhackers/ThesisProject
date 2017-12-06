@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+  import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Platform, Text, View, StyleSheet, Button } from 'react-native';
 import { MapView, Constants, Location, Permissions } from 'expo';
