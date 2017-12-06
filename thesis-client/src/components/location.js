@@ -4,7 +4,6 @@ import { Platform, Text, View, StyleSheet, Button } from 'react-native';
 import { MapView, Constants, Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
 import { join } from 'redux-saga/effects';
-import { getUserLocation } from '../actions/getUserLocation-action';
 import { getDirections } from '../actions/getDirections-action';
 
 class WayPoint extends Component {
@@ -12,7 +11,8 @@ class WayPoint extends Component {
     speed: null,
     errorMessage: null,
     disableButton: false,
-    userLocation: true,
+    followUserLocation: false,
+    showsUserLocation: true,
     wayPoints: [],
     coords: []
   };
@@ -25,7 +25,6 @@ class WayPoint extends Component {
           'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
       });
     } else {
-      this.props.getUserLocation();
       // this._getLocationAsync();
     }
   }
@@ -129,7 +128,8 @@ class WayPoint extends Component {
   // * enableHighAccuracy will get us better results, at the cost of battery
   // *  power.
   _trackLocationAsync = async () => {
-    this.setState({ disableButton: true });
+    this.setState({ disableButton: true, followUserLocation: true });
+
     this.track = await Location.watchPositionAsync(
       { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
       this._handlePositionChange
@@ -157,12 +157,13 @@ class WayPoint extends Component {
   _stopTrackLocation = () => {
     if (this.track) {
       this.track.remove();
-      this.setState({ disableButton: false });
+      this.setState({ disableButton: false, followUserLocation: false });
     }
     this._getDirections();
     this.setState({ coords: this.props.routeCoords });
     console.log('STATE', this.state);
   };
+
 
   render() {
     let text = 'Waiting..';
@@ -176,6 +177,7 @@ class WayPoint extends Component {
     console.log('MAP REGION', this.props.mapRegion);
     console.log('USER LOCATION', this.props.userLocation);
     console.log('SPEED', this.state.speed);
+    
     // * Just FYI, MapView.Polyline needs to be nested inside of MapView.
     // * Could probably be broken off into it's own components to make this
     // *  file less sprawling.
@@ -185,9 +187,9 @@ class WayPoint extends Component {
       <View style={styles.container}>
         <MapView
           style={{ flex: 7 }}
-          // region={this.props.mapRegion}
-          showsUserLocation={this.state.userLocation}
-          followsUserLocation={this.state.userLocation}
+          initialRegion={this.props.mapRegion}
+          showsUserLocation={this.state.showsUserLocation}
+          followsUserLocation={this.state.followUserLocation}
         >
           <MapView.Polyline
             coordinates={this.state.coords}
@@ -219,9 +221,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getUserLocation: () => {
-    dispatch(getUserLocation());
-  },
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
   }

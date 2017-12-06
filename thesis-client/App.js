@@ -9,8 +9,8 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <LoginNavigator />
-        {/* <RootNavigator /> */}
+        {/* <LoginNavigator /> */}
+        <RootNavigator />
       </Provider>
     );
   }

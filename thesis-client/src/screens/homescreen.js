@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Expo from 'expo';
 import { selectTrip } from '../actions/activeTrip-action';
 import { getTrips } from '../actions/getTrip-action';
+import { getUserLocation } from '../actions/getUserLocation-action';
 import icon from '../assets/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
@@ -25,8 +26,9 @@ class HomeScreen extends Component {
   };
 
   componentWillMount() {
+    this.props.getUserLocation();
     this._loadAssetsAsync();
-    this.props.getAllTrips();
+    this.props.getAllTrips();    
   }
 
   async _loadAssetsAsync() {
@@ -57,14 +59,17 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    showTripLocation: (trip, cb) => {
-      dispatch(selectTrip(trip, cb)); 
-    },
-    getAllTrips: () => {
-      dispatch(getTrips());
-    }
-  });
+const mapDispatchToProps = dispatch => ({
+  showTripLocation: (trip, cb) => {
+    dispatch(selectTrip(trip, cb));
+  },
+  getAllTrips: () => {
+    dispatch(getTrips());
+  },
+  getUserLocation: () => {
+    dispatch(getUserLocation());
+  }
+});
 
 const styles = {
   imageStyle: {
