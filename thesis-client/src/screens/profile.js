@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Platform, Text, StyleSheet } from 'react-native';
+import { View, Platform, Text, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import Swiper from 'react-native-swiper';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
+import ProfileRoutes from '../components/profile-routes-component';
 
 class ProfileScreen extends Component {
 
@@ -21,17 +22,19 @@ class ProfileScreen extends Component {
             <ProfileStats />
           </View>
         </View>
-        <View>
-          <Text style={styles.title}>
-            Your Routes
-          </Text>
-        </View>
+         <View>
+           <Text style={styles.title}>
+             Your Routes
+           </Text>
+           <ScrollView>
+             <ProfileRoutes />
+           </ScrollView>
+         </View>
       </Swiper>
     );
   }
-
 }
-
+// style={styles.container}
 // style={styles.homeStatsScreenView}
 const styles = StyleSheet.create({
   title: {
