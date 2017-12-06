@@ -1,9 +1,6 @@
 import { LOGIN, LOGOUT, INITIATE_LOGIN } from '../constants';
 
-export const initiateLogin = (handleButtonPress) => {
-  if (handleButtonPress) {
-    handleButtonPress();
-  }
+export const initiateLogin = () => {
   return ({
     type: INITIATE_LOGIN,
   });

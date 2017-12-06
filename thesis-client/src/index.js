@@ -9,5 +9,9 @@ const store = createStore(reducers, applyMiddleware(sagaMiddleware));
 
 sagaMiddleware.run(rootSaga);
 
+store.subscribe(() => {
+  console.log('currentState', store.getState());
+});
+
 export default store;
 

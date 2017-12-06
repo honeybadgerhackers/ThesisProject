@@ -2,10 +2,10 @@ import { AsyncStorage } from 'react-native';
 import { STORAGE_KEY } from '../constants';
 import { SERVER_URI } from '../../config';
 
-export async function dbGET(endpoint, filter) {
+export async function dbSecureGET(endpoint, filter) {
   const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
-  const data = await fetch(`${SERVER_URI}${endpoint}`, {
+  return fetch(`${SERVER_URI}${endpoint}`, {
     method: 'GET',
     headers: {
       'Authorization': `BEARER ${ACCESS_TOKEN}`,
@@ -14,10 +14,10 @@ export async function dbGET(endpoint, filter) {
   });
 }
 
-export async function dbPOST(endpoint, data) {
+export async function dbSecurePOST(endpoint, data) {
   const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
-  fetch(`${SERVER_URI}${endpoint}`, {
+  return fetch(`${SERVER_URI}${endpoint}`, {
     method: 'POST',
     headers: {
       'Authorization': `BEARER ${ACCESS_TOKEN}`,
@@ -27,6 +27,16 @@ export async function dbPOST(endpoint, data) {
   });
 }
 
-export async function otherThingStopBuggingMe() {
-  console.log('hello');
+export async function dbPOST(endpoint, data) {
+  if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
+  const responseData = await fetch(`${SERVER_URI}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    'body': JSON.stringify(data),
+  });
+  const parsed = await responseData.json();
+  console.log(parsed);
+  return parsed;
 }
