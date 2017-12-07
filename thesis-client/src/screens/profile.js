@@ -5,8 +5,22 @@ import Swiper from 'react-native-swiper';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
 import ProfileRoutes from '../components/profile-routes-component';
+import { getUserSession, getUserTrip } from '../actions/getUser-action';
 
 class ProfileScreen extends Component {
+  state = {
+    sessions: [],
+    routes: [],
+  }
+
+  componentWillMount() {
+    this.props.getUserTrips();
+    this.props.getUserInfo();
+  }
+
+  _getSessions = async (id_user) => {
+    axios.get
+  }
 
   render() {
     return (
@@ -34,6 +48,8 @@ class ProfileScreen extends Component {
     );
   }
 }
+
+
 // style={styles.container}
 // style={styles.homeStatsScreenView}
 const styles = StyleSheet.create({
@@ -55,4 +71,5 @@ const styles = StyleSheet.create({
 });
 
 
-export default connect()(ProfileScreen);
+export default connect(mapDispatchToProps)(ProfileScreen);
+
