@@ -48,25 +48,6 @@ const watchGetUserLocation = function* () {
 };
 
 const getUserDirectionsAsync = function* (action) {    
-  // if (!origin) {
-  //     // ! Just a test object to ensure functionality
-  //     const wayPointsObjects = this.state.wayPoints;
-    
-  //     /*
-  //       ! Way point array will probably come in a different format than
-  //       !  the one above.
-  //       ! This will deal with an object with JUST Latitude and Longitude.
-  //       ! Our Way points in the database will almost certainly have more
-  //       !  data on them.
-  //     */
-  //     const wayPoints = wayPointsObjects.map(wayPoint => Object.values(wayPoint).join());
-  //     // * Splice and save the first element
-  //     origin = wayPoints.splice(0, 1);
-  //     // * Same, but the last element.
-  //     destination = wayPoints.splice(wayPoints.length - 1, 1);
-  //     // * Google's directions endpoint takes way points separated by pipe character
-  //     joinedWaypoints = wayPoints.join('|');
-  //   }
   const origin = action.payload.origin;
   const destination = action.payload.destination;
   const joinedWaypoints = action.payload.joinedWaypoints;
@@ -84,7 +65,6 @@ const getUserDirectionsAsync = function* (action) {
             origin
           }&destination=${destination}&key=${googleAPIKEY}`);
       }
-      console.log(res);
 
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
       const coords = points.map((point) => ({

@@ -8,6 +8,7 @@ import { getDirections } from '../actions/getDirections-action';
 
 class WayPoint extends Component {
   state = {
+    localUserLocation: null,
     speed: null,
     errorMessage: null,
     disableButton: false,
@@ -137,19 +138,19 @@ class WayPoint extends Component {
   };
 
   // * the callback for _trackLocationAsync
-  _handlePositionChange = () => {
+  _handlePositionChange = location => {
     // * pushes way points to a copy of the state's way points
     const wayPoint = {
-      lat: this.props.userLocation.coords.latitude,
-      lng: this.props.userLocation.coords.longitude
+      lat: location.coords.latitude,
+      lng: location.coords.longitude
     };
     const wayPoints = this.state.wayPoints.slice();
-    this.setState({ speed: this.props.userLocation.coords.speed });
+    this.setState({ speed: location.coords.speed });
     wayPoints.push(wayPoint);
     console.log('WAYPOINT', wayPoint);
     // * Replaces way points in state, also current location
     this.setState({
-      wayPoints,
+      wayPoints, localUserLocation: location
     });
   };
 
@@ -169,15 +170,15 @@ class WayPoint extends Component {
     let text = 'Waiting..';
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
-    } else if (this.props.userLocation) {
-      text = JSON.stringify(this.props.userLocation);
+    } else if (this.state.localUserLocation) {
+      text = JSON.stringify(this.state.localUserLocation);
     }
 
     console.log('ROUTE COORDS', this.props.routeCoords);
     console.log('MAP REGION', this.props.mapRegion);
     console.log('USER LOCATION', this.props.userLocation);
     console.log('SPEED', this.state.speed);
-    
+
     // * Just FYI, MapView.Polyline needs to be nested inside of MapView.
     // * Could probably be broken off into it's own components to make this
     // *  file less sprawling.
@@ -192,7 +193,7 @@ class WayPoint extends Component {
           followsUserLocation={this.state.followUserLocation}
         >
           <MapView.Polyline
-            coordinates={this.state.coords}
+            coordinates={this.props.routeCoords}
             strokeWidth={10}
             strokeColor="red"
           />
