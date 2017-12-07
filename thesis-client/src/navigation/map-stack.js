@@ -3,8 +3,11 @@ import MapScreen from '../screens/mapscreen';
 
 const MapStack = StackNavigator({
   Map: {
-    screen: MapScreen,
-  },
+    screen: MapScreen
+  },  
+},
+{ 
+  headerMode: 'screen'
 });
 
 export default MapStack;

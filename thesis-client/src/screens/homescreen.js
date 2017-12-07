@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Expo from 'expo';
 import selectTrip from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
+import { getUserLocation } from '../actions/getUserLocation-action';
 import icon from '../assets/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
@@ -16,17 +17,7 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    headerStyle: {
-      height: Platform.OS === 'android' ? 54 + STATUS_BAR_HEIGHT : 54,
-      backgroundColor: 'white',
-    },
-    headerTitleStyle: {
-      marginTop: Platform.OS === 'android' ? STATUS_BAR_HEIGHT : 0,
-      color: 'white',
-    },
-    headerLeft: <Image source={icon} style={styles.imageStyle} />,
-    headerTitle: <Text style={styles.headerTitle}>Bike Map</Text>,
-    headerRight: <Image source={icon} style={styles.imageStyle2} />,
+    header: null
   });
 
   static propTypes = {
@@ -37,18 +28,19 @@ class HomeScreen extends Component {
   };
 
   state = {
-    // appIsReady: false,
+    appIsReady: false,
   };
 
   componentWillMount() {
+    this.props.getUserLocation();
     this._loadAssetsAsync();
-    this.props.getAllTrips();
+    this.props.getAllTrips();    
   }
 
   _loadAssetsAsync = async () => {
     const imageAssets = cacheImages([icon]);
     await Promise.all([...imageAssets]);
-    // this.setState({ appIsReady: true });
+    this.setState({ appIsReady: true });
   }
 
   render() {
@@ -73,24 +65,25 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    showTripLocation: (trip, cb) => {
-      dispatch(selectTrip(trip, cb));
-    },
-    getAllTrips: () => {
-      dispatch(getTrips());
-    },
-  });
+const mapDispatchToProps = dispatch => ({
+  showTripLocation: (trip, cb) => {
+    dispatch(selectTrip(trip, cb));
+  },
+  getAllTrips: () => {
+    dispatch(getTrips());
+  },
+  getUserLocation: () => {
+    dispatch(getUserLocation());
+  }
+});
 
 const styles = {
   imageStyle: {
-    // marginTop: 5,
     marginLeft: 10,
     width: 40,
     height: 40,
   },
   imageStyle2: {
-    // marginTop: 5,
     marginRight: 10,
     width: 40,
     height: 40,

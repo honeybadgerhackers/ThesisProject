@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import Map from '../components/map-component';
+import RobMap from '../components/location';
 
 // eslint-disable-next-line
 class MapScreen extends Component {
+  static navigationOptions = () => ({
+    header: null
+  });
+  
   static propTypes = {
     activeTrip: PropTypes.shape({}),
   };
@@ -16,11 +21,11 @@ class MapScreen extends Component {
 
   render() {
     const { activeTrip } = this.props;
-    return (
-      <View>
-        <Map activeTrip={activeTrip} />
-      </View>
-    );
+    return <RobMap />;
+
+      // <View>
+      //   {/* <Map activeTrip={activeTrip} /> */}
+      // </View>
   }
 }
 

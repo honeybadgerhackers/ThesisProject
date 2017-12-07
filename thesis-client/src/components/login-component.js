@@ -6,22 +6,22 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   box: {
     flex: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center"
   },
   boxImage: {
     flex: 5.5,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    alignItems: "center",
+    justifyContent: "flex-end"
   },
   boxButton: {
     flex: 4.5,
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   image: {
     flex: 0.5,
-    resizeMode: 'contain',
-  },
+    resizeMode: "contain"
+  }
 });
 
 const LoginView = ({ _handlePressAsync, disableButton }) => (
