@@ -26,15 +26,13 @@ class LoginContainer extends React.Component {
     try {
       await AsyncStorage.setItem(item, selectedValue);
     } catch (error) {
-      console.log(`AsyncStorage error: ${error.message}`);
+      console.log(error);
     }
   }
 
   _handlePressAsync = async () => {
     const redirectUrl = AuthSession.getRedirectUrl();
     this.setState({ disableButton: true });
-    // ! You need to add this url to your authorized redirect urls on your Facebook app ! //
-    console.log({ redirectUrl });
 
     const { type, params: { code } } = await AuthSession.startAsync({
       authUrl: facebookAuthUri(FB_APP_ID, encodeURIComponent(redirectUrl)),
@@ -57,7 +55,6 @@ class LoginContainer extends React.Component {
         redirectUrl,
       }),
     });
-    console.log(userInfoResponse, typeof userInfoResponse);
     const userData = await userInfoResponse.json();
     if (userData.type !== 'success!') {
       Alert.alert('Error', 'Unable to retrieve user data');
@@ -66,7 +63,6 @@ class LoginContainer extends React.Component {
     }
 
     const user = jwtDecode(userData.id_token);
-
     this.setState({ disableButton: false });
     this.props.loginUser(user);
   };

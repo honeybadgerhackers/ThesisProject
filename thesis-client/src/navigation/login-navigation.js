@@ -42,6 +42,7 @@ class LoginNavigation extends React.Component {
     dispatch(NavigationActions.back());
     return true;
   };
+  
   render() {
     const { navigationState, dispatch, isLoggedIn } = this.props;
     const state = isLoggedIn ?

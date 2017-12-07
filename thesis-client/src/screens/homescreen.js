@@ -28,7 +28,7 @@ class HomeScreen extends Component {
   };
 
   state = {
-    // appIsReady: false,
+    appIsReady: false,
   };
 
   componentWillMount() {
@@ -40,7 +40,7 @@ class HomeScreen extends Component {
   _loadAssetsAsync = async () => {
     const imageAssets = cacheImages([icon]);
     await Promise.all([...imageAssets]);
-    // this.setState({ appIsReady: true });
+    this.setState({ appIsReady: true });
   }
 
   render() {
@@ -79,13 +79,11 @@ const mapDispatchToProps = dispatch => ({
 
 const styles = {
   imageStyle: {
-    // marginTop: 5,
     marginLeft: 10,
     width: 40,
     height: 40,
   },
   imageStyle2: {
-    // marginTop: 5,
     marginRight: 10,
     width: 40,
     height: 40,

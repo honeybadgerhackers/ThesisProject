@@ -14,20 +14,13 @@ const getTripsAsync = function* () {
   }
 };
 
-const watchGetTrips = function* () {
-  yield takeEvery('GET_TRIPS', getTripsAsync);
-};
-
 const getUserLocationAsync = function* () {
   try { 
-    console.log('ASKING FOR LOCATION ACCESS PERMISSION');
     const { status } = yield call(Permissions.askAsync, Permissions.LOCATION);
     if (status !== 'granted') {
       yield put({ type: 'GET_USER_LOCATION_FAILED', payload: 'Permission to access location was denied' });
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
-    // console.log('USER LOCATION', userLocation);
-    // * Sets current location to the users -
     yield put({ type: 'UPDATE_MAP_REGION', 
       payload: { 
         latitude: userLocation.coords.latitude, 
@@ -36,15 +29,9 @@ const getUserLocationAsync = function* () {
         longitudeDelta: 0.05
         } });
     yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
-    // * Sets MAP current location.    
   } catch (error) {
     console.log(error);
   }
-};
-
-const watchGetUserLocation = function* () {
-  console.log('GETTING USER LOCATION SAGA STARTED!');
-  yield takeEvery('GET_USER_LOCATION', getUserLocationAsync);
 };
 
 const getUserDirectionsAsync = function* (action) {    
@@ -54,8 +41,6 @@ const getUserDirectionsAsync = function* (action) {
 
   try {
       let res;
-      // * Ali says all URLs should go in a config file. Maybe set these as a function
-      // *  that returns the correct one with the space filled in?
       if (!joinedWaypoints) {
         res = yield call(axios.get, `https://maps.googleapis.com/maps/api/directions/json?origin=${
             origin
@@ -65,24 +50,29 @@ const getUserDirectionsAsync = function* (action) {
             origin
           }&destination=${destination}&key=${googleAPIKEY}`);
       }
-
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
       const coords = points.map((point) => ({
           latitude: point[0],
           longitude: point[1]
         }));
 
-      // * coords is saved in state to re-render the directions line.
       yield put({ type: 'UPDATE_ROUTE_COORDS', payload: coords });
-
       return coords;
+
     } catch (error) {
       console.log(error);
     }
 };
 
+const watchGetTrips = function*() {
+  yield takeEvery("GET_TRIPS", getTripsAsync);
+};
+
+const watchGetUserLocation = function*() {
+  yield takeEvery("GET_USER_LOCATION", getUserLocationAsync);
+};
+
 const watchGetDirections = function* () {
-  console.log('GETTING DIRECTIONS SAGA STARTED!');
   yield takeEvery('GET_DIRECTIONS', getUserDirectionsAsync);
 };
 
@@ -92,4 +82,4 @@ const rootSaga = function* () {
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections };
