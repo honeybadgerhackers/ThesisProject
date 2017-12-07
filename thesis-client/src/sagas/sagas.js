@@ -4,8 +4,8 @@ import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
-import { dbPOST } from '../utilities/server-calls';
-import { storeItem } from '../utilities/async-storage';
+import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
+import { storeItem, getItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
 import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
 import { SERVER_URI, googleAPIKEY } from '../../config';
@@ -28,12 +28,12 @@ const authorizeUser = function* () {
       if (apiType === 'success!') {
 
         const user = jwtDecode(id_token);
-
         yield all([
           yield put({ type: LOGIN, user }),
-          yield call(storeItem, access_token, STORAGE_KEY),
+          yield call(storeItem, STORAGE_KEY, access_token),
           yield put({ type: ENABLE_LOGIN }),
         ]);
+
       }  else {
         throw new Error('Database call failed', type);
       }
@@ -53,8 +53,8 @@ const authorizeUser = function* () {
 
 const getTripsAsync = function* () {
   try {
-    const tripsRequest = yield call(axios.get, `${SERVER_URI}/route`);
-    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest.data });
+    const tripsRequest = yield call(dbSecureGET, 'route');
+    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
     console.log(error);
   }
