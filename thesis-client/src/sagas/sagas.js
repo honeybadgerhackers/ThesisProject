@@ -8,7 +8,8 @@ import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
 import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
 import { SERVER_URI } from '../../config';
 
-//worker saga - calls API and returns response_handlePressAsync = async () => {
+//worker saga - calls API and returns response
+
 const authorizeUser = function* () {
   const redirectUrl = getRedirectUrl;
   try {
@@ -59,6 +60,7 @@ const getTripsAsync = function* () {
     console.log(error);
   }
 };
+
 //watcher saga - listen for actions to be dispatched, will call worker
 
 const loginFlow = function* () {
@@ -72,7 +74,6 @@ const loginFlow = function* () {
       yield cancel(task);
     }
   }
-  // yield takeLast(INITIATE_LOGIN. loginUserAsync);
 };
 
 const watchGetTrips = function* () {
