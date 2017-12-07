@@ -5,7 +5,6 @@ import Swiper from 'react-native-swiper';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
 import ProfileRoutes from '../components/profile-routes-component';
-import { getUserSession, getUserTrip } from '../actions/getUser-action';
 
 class ProfileScreen extends Component {
   state = {
@@ -14,12 +13,30 @@ class ProfileScreen extends Component {
   }
 
   componentWillMount() {
-    this.props.getUserTrips();
-    this.props.getUserInfo();
+    this._getUserSessions();
+    this._getUserTrips();
   }
 
-  _getSessions = async (id_user) => {
-    axios.get
+  _getUserSessions = async (idUser) => {
+    axios({
+      method: 'get',
+      url: `${SERVER_URI}/session`,
+      headers: {filter: idUser}
+    })
+      .then((response) => {
+        this.setState({sessions: response});
+      })
+  }
+
+  _getUserTrips = async (idUser) => {
+    axios({
+      method: 'get',
+      url: `${SERVER_URI}/route`,
+      headers: {filter: idUser}
+    })
+      .then((response) => {
+        this.setState({routes: response})
+      })
   }
 
   render() {
