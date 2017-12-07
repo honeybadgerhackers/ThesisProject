@@ -1,43 +1,104 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
-import { MapView, Constants, Location, Permissions } from 'expo';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
+import { Alert } from 'react-native';
+import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
-import googleAPIKEY from '../config';
+import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
+import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
+import { storeItem, getItem } from '../utilities/async-storage';
+import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
+import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
+import { SERVER_URI, googleAPIKEY } from '../../config';
 
+
+const authorizeUser = function* () {
+  const redirectUrl = getRedirectUrl;
+  try {
+    yield put({ type: DISABLE_LOGIN });
+
+    const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
+
+    if (type === 'success' && !error) {
+      const {
+        type: apiType,
+        id_token,
+        access_token,
+      } = yield call(dbPOST, '/authorize', { code, redirectUrl });
+
+      if (apiType === 'success!') {
+
+        const user = jwtDecode(id_token);
+        yield all([
+          yield put({ type: LOGIN, user }),
+          yield call(storeItem, STORAGE_KEY, access_token),
+          yield put({ type: ENABLE_LOGIN }),
+        ]);
+
+      }  else {
+        throw new Error('Database call failed', type);
+      }
+    } else {
+      throw new Error('Facebook login failed', type);
+    }
+
+  } catch (error) {
+    console.log('error', error);
+    Alert.alert('Cancelled');
+    yield all([
+        yield put({ type: LOGIN_ERROR, error }),
+        yield put({ type: ENABLE_LOGIN }),
+    ]);
+  }
+};
 
 const getTripsAsync = function* () {
   try {
-    const tripsRequest = yield call(axios.get, 'http://18.216.220.101:8091/route');
-    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest.data });
+    const tripsRequest = yield call(dbSecureGET, 'route');
+    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
     console.log(error);
   }
 };
 
+const loginFlow = function* () {
+  while (true) {
+    yield take(INITIATE_LOGIN);
+
+    const task = yield fork(authorizeUser);
+    const action = yield take([LOGOUT, LOGIN_ERROR]);
+
+    if (action.type === LOGOUT) {
+      yield cancel(task);
+    }
+  }
+};
+
 const getUserLocationAsync = function* () {
-  try { 
+  try {
     const { status } = yield call(Permissions.askAsync, Permissions.LOCATION);
     if (status !== 'granted') {
       yield put({ type: 'GET_USER_LOCATION_FAILED', payload: 'Permission to access location was denied' });
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
-    yield put({ type: 'UPDATE_MAP_REGION', 
-      payload: { 
-        latitude: userLocation.coords.latitude, 
+    yield put({
+ type: 'UPDATE_MAP_REGION',
+      payload: {
+        latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.05,
-        longitudeDelta: 0.05
-        } });
+        longitudeDelta: 0.05,
+        },
+});
     yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
   } catch (error) {
     console.log(error);
   }
 };
 
-const getUserDirectionsAsync = function* (action) {    
-  const origin = action.payload.origin;
-  const destination = action.payload.destination;
-  const joinedWaypoints = action.payload.joinedWaypoints;
+const getUserDirectionsAsync = function* ({ payload: { origin, destination, joinedWaypoints } }) {
+  // const origin = action.payload.origin;
+  // const destination = action.payload.destination;
+  // const joinedWaypoints = action.payload.joinedWaypoints;
 
   try {
       let res;
@@ -53,7 +114,7 @@ const getUserDirectionsAsync = function* (action) {
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
       const coords = points.map((point) => ({
           latitude: point[0],
-          longitude: point[1]
+          longitude: point[1],
         }));
 
       yield put({ type: 'UPDATE_ROUTE_COORDS', payload: coords });
@@ -64,11 +125,11 @@ const getUserDirectionsAsync = function* (action) {
     }
 };
 
-const watchGetTrips = function*() {
+const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
 };
 
-const watchGetUserLocation = function*() {
+const watchGetUserLocation = function* () {
   yield takeEvery("GET_USER_LOCATION", getUserLocationAsync);
 };
 
@@ -78,7 +139,10 @@ const watchGetDirections = function* () {
 
 const rootSaga = function* () {
   yield all([
-    watchGetTrips(), watchGetUserLocation(), watchGetDirections(),
+    watchGetTrips(),
+    loginFlow(),
+    watchGetUserLocation(),
+    watchGetDirections(),
   ]);
 };
 
