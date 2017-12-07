@@ -1,4 +1,4 @@
-export default function (state = { trips: [], loading: false }, action) {
+export default function(state = { trips: [], loading: false }, action) {
   switch (action.type) {
     case 'GET_TRIPS':
       return { ...state, loading: true };

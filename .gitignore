@@ -1,0 +1,5 @@
+node_modules
+.expo/
+config.js
+npm-debug.*
+yarn-error.log

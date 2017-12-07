@@ -1,8 +1,8 @@
 export const loginUser = user => ({
     type: 'LOGIN',
-    user
+    user,
   });
 
 export const logoutUser = user => ({
-    type: 'LOGOUT'
+    type: 'LOGOUT',
   });

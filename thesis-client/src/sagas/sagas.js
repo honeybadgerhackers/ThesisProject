@@ -2,7 +2,7 @@ import { all, call, put, takeEvery } from 'redux-saga/effects';
 import { MapView, Constants, Location, Permissions } from 'expo';
 import axios from 'axios';
 import Polyline from '@mapbox/polyline';
-import  googleAPIKEY from '../config';
+import googleAPIKEY from '../config';
 
 
 const getTripsAsync = function* () {
