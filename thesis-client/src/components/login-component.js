@@ -45,7 +45,7 @@ const LoginView = ({ _handlePressAsync, disableButton }) => (
     <View style={[styles.boxButton]}>
       <Button
         title="Login with Facebook"
-        onPress={_handlePressAsync}
+        onPress={() => _handlePressAsync()}
         disabled={disableButton}
       />
     </View>
