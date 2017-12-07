@@ -5,19 +5,27 @@ import { SERVER_URI } from '../../config';
 export async function dbSecureGET(endpoint, filter) {
   const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
-  return fetch(`${SERVER_URI}${endpoint}`, {
+
+  const params = {
     method: 'GET',
     headers: {
+      'Content-Type': 'application/json',
       'Authorization': `BEARER ${ACCESS_TOKEN}`,
-      filter,
     },
-  });
+  };
+
+  if (filter) {
+    params.headers.filter = filter;
+  }
+  const responseData = await fetch(`${SERVER_URI}${endpoint}`, params);
+  const parsed = responseData.json();
+  return parsed;
 }
 
 export async function dbSecurePOST(endpoint, data) {
   const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
-  return fetch(`${SERVER_URI}${endpoint}`, {
+  const responseData = fetch(`${SERVER_URI}${endpoint}`, {
     method: 'POST',
     headers: {
       'Authorization': `BEARER ${ACCESS_TOKEN}`,
@@ -25,6 +33,8 @@ export async function dbSecurePOST(endpoint, data) {
     },
     'body': JSON.stringify(data),
   });
+  const parsed = await responseData.json();
+  return parsed;
 }
 
 export async function dbPOST(endpoint, data) {
