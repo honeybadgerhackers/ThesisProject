@@ -63,7 +63,5 @@ export async function dbPOST(endpoint, data) {
     data: JSON.stringify(data),
   };
 
-  console.log(params);
-
   return await axiosRequest(params);
 }

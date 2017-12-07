@@ -54,7 +54,6 @@ const authorizeUser = function* () {
 const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
-    console.log(tripsRequest);
     yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
     console.log(error);
