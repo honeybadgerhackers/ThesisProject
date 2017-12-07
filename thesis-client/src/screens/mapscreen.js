@@ -21,12 +21,11 @@ class MapScreen extends Component {
 
   render() {
     const { activeTrip } = this.props;
-    return (
-      <View>
-        <RobMap />
-        {/* <Map activeTrip={activeTrip} /> */}
-      </View>
-    );
+    return <RobMap />;
+
+      // <View>
+      //   {/* <Map activeTrip={activeTrip} /> */}
+      // </View>
   }
 }
 
