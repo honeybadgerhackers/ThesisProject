@@ -9,7 +9,7 @@ const Map = ({ activeTrip }) => (
       provider="google"
       showsMyLocationButton
       style={{ alignSelf: 'stretch', height: 400 }}
-      region={activeTrip.location}
+      region={activeTrip.waypoints[0]}
     />
   </View>
 );

@@ -3,7 +3,7 @@ import { View, ScrollView, Platform, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
-import selectTrip from '../actions/activeTrip-action';
+import getActiveTrip from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
 import { getUserLocation } from '../actions/getUserLocation-action';
 import icon from '../assets/bikeIcon.png';
@@ -67,7 +67,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => ({
   showTripLocation: (trip, cb) => {
-    dispatch(selectTrip(trip, cb));
+    dispatch(getActiveTrip(trip, cb));
   },
   getAllTrips: () => {
     dispatch(getTrips());

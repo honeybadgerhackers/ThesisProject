@@ -21,6 +21,8 @@ class MapScreen extends Component {
 
   render() {
     const { activeTrip } = this.props;
+    
+
     return <RobMap />;
 
       // <View>
