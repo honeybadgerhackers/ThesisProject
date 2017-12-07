@@ -7,29 +7,31 @@ const ProfileRoutes = () => {
   //   navigate('Map');
   // };
 
-const createTrip = () => routes.map(trip => (
+const createTrip = ({routes}) => 
+// routes.map(trip => (
   // <TouchableOpacity
   //   key={trip.id_user_account}
   //   // onPress={() => showTripLocation(trip, goToMap)}
   // >
 
-  <View style={styles.container} key={trip.id_user_account}>
-    <View style={{width: 325, height: 100, borderWidth: 2, borderRadius: 6}}>
-      <Text>{trip.route_name}</Text>
-      <Text>Current Rating: {trip.current_rating}</Text>
-      <Text>12345 N.Starting Address</Text>
-      <Text>Favorites: {trip.favorite_count}</Text>
-      <Text style={styles.imageContainerText}>{trip.type}</Text>
-      <TouchableOpacity
-      onPress={() => showTripLocation(trip, goToMap)}
-      >
-      <Image source={mapIcon}/>
-      </TouchableOpacity>
-    </View>
-  </View>
-));
+  console.log(routes)
+  // <View style={styles.container} key={trip.id_user_account}>
+  //   <View style={{ width: 325, height: 100, borderWidth: 2, borderRadius: 6 }}>
+  //     <Text>{trip.route_name}</Text>
+  //     <Text>Current Rating: {trip.current_rating}</Text>
+  //     <Text>12345 N.Starting Address</Text>
+  //     <Text>Favorites: {trip.favorite_count}</Text>
+  //     <Text style={styles.imageContainerText}>{trip.type}</Text>
+  //     <TouchableOpacity
+  //     onPress={() => showTripLocation(trip, goToMap)}
+  //     >
+  //     <Image source={mapIcon}/>
+  //     </TouchableOpacity>
+  //   </View>
+  // </View>
+// ));
 
-return <View>{createTrip()}</View>;  
+// return <View>{createTrip()}</View>;  
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Platform, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import Swiper from 'react-native-swiper';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
@@ -13,54 +14,64 @@ class ProfileScreen extends Component {
   }
 
   componentWillMount() {
-    this._getUserSessions();
-    this._getUserTrips();
+    this._getUserSessions(5);
+    this._getUserTrips(5);
   }
 
   _getUserSessions = async (idUser) => {
     axios({
-      method: 'get',
-      url: `${SERVER_URI}/session`,
-      headers: {filter: idUser}
+      method: 'GET',
+      url: `http://18.216.220.101:8091/session`,
+      headers: {
+        filter: '{"id_user_account": 5}',
+      },
     })
       .then((response) => {
-        this.setState({sessions: response});
+        this.setState({sessions: response.data});
       })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   _getUserTrips = async (idUser) => {
     axios({
-      method: 'get',
-      url: `${SERVER_URI}/route`,
-      headers: {filter: idUser}
+      method: 'GET',
+      url: `http://18.216.220.101:8091/route`,
+      headers: {
+        filter: '{"id_user_account": 5}',
+      },
     })
       .then((response) => {
-        this.setState({routes: response})
+        this.setState({routes: response.data});
       })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   render() {
     return (
       <Swiper
-      style={styles.wrapper}
-      loop={false}
+        style={styles.wrapper}
+        loop={false}
       >
         <View>
           <Text style={styles.title}>
             Your Stats
           </Text>
           <View style={styles.container}>
-            <ProfileStats />
+            <ProfileStats sessions={this.state.sessions} />
           </View>
         </View>
-         <View>
-           <Text style={styles.title}>
-             Your Routes
-           </Text>
-           <ScrollView>
-             <ProfileRoutes />
-           </ScrollView>
-         </View>
+        <View>
+          <Text style={styles.title}>
+            Your Routes
+          </Text>
+          <ScrollView>
+            <ProfileRoutes routes={this.state.routes} />
+          </ScrollView>
+        </View>
       </Swiper>
     );
   }
@@ -77,16 +88,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     backgroundColor: 'lightblue',
-    borderWidth: 2
+    borderWidth: 2,
   },
   container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
-  }
+  },
 });
 
 
-export default connect(mapDispatchToProps)(ProfileScreen);
+export default connect()(ProfileScreen);
 
