@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Platform, Text, View, StyleSheet, Button } from 'react-native';
+import { Platform, Text, View, StyleSheet, Button, TouchableOpacity, StatusBar } from 'react-native';
 import { MapView, Constants, Location, Permissions } from 'expo';
 import { join } from 'redux-saga/effects';
 import Polyline from "@mapbox/polyline";
 import { getDirections } from '../actions/getDirections-action';
+import Stats from '../components/routeStats-component';
 
 class WayPoint extends Component {
   state = {
@@ -15,7 +16,7 @@ class WayPoint extends Component {
     followUserLocation: false,
     showsUserLocation: true,
     wayPoints: [],
-    coords: []
+    buttonStartStop: false,
   };
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -73,9 +74,11 @@ class WayPoint extends Component {
       text = JSON.stringify(this.state.localUserLocation);
     }
     return (
+       
       <View style={styles.container}>
+        <StatusBar style={styles.statBar}></StatusBar>
         <MapView
-          style={{ flex: 7 }}
+          style={styles.map}
           initialRegion={this.props.mapRegion}
           showsUserLocation={this.state.showsUserLocation}
           followsUserLocation={this.state.followUserLocation}
@@ -84,9 +87,19 @@ class WayPoint extends Component {
             coordinates={this.props.routeCoords}
             strokeWidth={10}
             strokeColor="red"
-          />
+          />          
         </MapView>
-        <View style={{ flex: 3 }}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.setState({
+              buttonStartStop: !this.state.buttonStartStop
+            })}
+          >
+            <Text>{this.state.buttonStartStop ? 'End' : 'Start'}</Text>
+          </TouchableOpacity>
+        </View>
+        {/* <View style={{ flex: 3 }}>
           <Button
             disabled={this.state.disableButton}
             title="Watch Location"
@@ -95,7 +108,7 @@ class WayPoint extends Component {
           <Button title="Stop Watching" onPress={this._stopTrackLocation} />
           <Text style={styles.paragraph}>Speed: {this.state.speed}</Text>
           <Text style={styles.paragraph}>{text}</Text>
-        </View>
+        </View> */}
       </View>
       );
   }
@@ -111,16 +124,34 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
-  }
+  },
 });
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject
   },
   paragraph: {
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: "center",
+  },
+  buttonContainer: {
+    marginVertical: 20,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    borderRadius: 20,
+    padding: 12,
+    width: 160,
+  },
+  statBar: {
+    backgroundColor: 'black',
   }
 });
 

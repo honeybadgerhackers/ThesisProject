@@ -3,7 +3,7 @@ export default function(state = {}, action) {
     case 'TRIP_SELECTED':
       return action.payload;
     case 'GET_ACTIVE_TRIP_SUCCESS':
-      return {...state};
+      return action.payload;
     default:
         return state;
   }

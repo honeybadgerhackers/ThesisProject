@@ -30,7 +30,6 @@ export async function dbSecureGET(endpoint, filter) {
   if (filter) {
     params.headers.filter = filter;
   }
-
   return await axiosRequest(params);
 }
 

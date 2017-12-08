@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import Map from '../components/map-component';
-import RobMap from '../components/location';
+import CustomTripMap from '../components/location';
 
 // eslint-disable-next-line
 class MapScreen extends Component {
@@ -20,20 +20,21 @@ class MapScreen extends Component {
   };
 
   render() {
-    const { activeTrip } = this.props;
+    const { activeTrip, userLocation, mapRegion } = this.props;
     
 
-    return <RobMap />;
-
-      // <View>
-      //   {/* <Map activeTrip={activeTrip} /> */}
-      // </View>
+    // return <CustomeTripMap />;
+    return (
+      <Map activeTrip={activeTrip} userLocation={userLocation} mapRegion={mapRegion} />
+    );
   }
 }
 
 function mapStateToProps(state) {
   return {
     activeTrip: state.activeTrip,
+    userLocation: state.userLocation,
+    mapRegion: state.mapRegion,
   };
 }
 

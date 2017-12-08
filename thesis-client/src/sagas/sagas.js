@@ -123,8 +123,11 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 };
 
 const getActiveTripAsync = function* (action) {
+  let filter = {
+    'id_route': action.payload.id,
+  };
   try {
-    const activeTrip = yield call(getTrip);
+    const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });
   } catch (error) {
     console.log(error);
@@ -143,8 +146,7 @@ const watchGetDirections = function* () {
   yield takeEvery('GET_DIRECTIONS', getUserDirectionsAsync);
 };
 
-const watchGetActiveTrip = function* () {
-  console.log('GET TRIP SAGA STARTING');
+const watchGetActiveTrip = function* () {  
   yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);
 };
 
