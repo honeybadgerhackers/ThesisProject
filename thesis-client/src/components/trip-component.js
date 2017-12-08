@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import mapIcon from '../assets/mapIcon.png';
+import mapIcon from '../assets/icons/mapIcon.png';
 
 const Trip = ({ navigate, trips, showTripLocation }) => {
   const goToMap = () => {

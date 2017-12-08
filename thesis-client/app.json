@@ -4,9 +4,9 @@
     "description": "Thesis Project",
     "orientation": "portrait",
     "sdkVersion": "22.0.0",
-    "icon": "./src/assets/bikeIcon.png",
+    "icon": "./src/assets/iconss/bikeIcon.png",
     "loading": {
-      "icon": "./src/assets/bikemap_logo.png",
+      "icon": "./src/assets/images/bikemap_logo.png",
       "hideExponentText": false
     }
   }
