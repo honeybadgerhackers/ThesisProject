@@ -19,6 +19,9 @@ const authorizeUser = function* () {
     const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
 
     if (type === 'success' && !error) {
+      // ! Quick hack to make loader run, probably should fix later
+      yield put({ type: ENABLE_LOGIN });
+      yield put({ type: DISABLE_LOGIN });
       const {
         type: apiType,
         id_token,
