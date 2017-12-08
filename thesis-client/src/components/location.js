@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Platform, Text, View, StyleSheet, Button } from 'react-native';
+import { Platform, Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { MapView, Constants, Location } from 'expo';
 import PropTypes from 'prop-types';
 // import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
 import { getDirections } from '../actions/getDirections-action';
+import createTrip from '../actions/create-trip-action';
 
 class WayPoint extends Component {
   static propTypes = {
     getDirectionsSaga: PropTypes.func.isRequired,
+    createTripDispatch: PropTypes.func.isRequired,
     mapRegion: PropTypes.shape({}).isRequired,
-    routeCoords: PropTypes.shape(),
+    // eslint-disable-next-line
+    routeCoords: PropTypes.array,
   }
 
   static defaultProps = {
@@ -51,6 +54,7 @@ class WayPoint extends Component {
   }
     this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
   };
+
   _trackLocationAsync = async () => {
     this.setState({ disableButton: true, followUserLocation: true });
     this.track = await Location.watchPositionAsync(
@@ -58,6 +62,7 @@ class WayPoint extends Component {
       this._handlePositionChange
     );
   };
+
   _handlePositionChange = location => {
     const wayPoint = {
       lat: location.coords.latitude,
@@ -70,13 +75,23 @@ class WayPoint extends Component {
       wayPoints, localUserLocation: location,
     });
   };
+
   _stopTrackLocation = () => {
     if (this.track) {
       this.track.remove();
       this.setState({ disableButton: false, followUserLocation: false });
     }
     this._getDirections();
+    Alert.alert(
+      'Save',
+       'Would you like to save this trip to your routes?',
+       [
+         { text: 'No', onPress: () => console.log('pressed no')},
+         { text: 'Yes', onPress: () => this.props.createTripDispatch(this.state.wayPoints) },
+       ]
+    );
   };
+
   render() {
     let text = 'Waiting..';
     if (this.state.errorMessage) {
@@ -123,6 +138,9 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
+  },
+  createTripDispatch: (waypoints) => {
+    dispatch(createTrip(waypoints));
   },
 });
 
