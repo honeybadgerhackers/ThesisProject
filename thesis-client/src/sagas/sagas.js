@@ -81,39 +81,21 @@ const getUserLocationAsync = function* () {
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
     yield put({
-<<<<<<< HEAD
       type: 'UPDATE_MAP_REGION',
-=======
- type: 'UPDATE_MAP_REGION',
->>>>>>> ec82bdd03ad8b439733b5ab509839abe0d4b08eb
       payload: {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
         },
-<<<<<<< HEAD
       });
-=======
-});
->>>>>>> ec82bdd03ad8b439733b5ab509839abe0d4b08eb
     yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
   } catch (error) {
     console.log(error);
   }
 };
 
-<<<<<<< HEAD
-const getUserDirectionsAsync = function* (action) {
-  const origin = action.payload.origin;
-  const destination = action.payload.destination;
-  const joinedWaypoints = action.payload.joinedWaypoints;
-=======
 const getUserDirectionsAsync = function* ({ payload: { origin, destination, joinedWaypoints } }) {
-  // const origin = action.payload.origin;
-  // const destination = action.payload.destination;
-  // const joinedWaypoints = action.payload.joinedWaypoints;
->>>>>>> ec82bdd03ad8b439733b5ab509839abe0d4b08eb
 
   try {
       let res;
@@ -140,7 +122,6 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
-<<<<<<< HEAD
 const getActiveTripAsync = function* (action) {
   try {
     const activeTrip = yield call(getTrip);
@@ -150,8 +131,6 @@ const getActiveTripAsync = function* (action) {
   }
 };
 
-=======
->>>>>>> ec82bdd03ad8b439733b5ab509839abe0d4b08eb
 const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
 };
@@ -171,14 +150,11 @@ const watchGetActiveTrip = function* () {
 
 const rootSaga = function* () {
   yield all([
-<<<<<<< HEAD
-    watchGetTrips(), watchGetUserLocation(), watchGetDirections(), watchGetActiveTrip(),
-=======
     watchGetTrips(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
->>>>>>> ec82bdd03ad8b439733b5ab509839abe0d4b08eb
+    watchGetActiveTrip(),
   ]);
 };
 
