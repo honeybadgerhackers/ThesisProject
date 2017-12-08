@@ -5,10 +5,10 @@ import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
-import { storeItem, getItem } from '../utilities/async-storage';
+import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
 import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
-import { SERVER_URI, googleAPIKEY } from '../../config';
+import { googleAPIKEY } from '../../config';
 
 
 const authorizeUser = function* () {
