@@ -12,8 +12,8 @@ const initialState = {
   status: inactive,
 };
 
-export default function createTripReducer(state = initialState, { payload }) {
-  switch (action.type) {
+export default function createTripReducer(state = initialState, { payload, type }) {
+  switch (type) {
     case CREATE_TRIP:
       return {
         ...state,
