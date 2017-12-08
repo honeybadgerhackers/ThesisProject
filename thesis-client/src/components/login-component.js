@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, Image, View, Button } from 'react-native';
-import { LinearGradient, DangerZone } from 'expo';
+import { LinearGradient } from 'expo';
 import PropTypes from 'prop-types';
-
-const { Lottie } = DangerZone;
+import Loader from '../common/loader';
 
 const styles = StyleSheet.create({
   box: {
@@ -24,6 +23,11 @@ const styles = StyleSheet.create({
     flex: 0.5,
     resizeMode: "contain",
   },
+  loader: {
+    flex: 0,
+    zIndex: 10,
+    position: "absolute",
+  },
 });
 
 const LoginView = ({ _handlePressAsync, disableButton }) => (
@@ -38,6 +42,11 @@ const LoginView = ({ _handlePressAsync, disableButton }) => (
         height: 300,
       }}
     />
+    <View style={[styles.loader]}>
+      {
+        disableButton ? <Loader /> : null
+      }
+    </View>
     <View style={[styles.boxImage]}>
       <Image
         style={styles.image}

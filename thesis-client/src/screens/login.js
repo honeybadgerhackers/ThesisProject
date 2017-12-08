@@ -1,11 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { DangerZone } from 'expo';
 import PropTypes from 'prop-types';
 import LoginView from '../components/login-component';
 import { initiateLogin } from '../actions/user-actions';
-
-const { Lottie } = DangerZone;
 
 class LoginContainer extends React.Component {
   static navigationOptions = {
