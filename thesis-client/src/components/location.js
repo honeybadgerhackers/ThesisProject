@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Platform, Text, View, StyleSheet, Button } from 'react-native';
-import { MapView, Constants, Location, Permissions } from 'expo';
-import { join } from 'redux-saga/effects';
-import Polyline from "@mapbox/polyline";
+import { MapView, Constants, Location } from 'expo';
+import PropTypes from 'prop-types';
+// import Polyline from "@mapbox/polyline";
+// import { join } from 'redux-saga/effects';
 import { getDirections } from '../actions/getDirections-action';
 
 class WayPoint extends Component {
+  static propTypes = {
+    getDirectionsSaga: PropTypes.func.isRequired,
+    mapRegion: PropTypes.shape({}).isRequired,
+    routeCoords: PropTypes.shape(),
+  }
+
+  static defaultProps = {
+    routeCoords: [],
+  }
+
   state = {
     localUserLocation: null,
     speed: null,
@@ -15,19 +26,21 @@ class WayPoint extends Component {
     followUserLocation: false,
     showsUserLocation: true,
     wayPoints: [],
-    coords: []
   };
+
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
         errorMessage:
-          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
       });
     }
   }
+
   componentWillUnmount() {
     this._stopTrackLocation();
   }
+
   _getDirections = async (origin, destination, joinedWaypoints) => {
   if (!origin) {
     const wayPointsObjects = this.state.wayPoints;
@@ -48,13 +61,13 @@ class WayPoint extends Component {
   _handlePositionChange = location => {
     const wayPoint = {
       lat: location.coords.latitude,
-      lng: location.coords.longitude
+      lng: location.coords.longitude,
     };
     const wayPoints = this.state.wayPoints.slice();
     this.setState({ speed: location.coords.speed });
     wayPoints.push(wayPoint);
     this.setState({
-      wayPoints, localUserLocation: location
+      wayPoints, localUserLocation: location,
     });
   };
   _stopTrackLocation = () => {
@@ -63,7 +76,6 @@ class WayPoint extends Component {
       this.setState({ disableButton: false, followUserLocation: false });
     }
     this._getDirections();
-    this.setState({ coords: this.props.routeCoords });
   };
   render() {
     let text = 'Waiting..';
@@ -105,23 +117,23 @@ function mapStateToProps(state) {
   return {
     userLocation: state.userLocation,
     mapRegion: state.mapRegion,
-    routeCoords: state.routeCoords.coordsArray
+    routeCoords: state.routeCoords.coordsArray,
   };
 }
 const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
-  }
+  },
 });
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   paragraph: {
     fontSize: 18,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WayPoint);
