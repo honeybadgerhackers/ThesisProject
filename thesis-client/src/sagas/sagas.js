@@ -3,11 +3,11 @@ import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
-import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLast, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
-import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
+import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN, CREATE_TRIP } from '../constants';
 import { googleAPIKEY } from '../../config';
 
 
@@ -63,19 +63,6 @@ const getTripsAsync = function* () {
   }
 };
 
-const loginFlow = function* () {
-  while (true) {
-    yield take(INITIATE_LOGIN);
-
-    const task = yield fork(authorizeUser);
-    const action = yield take([LOGOUT, LOGIN_ERROR]);
-
-    if (action.type === LOGOUT) {
-      yield cancel(task);
-    }
-  }
-};
-
 const getUserLocationAsync = function* () {
   try {
     const { status } = yield call(Permissions.askAsync, Permissions.LOCATION);
@@ -84,14 +71,14 @@ const getUserLocationAsync = function* () {
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
     yield put({
- type: 'UPDATE_MAP_REGION',
+      type: 'UPDATE_MAP_REGION',
       payload: {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
         },
-});
+    });
     yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
   } catch (error) {
     console.log(error);
@@ -127,6 +114,27 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
       console.log(error);
     }
 };
+
+const createTripAsync = function* () {
+
+}
+
+const loginFlow = function* () {
+  while (true) {
+    yield take(INITIATE_LOGIN);
+
+    const task = yield fork(authorizeUser);
+    const action = yield take([LOGOUT, LOGIN_ERROR]);
+
+    if (action.type === LOGOUT) {
+      yield cancel(task);
+    }
+  }
+};
+
+const watchCreateTrip = function* () {
+  yield takeLast(CREATE_TRIP, createTripAsync)
+}
 
 const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
