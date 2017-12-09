@@ -8,9 +8,13 @@ import loginButton from './login-button-reducer';
 import userLocation from './user-location-reducer';
 import mapRegion from './map-region-reducer';
 import routeCoords from './update-route-coords';
+import userRoutes from './user-route-reducer';
+import userSessions from './user-session-reducer';
 
 
 export default combineReducers({
+  userRoutes,
+  userSessions,
   routeCoords,
   mapRegion,
   userLocation,
