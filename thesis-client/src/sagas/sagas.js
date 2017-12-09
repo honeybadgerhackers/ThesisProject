@@ -128,6 +128,23 @@ const getActiveTripAsync = function* (action) {
   };
   try {
     const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
+    const activeTripWaypoints = activeTrip.waypoints;
+    yield put({
+      type: 'UPDATE_MAP_REGION',
+      payload: {
+        latitude: 29.939993,
+        longitude: -90.074832,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+        },
+      });
+    const coords = activeTripWaypoints.map(waypoint => {
+      return {
+        latitude: Number(waypoint.lat),
+        longitude: Number(waypoint.lng),
+      };
+    });
+    activeTrip['coords'] = coords;
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });
   } catch (error) {
     console.log(error);

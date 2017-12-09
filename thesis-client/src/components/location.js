@@ -76,7 +76,6 @@ class WayPoint extends Component {
     return (
        
       <View style={styles.container}>
-        <StatusBar style={styles.statBar}></StatusBar>
         <MapView
           style={styles.map}
           initialRegion={this.props.mapRegion}

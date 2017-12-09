@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import mapIcon from '../assets/mapIcon.png';
 
@@ -7,7 +7,6 @@ const Trip = ({ navigate, trips, showTripLocation }) => {
   const goToMap = () => {
     navigate('Map');
   };
-
   const createTrip = () => trips.map(trip => (
     <TouchableOpacity
       key={trip.id}

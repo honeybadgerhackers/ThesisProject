@@ -6,8 +6,10 @@ export default function (state =
     longitudeDelta: 3.0 
   }, action) {
   switch (action.type) {
-    case 'UPDATE_MAP_REGION':
+    case "UPDATE_MAP_REGION":
       return action.payload;
+    // case "CLEAR_MAP":
+    //   return {};
     default:
       return state;
   }

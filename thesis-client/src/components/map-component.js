@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { MapView } from 'expo';
 
@@ -10,34 +10,60 @@ class Map extends Component {
 
     this.state = {
       showsUserLocation: true,
-      followsUserLocation: true,
+      followUserLocation: true,
       buttonStartStop: false,
-  };
+      // coords: [
+      //   {latitude: 29.939993, longitude: -90.074832},
+      //   {latitude: 29.942806, longitude: -90.072644},
+      //   {latitude: 29.943273, longitude: -90.071143},
+      //   {latitude: 29.945508, longitude: -90.070486},
+      // ],
+    };
+  }
+  
+  componentWillMount() {
+  }
+  
+  goToHomeScreen() {
+    this.props.clearActiveTrip();
+    this.props.navigate('Home');
   }
   render() {
+    console.log(this.props.activeTrip.coords);
     return (
       <View style={styles.container}>
         <MapView
-          provider='google'
+          provider="google"
           style={styles.map}
-          initialRegion={this.props.mapRegion}
+          region={this.props.mapRegion}
           showsUserLocation={this.state.showsUserLocation}
           followsUserLocation={this.state.followUserLocation}
         >
-          <MapView.Polyline
-            coordinates={this.props.routeCoords}
+          {this.props.activeTrip.coords != undefined && <MapView.Polyline
+            coordinates={this.props.activeTrip.coords}
             strokeWidth={10}
             strokeColor="red"
-          />          
+          /> }
+
         </MapView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => this.setState({
-              buttonStartStop: !this.state.buttonStartStop
-            })}
+            onPress={() =>
+              this.setState({
+                buttonStartStop: !this.state.buttonStartStop,
+              })
+            }
           >
-            <Text>{this.state.buttonStartStop ? 'End' : 'Start'}</Text>
+            <Text>{this.state.buttonStartStop ? "End" : "Start"}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              this.goToHomeScreen()
+            }
+          >
+            <Text>Cancel</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -56,25 +82,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   map: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   paragraph: {
     fontSize: 18,
-    textAlign: "center"
+    textAlign: "center",
   },
   buttonContainer: {
-    marginVertical: 20
+    marginVertical: 20,
   },
   button: {
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.7)",
     borderRadius: 20,
     padding: 12,
-    width: 160
+    width: 160,
+    marginBottom: 5,
   },
   statBar: {
     backgroundColor: 'black',
-  }
+  },
 });
 
 export default Map;

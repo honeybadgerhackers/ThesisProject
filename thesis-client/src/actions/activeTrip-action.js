@@ -1,14 +1,22 @@
+
 // export default function(trip, cb) {
 //   cb();
 //   return {
-//     type: 'TRIP_SELECTED',
-//     payload: trip,
+//     type: "GET_ACTIVE_TRIP",
+//     payload: trip
 //   };
 // }
-export default function(trip, cb) {
+
+export const getActiveTrip = (trip, cb) => {
   cb();
   return {
     type: "GET_ACTIVE_TRIP",
-    payload: trip
+    payload: trip,
   };
-}
+};
+
+export const clearActiveTrip = () => {
+  console.log('CLEARING ACTIVE');
+  return {type: "CLEAR_ACTIVE_TRIP"};
+};
+
