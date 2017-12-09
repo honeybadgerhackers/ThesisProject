@@ -6,9 +6,9 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
+import { getRedirectUrl, facebookAuth, googleDirectionsCall } from '../utilities/api-calls';
 import { INITIATE_LOGIN_DEMO, INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN, CREATE_TRIP, demoUser } from '../constants';
-import { googleAPIKEY } from '../../config';
+import { googleAPIKey } from '../../config';
 
 
 const authorizeUser = function* (params) {
@@ -90,18 +90,20 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
   // const origin = action.payload.origin;
   // const destination = action.payload.destination;
   // const joinedWaypoints = action.payload.joinedWaypoints;
-
+  console.log(origin, destination, joinedWaypoints);
   try {
       let res;
-      if (!joinedWaypoints) {
-        res = yield call(axios.get, `https://maps.googleapis.com/maps/api/directions/json?origin=${
+      if (joinedWaypoints) {
+        console.log('happening??')
+        res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&waypoints=${joinedWaypoints}&key=${googleAPIKEY}`);
+          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${googleAPIKey}`);
       } else {
-        res = yield call(axios.get, `https://maps.googleapis.com/maps/api/directions/json?origin=${
+        res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&key=${googleAPIKEY}`);
+          }&destination=${destination}&key=${googleAPIKey}`);
       }
+      console.log(res);
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
       const coords = points.map((point) => ({
           latitude: point[0],

@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { Platform, Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { MapView, Constants, Location } from 'expo';
 import PropTypes from 'prop-types';
-// import Polyline from "@mapbox/polyline";
+import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
 import getDirections from '../actions/getDirections-action';
 import createTrip from '../actions/create-trip-action';
+import { juliaToSoniat } from '../testing/long-route';
 
 class WayPoint extends Component {
   static propTypes = {
@@ -29,12 +30,14 @@ class WayPoint extends Component {
     disableButton: false,
     followUserLocation: false,
     showsUserLocation: true,
-    wayPoints: [
+    // ! Switch back to array 
+    wayPoints: juliaToSoniat,
+    // [
       // { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
       // { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
       // { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
       // { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
-    ],
+    // ],
     speedCounter: 0,
     topSpeed: 0,
     avgSpeed: 0,
@@ -57,10 +60,24 @@ class WayPoint extends Component {
   _getDirections = async (origin, destination, joinedWaypoints) => {
   if (!origin) {
     const wayPointsObjects = this.state.wayPoints;
-    const wayPoints = wayPointsObjects.map(wayPoint => Object.values(wayPoint).join());
-    origin = wayPoints.splice(0, 1);
-    destination = wayPoints.splice(wayPoints.length - 1, 1);
-    joinedWaypoints = wayPoints.join('|');
+    const wayPoints = wayPointsObjects.map(wayPoint => [wayPoint.lat, wayPoint.lng]);
+    origin = wayPoints.splice(0, 1).join(',');
+    destination = wayPoints.splice(wayPoints.length - 1, 1).join(',');
+    const interval = Math.floor(wayPoints.length / 23);
+    const indecesToSave = Array(23).fill(interval);
+
+    for (let i = 1; i < indecesToSave.length; i++) {
+      indecesToSave[i] = indecesToSave[i - 1] + indecesToSave[i];
+    }
+
+    const filteredWayPoints = wayPoints.filter((wayPoint, index) => {
+      if (indecesToSave.indexOf(index) > - 1) {
+        return true;
+      }
+      return false;
+    });
+
+    joinedWaypoints = Polyline.encode(filteredWayPoints);
   }
     this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
   };
@@ -84,18 +101,20 @@ class WayPoint extends Component {
   }
 
   _handlePositionChange = (location) => {
-    const wayPoint = {
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
-      speed: location.coords.speed,
-      timestamp: location.timestamp,
-    };
+    // ! Re-enable 
+    // const wayPoint = {
+    //   lat: location.coords.latitude,
+    //   lng: location.coords.longitude,
+    //   speed: location.coords.speed,
+    //   timestamp: location.timestamp,
+    // };
     const wayPoints = this.state.wayPoints.slice();
 
     // ? location.coords.speed is maybe meters/second, apparently multiplying
     // ? by 2.2369 will conver to miles per hour. We'll see?
     this.setState({ speed: location.coords.speed * 2.2369 });
-    wayPoints.push(wayPoint);
+    // ! Re-enable 
+    // wayPoints.push(wayPoint);
     this.setState({
       wayPoints, localUserLocation: location,
     });
@@ -137,7 +156,7 @@ class WayPoint extends Component {
         >
           <MapView.Polyline
             coordinates={this.props.routeCoords}
-            strokeWidth={10}
+            strokeWidth={2}
             strokeColor="red"
           />
         </MapView>
