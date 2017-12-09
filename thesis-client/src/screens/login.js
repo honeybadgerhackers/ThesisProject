@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import LoginView from '../components/login-component';
-import { initiateLogin } from '../actions/user-actions';
+import { initiateLogin, initiateLoginDemo } from '../actions/user-actions';
 
 class LoginContainer extends React.Component {
   static navigationOptions = {
@@ -12,6 +12,7 @@ class LoginContainer extends React.Component {
 
   static propTypes = {
     initiateLogin: PropTypes.func.isRequired,
+    initiateLoginDemo: PropTypes.func.isRequired,
     disableButton: PropTypes.bool.isRequired,
   };
 
@@ -19,12 +20,14 @@ class LoginContainer extends React.Component {
     <LoginView
       disableButton={this.props.disableButton}
       _handlePressAsync={this.props.initiateLogin}
+      _handlePressDemo={this.props.initiateLoginDemo}
     />
   );
 }
 
 const mapDispatchToProps = {
   initiateLogin,
+  initiateLoginDemo,
 };
 
 function mapStateToProps(state) {

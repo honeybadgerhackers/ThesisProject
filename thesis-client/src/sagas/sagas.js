@@ -3,22 +3,25 @@ import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
-import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
-import { storeItem, getItem } from '../utilities/async-storage';
+import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
-import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
-import { SERVER_URI, googleAPIKEY } from '../../config';
+import { INITIATE_LOGIN_DEMO, INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN, CREATE_TRIP, demoUser } from '../constants';
+import { googleAPIKEY } from '../../config';
 
 
-const authorizeUser = function* () {
+const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
   try {
     yield put({ type: DISABLE_LOGIN });
 
-    const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
+    const { type, params: { code, error } } = params.type === INITIATE_LOGIN ? yield call(facebookAuth, redirectUrl) : { type: "success", params: { code: demoUser, error: null } };
 
     if (type === 'success' && !error) {
+      // ! Quick hack to make loader run, probably should fix later
+      yield put({ type: ENABLE_LOGIN });
+      yield put({ type: DISABLE_LOGIN });
       const {
         type: apiType,
         id_token,
@@ -34,7 +37,7 @@ const authorizeUser = function* () {
           yield put({ type: ENABLE_LOGIN }),
         ]);
 
-      }  else {
+      } else {
         throw new Error('Database call failed', type);
       }
     } else {
@@ -54,22 +57,10 @@ const authorizeUser = function* () {
 const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
+
     yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
-    console.log(error);
-  }
-};
-
-const loginFlow = function* () {
-  while (true) {
-    yield take(INITIATE_LOGIN);
-
-    const task = yield fork(authorizeUser);
-    const action = yield take([LOGOUT, LOGIN_ERROR]);
-
-    if (action.type === LOGOUT) {
-      yield cancel(task);
-    }
+    console.log('async', JSON.stringify(error));
   }
 };
 
@@ -81,14 +72,14 @@ const getUserLocationAsync = function* () {
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
     yield put({
- type: 'UPDATE_MAP_REGION',
+      type: 'UPDATE_MAP_REGION',
       payload: {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
         },
-});
+    });
     yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
   } catch (error) {
     console.log(error);
@@ -125,6 +116,33 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
+const createTripAsync = function* (payload) {
+  const { payload: waypoints, userId} = payload;
+  try {
+    const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loginFlow = function* () {
+  while (true) {
+    const initiateAction = yield take([INITIATE_LOGIN, INITIATE_LOGIN_DEMO]);
+
+    const task = yield fork(authorizeUser, initiateAction);
+    const action = yield take([LOGOUT, LOGIN_ERROR]);
+
+    if (action.type === LOGOUT) {
+      yield cancel(task);
+    }
+  }
+};
+
+const watchCreateTrip = function* () {
+  yield takeLatest(CREATE_TRIP, createTripAsync);
+};
+
 const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
 };
@@ -140,6 +158,7 @@ const watchGetDirections = function* () {
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
+    watchCreateTrip(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
