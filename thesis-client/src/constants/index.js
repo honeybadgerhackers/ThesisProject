@@ -25,6 +25,9 @@ export const GET_TRIPS_SUCCESS = 'GET_TRIPS_SUCCESS';
 export const UPDATE_MAP_REGION = 'UPDATE_MAP_REGION';
 export const UPDATE_ROUTE_COORDS = 'UPDATE_ROUTE_COORDS';
 
+export const GET_USER_TRIPS_SUCCESS = 'GET_USER_TRIPS_SUCCESS';
+export const GET_USER_SESSIONS_SUCCESS = 'GET_USER_SESSIONS SUCCESS';
+
 export const inactive = 'inactive';
 export const inProgress = 'in progress';
 export const success = 'success';
