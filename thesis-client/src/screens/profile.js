@@ -52,18 +52,18 @@ class ProfileScreen extends Component {
 
   render() {
     return (
-      <Swiper
-        style={styles.wrapper}
-        loop={false}
-      >
-        <View>
-          <Text style={styles.title}>
-            Your Stats
-          </Text>
-          <View style={styles.container}>
+      // <Swiper
+      //   style={styles.wrapper}
+      //   loop={false}
+      // >
+        // <View>
+        //   <Text style={styles.title}>
+        //     Your Stats
+        //   </Text>
+          /* <View>
             <ProfileStats sessions={this.state.sessions} />
-          </View>
-        </View>
+          </View> */
+        /* </View> */
         <View>
           <Text style={styles.title}>
             Your Routes
@@ -72,15 +72,15 @@ class ProfileScreen extends Component {
             <ProfileRoutes routes={this.state.routes} />
           </ScrollView>
         </View>
-      </Swiper>
+      // </Swiper>
     );
   }
 }
 
 
-// style={styles.container}
-// style={styles.homeStatsScreenView}
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
+  wrapper: {
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
