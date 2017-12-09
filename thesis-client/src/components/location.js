@@ -64,14 +64,14 @@ class WayPoint extends Component {
     origin = wayPoints.splice(0, 1).join(',');
     destination = wayPoints.splice(wayPoints.length - 1, 1).join(',');
     const interval = Math.floor(wayPoints.length / 23);
-    const indecesToSave = Array(23).fill(interval);
+    const indicesToSave = Array(23).fill(interval);
 
-    for (let i = 1; i < indecesToSave.length; i++) {
-      indecesToSave[i] = indecesToSave[i - 1] + indecesToSave[i];
+    for (let i = 1; i < indicesToSave.length; i++) {
+      indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
     }
 
     const filteredWayPoints = wayPoints.filter((wayPoint, index) => {
-      if (indecesToSave.indexOf(index) > - 1) {
+      if (indicesToSave.indexOf(index) > - 1) {
         return true;
       }
       return false;
