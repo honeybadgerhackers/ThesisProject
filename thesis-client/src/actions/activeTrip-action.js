@@ -7,4 +7,4 @@ export default (trip, cb) => {
     type: TRIP_SELECTED,
     payload: trip,
   };
-}
+};

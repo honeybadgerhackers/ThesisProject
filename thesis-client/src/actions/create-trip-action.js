@@ -6,4 +6,4 @@ export default (trip, userId) => {
     payload: trip,
     userId,
   };
-}
+};
