@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
-import { all, call, put, takeEvery, takeLast, take, fork, cancel } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
@@ -57,7 +57,7 @@ const authorizeUser = function* () {
 const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
-    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
+    // yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
@@ -116,8 +116,12 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 };
 
 const createTripAsync = function* () {
-
-}
+  try {
+    yield console.log('hello');
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const loginFlow = function* () {
   while (true) {
@@ -133,7 +137,7 @@ const loginFlow = function* () {
 };
 
 const watchCreateTrip = function* () {
-  yield takeLast(CREATE_TRIP, createTripAsync)
+  yield takeLatest(CREATE_TRIP, createTripAsync);
 }
 
 const watchGetTrips = function* () {
@@ -151,6 +155,7 @@ const watchGetDirections = function* () {
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
+    watchCreateTrip(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
