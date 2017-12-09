@@ -28,8 +28,17 @@ class WayPoint extends Component {
     disableButton: false,
     followUserLocation: false,
     showsUserLocation: true,
-    wayPoints: [],
+    wayPoints: [
+      { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
+      { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
+      { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
+      { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
+    ],
+    speedCounter: 0,
+    topSpeed: 0,
+    avgSpeed: 0,
   };
+
 
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -63,13 +72,28 @@ class WayPoint extends Component {
     );
   };
 
-  _handlePositionChange = location => {
+  handleSpeedChange = (speed) => {
+    const { state: {topSpeed, avgSpeed, speedCounter }} = this;
+    const currentSpeed = speed < 0 ? 0 : Math.round(speed * 100) / 100;
+    this.setState({ speedCounter: speedCounter + 1 });
+    this.setState({
+      topSpeed: speed > topSpeed ? speed : topSpeed,
+      avgSpeed: Math.round((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter),
+    })
+  }
+
+  _handlePositionChange = (location) => {
     const wayPoint = {
       lat: location.coords.latitude,
       lng: location.coords.longitude,
+      speed: location.coords.speed,
+      timestamp: location.timestamp,
     };
     const wayPoints = this.state.wayPoints.slice();
-    this.setState({ speed: location.coords.speed });
+    
+    // ? location.coords.speed is maybe meters/second, apparently multiplying
+    // ? by 2.2369 will conver to miles per hour. We'll see?
+    this.setState({ speed: location.coords.speed * 2.2369 });
     wayPoints.push(wayPoint);
     this.setState({
       wayPoints, localUserLocation: location,
