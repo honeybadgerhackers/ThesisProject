@@ -1,5 +1,5 @@
-export default function() {
+export default () => {
   return ({
     type: 'GET_TRIPS',
   });
-}
+};
