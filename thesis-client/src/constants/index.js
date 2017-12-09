@@ -17,3 +17,11 @@ export const inactive = 'inactive';
 export const inProgress = 'in progress';
 export const success = 'success';
 export const failed = 'failed';
+
+export const demoUser = {
+  first_name: 'Zachary',
+  last_name: 'Gagnier',
+  picture: null,
+  email: 'emailemailemailemailemail@gmail.com',
+  social_media_id: "doesnthaveafacebookaccount",
+};
