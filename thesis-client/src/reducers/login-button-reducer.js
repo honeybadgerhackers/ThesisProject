@@ -12,5 +12,3 @@ export default (active = { enabled: false }, action) => {
       return { ...active };
   }
 };
-
-
