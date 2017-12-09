@@ -6,13 +6,17 @@ export const INITIATE_LOGIN_DEMO = 'INITIATE_LOGIN_DEMO';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
-
 export const ENABLE_LOGIN = 'ENABLE_LOGIN';
 export const DISABLE_LOGIN = 'DISABLE_LOGIN';
 
 export const CREATE_TRIP = 'CREATE_TRIP';
 export const CREATE_TRIP_SUCCESS = 'CREATE_TRIP_SUCCESS';
 export const CREATE_TRIP_FAILED = 'CREATE_TRIP_FAILED';
+
+export const TRIP_SELECTED = 'TRIP_SELECTED';
+export const GET_DIRECTIONS = 'GET_DIRECTIONS';
+export const GET_TRIPS = 'GET_TRIPS';
+export const GET_USER_LOCATION = 'GET_USER_LOCATION';
 
 export const inactive = 'inactive';
 export const inProgress = 'in progress';
