@@ -3,54 +3,27 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Swiper from 'react-native-swiper';
+import { getUserRoutes, getUserSessions } from '../actions/getUserInfo-action';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
 import ProfileRoutes from '../components/profile-routes-component';
 
 class ProfileScreen extends Component {
-  state = {
-    sessions: [],
-    routes: [],
-  }
+  // state = {
+  //   sessions: [],
+  //   routes: [],
+  // }
 
   componentWillMount() {
-    this._getUserSessions(5);
-    this._getUserTrips(5);
+    // this.props.getUserSessions(7);
+    this.props.getUserRoutes(7);
+    // this._getUserTrips(5);
   }
 
-  _getUserSessions = async (idUser) => {
-    axios({
-      method: 'GET',
-      url: `http://18.216.220.101:8091/session`,
-      headers: {
-        filter: '{"id_user_account": 5}',
-      },
-    })
-      .then((response) => {
-        this.setState({sessions: response.data});
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-
-  _getUserTrips = async (idUser) => {
-    axios({
-      method: 'GET',
-      url: `http://18.216.220.101:8091/route`,
-      headers: {
-        filter: '{"id_user_account": 5}',
-      },
-    })
-      .then((response) => {
-        this.setState({routes: response.data});
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
 
   render() {
+    console.log(this.props.routes);
+    debugger;
     return (
       // <Swiper
       //   style={styles.wrapper}
@@ -69,13 +42,30 @@ class ProfileScreen extends Component {
             Your Routes
           </Text>
           <ScrollView>
-            <ProfileRoutes routes={this.state.routes} />
+            <ProfileRoutes routes={this.props.routes} />
           </ScrollView>
         </View>
       // </Swiper>
     );
   }
 }
+
+function mapStateToProps (state) {
+  return {
+    user: state.user,
+    routes: state.userRoutes.routes,
+    // sessions: state.userSessions,
+  };  
+};
+
+const mapDispatchToProps = dispatch => ({
+  // getUserSessions: (userId) => {
+  //   dispatch(getUserSessions(userId));
+  // },
+  getUserRoutes: (userId) => {
+    dispatch(getUserRoutes(userId));
+  },
+});
 
 
  const styles = StyleSheet.create({
@@ -99,5 +89,5 @@ class ProfileScreen extends Component {
 });
 
 
-export default connect()(ProfileScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
 
