@@ -3,7 +3,11 @@ import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
+<<<<<<< 55711ce184437f645b4718cbb9e31a1a4a9137dd
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
+=======
+import { all, call, put, takeEvery, take, fork, cancel, takeLatest } from 'redux-saga/effects';
+>>>>>>> (add) user session saga
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
@@ -145,15 +149,24 @@ const watchCreateTrip = function* () {
 };
 =======
 const getUserTrips = function* ({ payload: { userId } }) {
+  let filter = {
+    id_user_account: userId,
+  };
   try {
-  const userTripRequest = yield call(axios({
-      method: 'GET',
-      url: `http://18.216.220.101:8091/session`,
-      headers: {
-        filter: `{"id_user_account": ${userId}}`,
-      },
-    }));
+  const userTripRequest = yield call(dbSecureGET, 'route', JSON.stringify(filter));
     yield put({type: 'GET_USER_TRIPS_SUCCESS', payload: userTripRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getUserSessions = function* ({ payload: { userId } }) {
+  let filter = {
+    id_user_account: userId,
+  };
+  try {
+  const userSessionRequest = yield call(dbSecureGET, 'session', JSON.stringify(filter));
+    yield put({type: 'GET_USER_SESSIONS_SUCCESS', payload: userSessionRequest});
   } catch (error) {
     console.error(error);
   }
@@ -176,6 +189,10 @@ const watchGetDirections = function* () {
 const watchUserTrips = function* () {
   yield takeLatest('GET_USER_TRIPS', getUserTrips);
 };
+
+const watchUserSessions = function* () {
+  yield takeLatest('GET_USER_SESSIONS', getUserSessions);
+};
 //combine watcher sagas to root saga
 
 const rootSaga = function* () {
@@ -186,7 +203,8 @@ const rootSaga = function* () {
     watchGetUserLocation(),
     watchGetDirections(),
     watchUserTrips(),
+    watchUserSessions(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips};
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions};
