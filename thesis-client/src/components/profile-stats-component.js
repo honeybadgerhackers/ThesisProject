@@ -21,7 +21,7 @@ const ProfileStats = ({ sessions }) => {
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
       <View style={styles.title}>
         <Text style={styles.textBox}>
-          Total Distance: {total.total_distance}
+          Total Distance: {total.total_distance || 0}
         </Text>
       </View>
       <View style={styles.title}>
