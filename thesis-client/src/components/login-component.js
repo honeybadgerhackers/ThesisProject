@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoginView = ({ _handlePressAsync, disableButton }) => (
+const LoginView = ({ _handlePressAsync, disableButton, _handlePressDemo }) => (
   <View style={[styles.box]}>
     <LinearGradient
       colors={['rgba(0,96,255,0.09)', 'transparent']}
@@ -59,6 +59,11 @@ const LoginView = ({ _handlePressAsync, disableButton }) => (
         onPress={() => _handlePressAsync()}
         disabled={disableButton}
       />
+      <Button
+        title="Demo"
+        onPress={() => _handlePressDemo()}
+        disabled={disableButton}
+      />
     </View>
     <LinearGradient
       colors={['transparent', 'rgba(0,96,255,0.06)']}
@@ -75,6 +80,7 @@ const LoginView = ({ _handlePressAsync, disableButton }) => (
 
 LoginView.propTypes = {
   _handlePressAsync: PropTypes.func.isRequired,
+  _handlePressDemo: PropTypes.func.isRequired,
   disableButton: PropTypes.bool.isRequired,
 };
 

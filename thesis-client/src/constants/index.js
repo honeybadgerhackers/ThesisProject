@@ -2,6 +2,7 @@
 export const STORAGE_KEY = 'access_token';
 
 export const INITIATE_LOGIN = 'INITIATE_LOGIN';
+export const INITIATE_LOGIN_DEMO = 'INITIATE_LOGIN_DEMO';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
@@ -21,7 +22,8 @@ export const failed = 'failed';
 export const demoUser = {
   first_name: 'Zachary',
   last_name: 'Gagnier',
-  picture: null,
+  picture: { data: { url: null } },
   email: 'emailemailemailemailemail@gmail.com',
-  social_media_id: "doesnthaveafacebookaccount",
+  accessToken: { access_token: null, expires_in: 'never' },
+  id: "doesnthaveafacebookaccount",
 };

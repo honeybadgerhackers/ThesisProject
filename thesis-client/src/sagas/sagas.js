@@ -7,16 +7,16 @@ import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
-import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN, CREATE_TRIP } from '../constants';
+import { INITIATE_LOGIN_DEMO, INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN, CREATE_TRIP, demoUser } from '../constants';
 import { googleAPIKEY } from '../../config';
 
 
-const authorizeUser = function* () {
+const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
   try {
     yield put({ type: DISABLE_LOGIN });
 
-    const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
+    const { type, params: { code, error } } = params.type === INITIATE_LOGIN ? yield call(facebookAuth, redirectUrl) : { type: "success", params: { code: demoUser, error: null } };
 
     if (type === 'success' && !error) {
       // ! Quick hack to make loader run, probably should fix later
@@ -37,7 +37,7 @@ const authorizeUser = function* () {
           yield put({ type: ENABLE_LOGIN }),
         ]);
 
-      }  else {
+      } else {
         throw new Error('Database call failed', type);
       }
     } else {
@@ -56,7 +56,7 @@ const authorizeUser = function* () {
 
 const getTripsAsync = function* () {
   try {
-    const tripsRequest = yield call(dbSecureGET, 'route&location', JSON.stringify({ id_route: 315 }));
+    const tripsRequest = yield call(dbSecureGET, 'route&location');
     console.log(tripsRequest.filter((route) => console.log(route)));
     yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
@@ -128,9 +128,9 @@ const createTripAsync = function* (payload) {
 
 const loginFlow = function* () {
   while (true) {
-    yield take(INITIATE_LOGIN);
+    const initiateAction = yield take([INITIATE_LOGIN, INITIATE_LOGIN_DEMO]);
 
-    const task = yield fork(authorizeUser);
+    const task = yield fork(authorizeUser, initiateAction);
     const action = yield take([LOGOUT, LOGIN_ERROR]);
 
     if (action.type === LOGOUT) {
@@ -141,7 +141,7 @@ const loginFlow = function* () {
 
 const watchCreateTrip = function* () {
   yield takeLatest(CREATE_TRIP, createTripAsync);
-}
+};
 
 const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
