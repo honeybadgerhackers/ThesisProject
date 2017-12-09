@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ProfileStats = ({sessions}) => {
+const ProfileStats = ({ sessions }) => {
 
   const total = sessions.reduce((prev, current, i, a) => {
     prev.total_time = (prev.total_time || 0) + current.time;
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     borderRadius: 50,
     borderWidth: 2,
-    // flex: 1,
     flexDirection: 'row',
   },
   textBox: {
@@ -69,5 +69,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+ProfileStats.propTypes = {
+  //eslint-disable-next-line
+  sessions: PropTypes.array.isRequired,
+};
 
 export default ProfileStats;

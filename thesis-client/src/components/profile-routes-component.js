@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import mapIcon from '../assets/mapIcon.png'; 
+import mapIcon from '../assets/icons/mapIcon.png'; 
 
 const ProfileRoutes = ({routes}) => {  
   // const goToMap = () => {
@@ -24,7 +25,7 @@ const ProfileRoutes = ({routes}) => {
         {/* <TouchableOpacity
           onPress={() => showTripLocation(trip, goToMap)}
           > */}
-          <Image source={mapIcon}/>
+        <Image source={mapIcon} />
         {/* </TouchableOpacity> */}
       </View>
     </View>
@@ -37,13 +38,14 @@ container: {
 flex: 1,
 alignItems: 'flex-end',
 justifyContent: 'flex-end',
-// backgroundColor: 'grey',
 height: 60,
-// borderWidth: 2,
 flexDirection: 'column',
-// justifyContent: 'space-between',
-// alignItems: 'center',
-}
+},
 });
+
+ProfileRoutes.propTypes = {
+  //eslint-disable-next-line
+  routes: PropTypes.array.isRequired,
+};
 
 export default ProfileRoutes;

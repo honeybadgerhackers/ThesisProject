@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import Swiper from 'react-native-swiper';
 import { getUserRoutes, getUserSessions } from '../actions/getUserInfo-action';
 // import { STATUS_BAR_HEIGHT } from '../constants';
@@ -9,34 +9,38 @@ import ProfileStats from '../components/profile-stats-component';
 import ProfileRoutes from '../components/profile-routes-component';
 
 class ProfileScreen extends Component {
-  // state = {
-  //   sessions: [],
-  //   routes: [],
-  // }
 
-  componentWillMount() {
-    // this.props.getUserSessions(7);
-    this.props.getUserRoutes(7);
-    // this._getUserTrips(5);
+  static propTypes = {
+    getUserSessions: PropTypes.func.isRequired,
+    getUserRoutes: PropTypes.func.isRequired,
+    //eslint-disable-next-line
+    user: PropTypes.object.isRequired,
+    // eslint-disable-next-line
+    sessions: PropTypes.array.isRequired,
+    // eslint-disable-next-line
+    routes: PropTypes.array.isRequired,
   }
 
+  componentWillMount() {
+    this.props.getUserSessions(this.props.user.id);
+    this.props.getUserRoutes(this.props.user.id);
+  }
 
   render() {
-    console.log(this.props.routes);
-    debugger;
+    console.log(this.props.user);
     return (
-      // <Swiper
-      //   style={styles.wrapper}
-      //   loop={false}
-      // >
-        // <View>
-        //   <Text style={styles.title}>
-        //     Your Stats
-        //   </Text>
-          /* <View>
-            <ProfileStats sessions={this.state.sessions} />
-          </View> */
-        /* </View> */
+      <Swiper
+        style={styles.wrapper}
+        loop={false}
+      >
+        <View>
+          <Text style={styles.title}>
+            Your Stats
+          </Text>
+          <View>
+            <ProfileStats sessions={this.props.sessions} />
+          </View>
+        </View>
         <View>
           <Text style={styles.title}>
             Your Routes
@@ -45,28 +49,27 @@ class ProfileScreen extends Component {
             <ProfileRoutes routes={this.props.routes} />
           </ScrollView>
         </View>
-      // </Swiper>
+      </Swiper>
     );
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     user: state.user,
     routes: state.userRoutes.routes,
-    // sessions: state.userSessions,
-  };  
-};
+    sessions: state.userSessions.sessions,
+  };
+}
 
 const mapDispatchToProps = dispatch => ({
-  // getUserSessions: (userId) => {
-  //   dispatch(getUserSessions(userId));
-  // },
+  getUserSessions: (userId) => {
+    dispatch(getUserSessions(userId));
+  },
   getUserRoutes: (userId) => {
     dispatch(getUserRoutes(userId));
   },
 });
-
 
  const styles = StyleSheet.create({
   wrapper: {
@@ -88,6 +91,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
-
