@@ -13,6 +13,7 @@ class WayPoint extends Component {
     getDirectionsSaga: PropTypes.func.isRequired,
     createTripDispatch: PropTypes.func.isRequired,
     mapRegion: PropTypes.shape({}).isRequired,
+    userId: PropTypes.number.isRequired,
     // eslint-disable-next-line
     routeCoords: PropTypes.array,
   }
@@ -29,10 +30,10 @@ class WayPoint extends Component {
     followUserLocation: false,
     showsUserLocation: true,
     wayPoints: [
-      { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
-      { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
-      { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
-      { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
+      // { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
+      // { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
+      // { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
+      // { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
     ],
     speedCounter: 0,
     topSpeed: 0,
@@ -79,7 +80,7 @@ class WayPoint extends Component {
     this.setState({
       topSpeed: speed > topSpeed ? speed : topSpeed,
       avgSpeed: Math.round((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter),
-    })
+    });
   }
 
   _handlePositionChange = (location) => {
@@ -90,7 +91,7 @@ class WayPoint extends Component {
       timestamp: location.timestamp,
     };
     const wayPoints = this.state.wayPoints.slice();
-    
+
     // ? location.coords.speed is maybe meters/second, apparently multiplying
     // ? by 2.2369 will conver to miles per hour. We'll see?
     this.setState({ speed: location.coords.speed * 2.2369 });
@@ -108,11 +109,14 @@ class WayPoint extends Component {
     this._getDirections();
     Alert.alert(
       'Save',
-       'Would you like to save this trip to your routes?',
-       [
-         { text: 'No', onPress: () => console.log('pressed no')},
-         { text: 'Yes', onPress: () => this.props.createTripDispatch(this.state.wayPoints) },
-       ]
+      'Would you like to save this trip to your routes?',
+      [
+        { text: 'No', onPress: () => console.log('pressed no', this.props.userId)},
+        {
+          text: 'Yes',
+          onPress: () => this.props.createTripDispatch(this.state.wayPoints, this.props.userId),
+        },
+      ]
     );
   };
 
@@ -157,14 +161,15 @@ function mapStateToProps(state) {
     userLocation: state.userLocation,
     mapRegion: state.mapRegion,
     routeCoords: state.routeCoords.coordsArray,
+    userId: state.user.id,
   };
 }
 const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
   },
-  createTripDispatch: (waypoints) => {
-    dispatch(createTrip(waypoints));
+  createTripDispatch: (waypoints, userId) => {
+    dispatch(createTrip(waypoints, userId));
   },
 });
 

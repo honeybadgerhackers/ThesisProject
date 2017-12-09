@@ -56,8 +56,9 @@ const authorizeUser = function* () {
 
 const getTripsAsync = function* () {
   try {
-    const tripsRequest = yield call(dbSecureGET, 'route');
-    // yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
+    const tripsRequest = yield call(dbSecureGET, 'route&location', JSON.stringify({ id_route: 315 }));
+    console.log(tripsRequest.filter((route) => console.log(route)));
+    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
@@ -115,9 +116,11 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
-const createTripAsync = function* () {
+const createTripAsync = function* (payload) {
+  const { payload: waypoints, userId} = payload;
   try {
-    yield console.log('hello');
+    const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    console.log(result);
   } catch (error) {
     console.log(error);
   }
