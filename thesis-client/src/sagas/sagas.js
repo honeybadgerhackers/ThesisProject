@@ -116,6 +116,7 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
+<<<<<<< f92a87b26edb54524ecde7bd3cb4c0b727277a7b
 const createTripAsync = function* (payload) {
   const { payload: waypoints, userId} = payload;
   try {
@@ -142,6 +143,23 @@ const loginFlow = function* () {
 const watchCreateTrip = function* () {
   yield takeLatest(CREATE_TRIP, createTripAsync);
 };
+=======
+const getUserTrips = function* ({ payload: { userId } }) {
+  try {
+  const userTripRequest = yield call(axios({
+      method: 'GET',
+      url: `http://18.216.220.101:8091/session`,
+      headers: {
+        filter: `{"id_user_account": ${userId}}`,
+      },
+    }));
+    yield put({type: 'GET_USER_TRIPS_SUCCESS', payload: userTripRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+//watcher saga - listen for actions to be dispatched, will call worker
+>>>>>>> (add) getUserTrips saga
 
 const watchGetTrips = function* () {
   yield takeEvery("GET_TRIPS", getTripsAsync);
@@ -155,6 +173,11 @@ const watchGetDirections = function* () {
   yield takeEvery('GET_DIRECTIONS', getUserDirectionsAsync);
 };
 
+const watchUserTrips = function* () {
+  yield takeLatest('GET_USER_TRIPS', getUserTrips);
+};
+//combine watcher sagas to root saga
+
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
@@ -162,7 +185,8 @@ const rootSaga = function* () {
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
+    watchUserTrips(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips};
