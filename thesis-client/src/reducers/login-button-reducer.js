@@ -1,6 +1,6 @@
 import { ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
 
-const loginButton = (active = { enabled: false }, action) => {
+export default (active = { enabled: false }, action) => {
   switch (action.type) {
     case '@@redux/INIT':
       return { ...active, enabled: false };
@@ -12,5 +12,3 @@ const loginButton = (active = { enabled: false }, action) => {
       return { ...active };
   }
 };
-
-export default loginButton;
