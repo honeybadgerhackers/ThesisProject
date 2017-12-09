@@ -1,9 +1,13 @@
 import { CREATE_TRIP } from '../constants/';
 
-export default (trip, userId) => {
+export default (origin, destination, waypoints, userId) => {
   return {
     type: CREATE_TRIP,
-    payload: trip,
+    payload: {
+      origin,
+      destination,
+      waypoints,
+    },
     userId,
   };
 };

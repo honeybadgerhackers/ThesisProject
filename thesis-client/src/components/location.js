@@ -57,27 +57,58 @@ class WayPoint extends Component {
     this._stopTrackLocation();
   }
 
+  processTrip = () => {
+    let tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
+    // const tripSpeed = {
+    //   topSpeed: this.state.topSpeed,
+    //   avgSpeed: this.state.avgSpeed,
+    // };
+    const origin = tripWayPoints.splice(0, 1).join(',');
+    const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
+    if (tripWayPoints.length > 23) {
+      const interval = Math.floor(tripWayPoints.length / 23);
+      const indicesToSave = Array(23).fill(interval);
+
+      for (let i = 1; i < indicesToSave.length; i++) {
+        indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
+      }
+
+      tripWayPoints = tripWayPoints.filter((wayPoint, index) => {
+        if (indicesToSave.indexOf(index) > - 1) {
+          return true;
+        }
+        return false;
+      });
+    }
+    const joinedWaypoints = Polyline.encode(tripWayPoints);
+
+  }
+
   _getDirections = async (origin, destination, joinedWaypoints) => {
   if (!origin) {
+    let filteredWayPoints;
     const wayPointsObjects = this.state.wayPoints;
     const wayPoints = wayPointsObjects.map(wayPoint => [wayPoint.lat, wayPoint.lng]);
+
     origin = wayPoints.splice(0, 1).join(',');
     destination = wayPoints.splice(wayPoints.length - 1, 1).join(',');
-    const interval = Math.floor(wayPoints.length / 23);
-    const indicesToSave = Array(23).fill(interval);
-
-    for (let i = 1; i < indicesToSave.length; i++) {
-      indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
+    if (wayPoints.length > 23) {
+      const interval = Math.floor(wayPoints.length / 23);
+      const indicesToSave = Array(23).fill(interval);
+  
+      for (let i = 1; i < indicesToSave.length; i++) {
+        indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
+      }
+  
+      filteredWayPoints = wayPoints.filter((wayPoint, index) => {
+        if (indicesToSave.indexOf(index) > - 1) {
+          return true;
+        }
+        return false;
+      });
     }
 
-    const filteredWayPoints = wayPoints.filter((wayPoint, index) => {
-      if (indicesToSave.indexOf(index) > - 1) {
-        return true;
-      }
-      return false;
-    });
-
-    joinedWaypoints = Polyline.encode(filteredWayPoints);
+    joinedWaypoints = filteredWayPoints ? Polyline.encode(filteredWayPoints) : Polyline.encode(wayPoints);
   }
     this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
   };
@@ -90,7 +121,7 @@ class WayPoint extends Component {
     );
   };
 
-  handleSpeedChange = (speed) => {
+  _handleSpeedChange = async (speed) => {
     const { state: {topSpeed, avgSpeed, speedCounter }} = this;
     const currentSpeed = speed < 0 ? 0 : Math.round(speed * 100) / 100;
     this.setState({ speedCounter: speedCounter + 1 });
@@ -100,14 +131,16 @@ class WayPoint extends Component {
     });
   }
 
-  _handlePositionChange = (location) => {
+  _handlePositionChange = async (location) => {
     // ! Re-enable 
     // const wayPoint = {
-    //   lat: location.coords.latitude,
-    //   lng: location.coords.longitude,
-    //   speed: location.coords.speed,
-    //   timestamp: location.timestamp,
-    // };
+      //   lat: location.coords.latitude,
+      //   lng: location.coords.longitude,
+      //   speed: location.coords.speed,
+      //   timestamp: location.timestamp,
+      // };
+
+    // this._handleSpeedChange(speed);
     const wayPoints = this.state.wayPoints.slice();
 
     // ? location.coords.speed is maybe meters/second, apparently multiplying
@@ -187,8 +220,8 @@ const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));
   },
-  createTripDispatch: (waypoints, userId) => {
-    dispatch(createTrip(waypoints, userId));
+  createTripDispatch: (origin, destination, waypoints, userId) => {
+    dispatch(createTrip(origin, destination, waypoints, userId));
   },
 });
 
