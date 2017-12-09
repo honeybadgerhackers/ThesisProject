@@ -120,11 +120,11 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
         console.log('happening??')
         res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${googleAPIKey}`);
+          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${googleAPIKEY}`);
       } else {
         res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&key=${googleAPIKey}`);
+          }&destination=${destination}&key=${googleAPIKEY}`);
       }
       console.log(res);
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
