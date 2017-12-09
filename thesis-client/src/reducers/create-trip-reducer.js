@@ -1,4 +1,4 @@
-import { 
+import {
   CREATE_TRIP,
   CREATE_TRIP_SUCCESS,
   CREATE_TRIP_FAILED,
@@ -12,7 +12,7 @@ const initialState = {
   status: inactive,
 };
 
-export default function createTripReducer(state = initialState, { payload, type }) {
+export default (state = initialState, { payload, type }) => {
   switch (type) {
     case CREATE_TRIP:
       return {
