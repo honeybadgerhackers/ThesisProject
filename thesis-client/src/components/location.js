@@ -5,7 +5,7 @@ import { MapView, Constants, Location } from 'expo';
 import PropTypes from 'prop-types';
 // import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
-import { getDirections } from '../actions/getDirections-action';
+import getDirections from '../actions/getDirections-action';
 import createTrip from '../actions/create-trip-action';
 
 class WayPoint extends Component {
