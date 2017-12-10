@@ -1,4 +1,3 @@
-import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
@@ -7,7 +6,7 @@ import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth, googleDirectionsCall } from '../utilities/api-calls';
-import { 
+import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
   LOGIN,

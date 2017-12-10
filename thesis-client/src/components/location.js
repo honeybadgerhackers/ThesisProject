@@ -7,6 +7,7 @@ import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
 import getDirections from '../actions/getDirections-action';
 import createTrip from '../actions/create-trip-action';
+import { createPolyline } from '../utilities/processors';
 import { juliaToSoniat } from '../testing/long-route';
 
 class WayPoint extends Component {
@@ -59,28 +60,14 @@ class WayPoint extends Component {
 
   processTrip = () => {
     let tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
-    // const tripSpeed = {
-    //   topSpeed: this.state.topSpeed,
-    //   avgSpeed: this.state.avgSpeed,
-    // };
+    const tripSpeed = {
+      speedCounter: this.state.speedCounter,
+      avgSpeed: this.state.avgSpeed,
+    };
     const origin = tripWayPoints.splice(0, 1).join(',');
     const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
-    if (tripWayPoints.length > 23) {
-      const interval = Math.floor(tripWayPoints.length / 23);
-      const indicesToSave = Array(23).fill(interval);
-
-      for (let i = 1; i < indicesToSave.length; i++) {
-        indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
-      }
-
-      tripWayPoints = tripWayPoints.filter((wayPoint, index) => {
-        if (indicesToSave.indexOf(index) > - 1) {
-          return true;
-        }
-        return false;
-      });
-    }
-    const joinedWaypoints = Polyline.encode(tripWayPoints);
+    const joinedWayPoints = createPolyline(tripWayPoints);
+    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId, tripSpeed);
 
   }
 
