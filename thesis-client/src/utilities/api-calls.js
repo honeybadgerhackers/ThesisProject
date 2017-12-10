@@ -1,6 +1,6 @@
 import { AuthSession } from 'expo';
 import axios from 'axios';
-import { FB_APP_ID, facebookAuthUri } from '../../config';
+import { FB_APP_ID, googleAPIKEY, facebookAuthUri } from '../../config';
 
 const axiosGet = (url) => (
   axios.get(url)
@@ -28,3 +28,10 @@ export const facebookAuth = (redirectUrl) => (
 export const googleDirectionsCall = async (url) => (
   axiosGet(url)
 );
+
+export const getGoogleRouteImage = async coords => (
+  axiosGet(`https://maps.googleapis.com/maps/api/staticmap?
+    size=600x600
+    &path=weight:4|color:red|enc:${coords}
+    &key=${googleAPIKEY}`)
+)
