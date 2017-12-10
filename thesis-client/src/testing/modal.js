@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import { StyleSheet, Button, View, Text, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -21,21 +21,46 @@ class ModalView extends React.Component {
   render = () => (
     <View style={styles.container}>
       <Modal
-        style={styles.modalContent}
         isVisible={this.state.visibleModal}
       >
-        <View>
-          <Text>Hello!</Text>
-          <Button
-            onPress={() => this.setState({ visibleModal: false })}
-            title="Close"
-          />
+        <View style={styles.modalContent}>
+          <View style={styles.modalBody}>
+            <Text>Hello!</Text>
+          </View>
+          <View style={styles.buttons}>
+            <View style={styles.button}>
+              <Button
+                onPress={() => this.setState({ visibleModal: false })}
+                title="Close"
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                onPress={() => this.setState({ visibleModal: false })}
+                title="Close"
+              />
+            </View>
+          </View>
           {/* {this._renderButton('Close', () => this.setState({ visibleModal: null }))} */}
         </View>
       </Modal>
       <Button
         onPress={() => this.setState({ visibleModal: true })}
         title="Modal"
+      />
+      <Button
+        onPress={() => Alert.alert(
+          'test',
+          'alert example',
+        [
+          { text: 'No', onPress: () => console.log('pressed no')},
+          {
+            text: 'Yes',
+            onPress: () => () => console.log('pressed yes'),
+          },
+        ]
+      )}
+        title="Alert"
       />
     </View>
   );
@@ -49,15 +74,31 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 4,
+    paddingTop: 22,
+    borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalBody: {
+    paddingBottom: 20,
   },
   paragraph: {
     fontSize: 18,
     textAlign: 'center',
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    borderTopWidth: 0.75,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  button: {
+    flex: 2,
+    borderLeftWidth: 0.75,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+    paddingHorizontal: 22,
+    paddingVertical: 10,
   },
 });
 
