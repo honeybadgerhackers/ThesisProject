@@ -3,22 +3,48 @@ import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
-import { all, call, put, takeEvery, take, fork, cancel } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
-import { storeItem, getItem } from '../utilities/async-storage';
+import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
-import { INITIATE_LOGIN, LOGIN, LOGOUT, LOGIN_ERROR, STORAGE_KEY, ENABLE_LOGIN, DISABLE_LOGIN } from '../constants';
-import { SERVER_URI, googleAPIKEY } from '../../config';
+import { 
+  INITIATE_LOGIN_DEMO,
+  INITIATE_LOGIN,
+  LOGIN,
+  LOGOUT,
+  LOGIN_ERROR,
+  STORAGE_KEY,
+  ENABLE_LOGIN,
+  DISABLE_LOGIN,
+  CREATE_TRIP,
+  demoUser,
+  GET_TRIPS_SUCCESS,
+  GET_USER_LOCATION_SUCCESS,
+  GET_USER_LOCATION_FAILED,
+  UPDATE_MAP_REGION,
+  UPDATE_ROUTE_COORDS,
+  GET_USER_TRIPS_SUCCESS,
+  GET_USER_SESSIONS_SUCCESS,
+  GET_TRIPS,
+  GET_USER_TRIPS,
+  GET_USER_SESSIONS,
+  GET_DIRECTIONS,
+  GET_USER_LOCATION,
+  } from '../constants';
+import { googleAPIKEY } from '../../config';
 
 
-const authorizeUser = function* () {
+const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
   try {
     yield put({ type: DISABLE_LOGIN });
 
-    const { type, params: { code, error } } = yield call(facebookAuth, redirectUrl);
+    const { type, params: { code, error } } = params.type === INITIATE_LOGIN ? yield call(facebookAuth, redirectUrl) : { type: "success", params: { code: demoUser, error: null } };
 
     if (type === 'success' && !error) {
+      // ! Quick hack to make loader run, probably should fix later
+      yield put({ type: ENABLE_LOGIN });
+      yield put({ type: DISABLE_LOGIN });
       const {
         type: apiType,
         id_token,
@@ -34,7 +60,7 @@ const authorizeUser = function* () {
           yield put({ type: ENABLE_LOGIN }),
         ]);
 
-      }  else {
+      } else {
         throw new Error('Database call failed', type);
       }
     } else {
@@ -54,22 +80,10 @@ const authorizeUser = function* () {
 const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
-    yield put({ type: 'GET_TRIPS_SUCCESS', payload: tripsRequest });
+
+    yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
   } catch (error) {
-    console.log(error);
-  }
-};
-
-const loginFlow = function* () {
-  while (true) {
-    yield take(INITIATE_LOGIN);
-
-    const task = yield fork(authorizeUser);
-    const action = yield take([LOGOUT, LOGIN_ERROR]);
-
-    if (action.type === LOGOUT) {
-      yield cancel(task);
-    }
+    console.log('async', JSON.stringify(error));
   }
 };
 
@@ -77,19 +91,19 @@ const getUserLocationAsync = function* () {
   try {
     const { status } = yield call(Permissions.askAsync, Permissions.LOCATION);
     if (status !== 'granted') {
-      yield put({ type: 'GET_USER_LOCATION_FAILED', payload: 'Permission to access location was denied' });
+      yield put({ type: GET_USER_LOCATION_FAILED, payload: 'Permission to access location was denied' });
     }
     const userLocation = yield call(Location.getCurrentPositionAsync, {});
     yield put({
-      type: 'UPDATE_MAP_REGION',
+      type: UPDATE_MAP_REGION,
       payload: {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
         },
-      });
-    yield put({ type: 'GET_USER_LOCATION_SUCCESS', payload: userLocation });
+    });
+    yield put({ type: GET_USER_LOCATION_SUCCESS, payload: userLocation });
   } catch (error) {
     console.log(error);
   }
@@ -114,7 +128,7 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
           longitude: point[1],
         }));
 
-      yield put({ type: 'UPDATE_ROUTE_COORDS', payload: coords });
+      yield put({ type: UPDATE_ROUTE_COORDS, payload: coords });
       return coords;
 
     } catch (error) {
@@ -151,18 +165,78 @@ const getActiveTripAsync = function* (action) {
     console.log(error);
   }
 };
+const createTripAsync = function* (payload) {
+  const { payload: waypoints, userId} = payload;
+  try {
+    const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loginFlow = function* () {
+  while (true) {
+    const initiateAction = yield take([INITIATE_LOGIN, INITIATE_LOGIN_DEMO]);
+
+    const task = yield fork(authorizeUser, initiateAction);
+    const action = yield take([LOGOUT, LOGIN_ERROR]);
+
+    if (action.type === LOGOUT) {
+      yield cancel(task);
+    }
+  }
+};
+
+const watchCreateTrip = function* () {
+  yield takeLatest(CREATE_TRIP, createTripAsync);
+};
+
+const getUserTrips = function* ({ payload: { userId } }) {
+  let filter = {
+    id_user_account: userId,
+  };
+  try {
+  const userTripRequest = yield call(dbSecureGET, 'route', JSON.stringify(filter));
+    yield put({type: GET_USER_TRIPS_SUCCESS, payload: userTripRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getUserSessions = function* ({ payload: { userId } }) {
+  let filter = {
+    id_user_account: userId,
+  };
+  try {
+  const userSessionRequest = yield call(dbSecureGET, 'session', JSON.stringify(filter));
+    yield put({type: GET_USER_SESSIONS_SUCCESS, payload: userSessionRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+//watcher saga - listen for actions to be dispatched, will call worker
 
 const watchGetTrips = function* () {
-  yield takeEvery("GET_TRIPS", getTripsAsync);
+  yield takeEvery(GET_TRIPS, getTripsAsync);
 };
 
 const watchGetUserLocation = function* () {
-  yield takeEvery("GET_USER_LOCATION", getUserLocationAsync);
+  yield takeEvery(GET_USER_LOCATION, getUserLocationAsync);
 };
 
 const watchGetDirections = function* () {
-  yield takeEvery('GET_DIRECTIONS', getUserDirectionsAsync);
+  yield takeEvery(GET_DIRECTIONS, getUserDirectionsAsync);
 };
+
+const watchUserTrips = function* () {
+  yield takeLatest(GET_USER_TRIPS, getUserTrips);
+};
+
+const watchUserSessions = function* () {
+  yield takeLatest(GET_USER_SESSIONS, getUserSessions);
+};
+//combine watcher sagas to root saga
 
 const watchGetActiveTrip = function* () {  
   yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);
@@ -171,11 +245,14 @@ const watchGetActiveTrip = function* () {
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
+    watchCreateTrip(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
     watchGetActiveTrip(),
+    watchUserTrips(),
+    watchUserSessions(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions};

@@ -1,6 +1,6 @@
 import { LOGIN, LOGOUT, LOGIN_ERROR } from '../constants';
 
-const userAction = (user = null, action) => {
+export default (user = null, action) => {
   switch (action.type) {
     case LOGIN:
       return action.user;
@@ -12,5 +12,3 @@ const userAction = (user = null, action) => {
       return user;
   }
 };
-
-export default userAction;

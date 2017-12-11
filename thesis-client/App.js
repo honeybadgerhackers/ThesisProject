@@ -5,13 +5,11 @@ import LoginNavigator from './src/navigation/login-navigation';
 import RootNavigator from "./src/navigation/root-navigator";
 
 
-export default class App extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <LoginNavigator />
-        {/* <RootNavigator /> */}
-      </Provider>
-    );
-  }
+export default function App() {
+  return (
+    <Provider store={store}>
+      <LoginNavigator />
+      {/* <RootNavigator /> */}
+    </Provider>
+  );
 }

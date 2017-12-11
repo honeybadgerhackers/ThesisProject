@@ -9,8 +9,10 @@ const axiosRequest = (params) => (
     return response.data;
   })
   .catch((err) => {
-    console.log(err);
-    throw new Error({ err });
+    throw new Error(err);
+    // const test = err.response.data
+    // throw new Error('UnauthorizedError: No authorization token was found');
+    // throw new Error('Request could not complete');
   })
 );
 

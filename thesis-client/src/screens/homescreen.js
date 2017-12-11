@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
-import { getUserLocation } from '../actions/getUserLocation-action';
-import icon from '../assets/bikeIcon.png';
+import getUserLocation from '../actions/getUserLocation-action';
+import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
 

@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import HomeStack from './home-stack';
 import MapStack from './map-stack';
+import ProfileStack from './profile-stack';
 
 const tabBarIcon = ({ tintColor, focused }) => (
   <Ionicons
@@ -29,7 +30,20 @@ const RootNavigator = TabNavigator(
         tabBarLabel: 'Map',
         tabBarIcon,
       },
-    },
+    },        
+    Profile: {
+      screen: ProfileStack,
+      navigationOptions: {
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({ tintColor, focused }) => (
+          <Ionicons
+            name={focused ? 'ios-person' : 'ios-person-outline'}
+            size={26}
+            style={{ color: tintColor }}
+          />
+        )
+      }
+    }
   },
   {
     tabBarComponent: TabBarBottom,

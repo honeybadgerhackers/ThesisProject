@@ -1,6 +1,8 @@
-export default function(state = {}, action) {
+import { TRIP_SELECTED } from '../constants';
+
+export default (state = {}, action) => {
   switch (action.type) {
-    case "TRIP_SELECTED":
+    case TRIP_SELECTED:
       return action.payload;
     case "GET_ACTIVE_TRIP_SUCCESS":
       return action.payload;
