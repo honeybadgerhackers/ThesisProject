@@ -14,6 +14,7 @@ const ModalView = ({
   tripName,
   closeModal,
   openRatingModal,
+  setRating,
   starIcons,
 }) => {
   return (
@@ -90,7 +91,7 @@ const ModalView = ({
             <View style={styles.ratingContainer}>
               <View style={styles.rating}>
                 <Rating
-                  onChange={rating => console.log(rating)}
+                  onChange={rating => setRating(rating)}
                   selectedStar={starIcons.filled}
                   unselectedStar={starIcons.unfilled}
                   config={{
@@ -204,6 +205,7 @@ ModalView.propTypes = {
   tripName: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
   openRatingModal: PropTypes.func.isRequired,
+  setRating: PropTypes.func.isRequired,
   starIcons: PropTypes.shape({
     filled: PropTypes.number.isRequired,
     unfilled: PropTypes.number.isRequired,

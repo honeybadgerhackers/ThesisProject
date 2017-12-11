@@ -52,9 +52,9 @@ class WayPoint extends Component {
     avgSpeed: 0,
     visibleModal: 0,
     googleMapImage: null,
+    rating: 0,
     tripName: 'Julia St to Soniat St',
   };
-
 
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -68,20 +68,28 @@ class WayPoint extends Component {
   }
 
   componentWillUnmount() {
-    this._stopTrackLocation();
+    if (this.track) {
+      this.track.remove();
+      this.setState({ disableButton: false, followUserLocation: false });
+    }
+  }
+
+  setRating = (selectedRating) => {
+    this.setState({ rating: selectedRating });
   }
 
   processTrip = () => {
     let tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
-    const tripSpeed = {
-      speedCounter: this.state.speedCounter,
-      avgSpeed: this.state.avgSpeed,
+    const { speedCounter, avgSpeed, rating } = this.state;
+    const tripStats = {
+      speedCounter,
+      avgSpeed,
+      rating,
     };
     const origin = tripWayPoints.splice(0, 1).join(',');
     const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
     const joinedWayPoints = createPolyline(tripWayPoints);
-    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId, tripSpeed);
-
+    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId, tripStats);
   }
 
   _getDirections = async (origin, destination, joinedWaypoints) => {
@@ -117,7 +125,7 @@ class WayPoint extends Component {
     this.setState({ disableButton: true, followUserLocation: true });
     this.track = await Location.watchPositionAsync(
       { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
-      this._handlePositionChange
+      this._handlePositionChange,
     );
   };
 
@@ -207,6 +215,7 @@ class WayPoint extends Component {
           tripName={this.state.tripName}
           closeModal={this.closeModal}
           openRatingModal={this.openRatingModal}
+          setRating={this.setRating}
           starIcons={starIcons}
         />
       </View>
