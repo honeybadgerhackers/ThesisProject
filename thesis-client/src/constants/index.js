@@ -30,6 +30,11 @@ export const GET_USER_SESSIONS = "GET_USER_SESSIONS";
 export const GET_USER_TRIPS_SUCCESS = 'GET_USER_TRIPS_SUCCESS';
 export const GET_USER_SESSIONS_SUCCESS = 'GET_USER_SESSIONS SUCCESS';
 
+
+export const GET_USER_FAVORITES_SUCCESS = "GET_USER_FAVORITES_SUCCESS";
+export const GET_USER_FAVORITES = "GET_USER_FAVORITES";
+export const POST_FAVORITE = 'POST_FAVORITE';
+
 export const inactive = 'inactive';
 export const inProgress = 'in progress';
 export const success = 'success';
