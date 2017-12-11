@@ -30,6 +30,9 @@ import {
   GET_USER_SESSIONS,
   GET_DIRECTIONS,
   GET_USER_LOCATION,
+  POST_FAVORITE,
+  GET_USER_FAVORITES_SUCCESS,
+  GET_USER_FAVORITES,
   } from '../constants';
 import { googleAPIKEY } from '../../config';
 
@@ -145,7 +148,7 @@ const createTripAsync = function* (payload) {
     const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
     console.log(result);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -171,7 +174,7 @@ const getUserTrips = function* ({ payload: { userId } }) {
     id_user_account: userId,
   };
   try {
-  const userTripRequest = yield call(dbSecureGET, 'route', JSON.stringify(filter));
+  const userTripRequest = yield call(dbSecureGET, 'route', filter);
     yield put({type: GET_USER_TRIPS_SUCCESS, payload: userTripRequest});
   } catch (error) {
     console.error(error);
@@ -183,8 +186,33 @@ const getUserSessions = function* ({ payload: { userId } }) {
     id_user_account: userId,
   };
   try {
-  const userSessionRequest = yield call(dbSecureGET, 'session', JSON.stringify(filter));
+  const userSessionRequest = yield call(dbSecureGET, 'session', filter);
     yield put({type: GET_USER_SESSIONS_SUCCESS, payload: userSessionRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const postFavorite = function* ({payload: {userId, routeId}}) {
+  try {
+    const data = {
+      id_user_account: userId,
+      id_route: routeId,
+    };
+    const favoritePostRequest = yield call(dbSecurePOST, 'favorite', data);
+    console.info(favoritePostRequest);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getFavorite = function* ({payload: {userId}}) {
+  try {
+    const filter = {
+      "favorite.id_user_account": userId,
+    };
+    const userFavorites = yield call(dbSecureGET, 'favorite', filter);
+    yield put({type: GET_USER_FAVORITES_SUCCESS, payload: userFavorites});
   } catch (error) {
     console.error(error);
   }
@@ -210,6 +238,14 @@ const watchUserTrips = function* () {
 const watchUserSessions = function* () {
   yield takeLatest(GET_USER_SESSIONS, getUserSessions);
 };
+
+const watchPostFavorite = function* () {
+  yield takeEvery(POST_FAVORITE, postFavorite);
+};
+
+const watchGetFavorite = function* () {
+  yield takeLatest(GET_USER_FAVORITES, getFavorite);
+};
 //combine watcher sagas to root saga
 
 const rootSaga = function* () {
@@ -221,7 +257,9 @@ const rootSaga = function* () {
     watchGetDirections(),
     watchUserTrips(),
     watchUserSessions(),
+    watchPostFavorite(),
+    watchGetFavorite(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions};
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite };
