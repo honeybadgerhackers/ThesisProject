@@ -1,6 +1,19 @@
 
 export const STORAGE_KEY = 'access_token';
 
+export const appColors = {
+  logoBlue: 'rgb(104, 146, 179)',
+  lightBlue: 'rgb(248, 252, 255)',
+  midLightBlue: 'rgb(210, 222, 232)',
+  spanishBlue: '#016fb9',
+  navyBlue: 'rgb(28, 38, 65)',
+  begonia: '#f7717d',
+  mossGreen: '#b2ffa9',
+  aquamarine: '#59c9a5',
+  oriolesOrange: '#ff4a1c',
+  citrine: '#e3b505',
+};
+
 export const INITIATE_LOGIN = 'INITIATE_LOGIN';
 export const INITIATE_LOGIN_DEMO = 'INITIATE_LOGIN_DEMO';
 export const LOGIN = 'LOGIN';
