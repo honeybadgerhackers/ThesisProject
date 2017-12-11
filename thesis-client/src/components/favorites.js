@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import mapIcon from '../assets/icons/mapIcon.png';
 
 const Favorite = ({ navigate, favorites, showTripLocation }) => {
-    console.log(favorites);
   const goToMap = () => {
     navigate('Map');
   };
