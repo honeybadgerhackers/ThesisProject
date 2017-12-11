@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text, Alert, Image, Easing } from 'react-native';
+import { StyleSheet, Button, View, Text, Image, Easing } from 'react-native';
 import { LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
+import PropTypes from 'prop-types';
 import { appColors } from '../constants';
-import { getGoogleRouteImage } from '../utilities/api-calls';
 
 const images = {
   starFilled: require('../assets/icons/star_filled.png'),
@@ -13,21 +13,18 @@ const images = {
 
 const buttonColor = appColors.aquamarine;
 
-class ModalView extends React.Component {
-  state = {
-    visibleModal: false,
-    googleMapImage: null,
-  };
-
-  componentWillMount = () => {
-    const image = getGoogleRouteImage('cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE');
-    this.setState({ googleMapImage: image });
-  }
-
-  render = () => (
-    <View style={styles.container}>
+const ModalView = ({
+  visibleModal,
+  googleMapImage,
+  tripName,
+  closeModal,
+  openRatingModal,
+  starIcons,
+}) => {
+  return (
+    <View>
       <Modal
-        isVisible={this.state.visibleModal === 1}
+        isVisible={visibleModal === 1}
         backdropOpacity={0.70}
         backdropColor={appColors.logoBlue}
       >
@@ -47,17 +44,17 @@ class ModalView extends React.Component {
             <View style={styles.imageContainer}>
               <Image
                 style={styles.image}
-                source={{uri: this.state.googleMapImage}}
+                source={{uri: googleMapImage}}
               />
             </View>
             <View style={styles.paragraph}>
-              <Text style={styles.text}>Julia St to Soniat St</Text>
+              <Text style={styles.text}>{tripName}</Text>
             </View>
           </View>
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
               <Button
-                onPress={() => this.setState({ visibleModal: false })}
+                onPress={() => closeModal()}
                 title="No"
                 color={buttonColor}
               />
@@ -65,9 +62,9 @@ class ModalView extends React.Component {
             <View style={styles.buttonRight}>
               <Button
                 onPress={() => {
-                  this.setState({ visibleModal: false });
+                  closeModal();
                   setTimeout(() => {
-                    this.setState({ visibleModal: 2});
+                    openRatingModal();
                   }, 400);
                 }}
                 title="Yes"
@@ -78,7 +75,7 @@ class ModalView extends React.Component {
         </View>
       </Modal>
       <Modal
-        isVisible={this.state.visibleModal === 2}
+        isVisible={visibleModal === 2}
         backdropOpacity={0.70}
         backdropColor={appColors.logoBlue}
       >
@@ -118,7 +115,7 @@ class ModalView extends React.Component {
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
               <Button
-                onPress={() => this.setState({ visibleModal: false })}
+                onPress={() => closeModal()}
                 title="Save"
                 color={buttonColor}
               />
@@ -126,27 +123,9 @@ class ModalView extends React.Component {
           </View>
         </View>
       </Modal>
-      <Button
-        onPress={() => this.setState({ visibleModal: 1 })}
-        title="Modal"
-      />
-      <Button
-        onPress={() => Alert.alert(
-          'test',
-          'alert example',
-        [
-          { text: 'No', onPress: () => console.log('pressed no')},
-          {
-            text: 'Yes',
-            onPress: () => () => console.log('pressed yes'),
-          },
-        ]
-      )}
-        title="Alert"
-      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -223,5 +202,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
 });
+
+ModalView.propTypes = {
+  visibleModal: PropTypes.number,
+  googleMapImage: PropTypes.string,
+  tripName: PropTypes.string,
+  closeModal: PropTypes.func.isRequired,
+  openRatingModal: PropTypes.func.isRequired,
+  starIcons: PropTypes.shape({
+    filled: PropTypes.string.isRequired,
+    unfilled: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+ModalView.defaultProps = {
+  visibleModal: null,
+  googleMapImage: null,
+  tripName: null,
+};
 
 export default ModalView;

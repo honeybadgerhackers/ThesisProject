@@ -151,7 +151,7 @@ const createTripAsync = function* (payload) {
       &waypoints=via:enc:${waypoints}:
       &key=${googleAPIKEY}`
     );
-    console.log(result);
+    console.log(res);
   } catch (error) {
     console.log(error);
   }

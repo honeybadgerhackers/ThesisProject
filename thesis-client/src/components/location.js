@@ -5,10 +5,18 @@ import { MapView, Constants, Location } from 'expo';
 import PropTypes from 'prop-types';
 import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
+import CreateTripModal from './create-trip-modal';
 import getDirections from '../actions/getDirections-action';
 import createTrip from '../actions/create-trip-action';
 import { createPolyline } from '../utilities/processors';
 import { juliaToSoniat } from '../testing/long-route';
+import { getGoogleRouteImage } from '../utilities/api-calls';
+
+
+const images = {
+  starFilled: require('../assets/icons/star_filled.png'),
+  starUnfilled: require('../assets/icons/star_unfilled.png'),
+};
 
 class WayPoint extends Component {
   static propTypes = {
@@ -42,6 +50,9 @@ class WayPoint extends Component {
     speedCounter: 0,
     topSpeed: 0,
     avgSpeed: 0,
+    visibleModal: 0,
+    googleMapImage: null,
+    tripName: 'Julia St to Soniat St',
   };
 
 
@@ -52,6 +63,8 @@ class WayPoint extends Component {
           'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
       });
     }
+    const image = getGoogleRouteImage('cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE');
+    this.setState({ googleMapImage: image });
   }
 
   componentWillUnmount() {
@@ -82,11 +95,11 @@ class WayPoint extends Component {
     if (wayPoints.length > 23) {
       const interval = Math.floor(wayPoints.length / 23);
       const indicesToSave = Array(23).fill(interval);
-  
+
       for (let i = 1; i < indicesToSave.length; i++) {
         indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
       }
-  
+
       filteredWayPoints = wayPoints.filter((wayPoint, index) => {
         if (indicesToSave.indexOf(index) > - 1) {
           return true;
@@ -159,6 +172,14 @@ class WayPoint extends Component {
     );
   };
 
+  closeModal = () => {
+    this.setState({ visibleModal: 0 });
+  }
+
+  openRatingModal = () => {
+    this.setState({ visibleModal: 2 });
+  }
+
   render() {
     let text = 'Waiting..';
     if (this.state.errorMessage) {
@@ -190,6 +211,14 @@ class WayPoint extends Component {
           <Text style={styles.paragraph}>Speed: {this.state.speed}</Text>
           <Text style={styles.paragraph}>{text}</Text>
         </View>
+        <CreateTripModal
+          visibleModal={this.state.visibleModal}
+          googleMapImage={this.state.googleMapImage}
+          tripName={this.state.tripName}
+          closeModal={this.closeModal}
+          openRatingModal={this.openRatingModal}
+          starIcons={images}
+        />
       </View>
       );
   }
