@@ -29,9 +29,6 @@ export const googleDirectionsCall = async (url) => (
   axiosGet(url)
 );
 
-export const getGoogleRouteImage = async coords => (
-  axiosGet(`https://maps.googleapis.com/maps/api/staticmap?
-    size=600x600
-    &path=weight:4|color:red|enc:${coords}
-    &key=${googleAPIKEY}`)
+export const getGoogleRouteImage = coords => (
+  `https://maps.googleapis.com/maps/api/staticmap?size=600x600&path=weight:4|color:red|enc:${coords}&key=${googleAPIKEY}`
 )

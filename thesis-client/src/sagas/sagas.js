@@ -139,9 +139,18 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 };
 
 const createTripAsync = function* (payload) {
-  const { payload: waypoints, userId} = payload;
+  const { payload: origin, destination, waypoints, userId} = payload;
   try {
-    const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    const res = yield call(
+      googleDirectionsCall,
+      `https://maps.googleapis.com/maps/api/directions/json?
+      &mode=bicycling
+      &origin=${origin}
+      &destination=${destination}
+      &waypoints=via:enc:${waypoints}:
+      &key=${googleAPIKEY}`
+    );
     console.log(result);
   } catch (error) {
     console.log(error);
