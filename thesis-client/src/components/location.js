@@ -13,9 +13,9 @@ import { juliaToSoniat } from '../testing/long-route';
 import { getGoogleRouteImage } from '../utilities/api-calls';
 
 
-const images = {
-  starFilled: require('../assets/icons/star_filled.png'),
-  starUnfilled: require('../assets/icons/star_unfilled.png'),
+const starIcons = {
+  filled: require('../assets/icons/star_filled.png'),
+  unfilled: require('../assets/icons/star_unfilled.png'),
 };
 
 class WayPoint extends Component {
@@ -159,25 +159,15 @@ class WayPoint extends Component {
       this.setState({ disableButton: false, followUserLocation: false });
     }
     this._getDirections();
-    Alert.alert(
-      'Save',
-      'Would you like to save this trip to your routes?',
-      [
-        { text: 'No', onPress: () => console.log('pressed no', this.props.userId)},
-        {
-          text: 'Yes',
-          onPress: () => this.props.createTripDispatch(this.state.wayPoints, this.props.userId),
-        },
-      ]
-    );
+    this.setState({ visibleModal: 1 });
   };
-
-  closeModal = () => {
-    this.setState({ visibleModal: 0 });
-  }
 
   openRatingModal = () => {
     this.setState({ visibleModal: 2 });
+  }
+
+  closeModal = () => {
+    this.setState({ visibleModal: 0 });
   }
 
   render() {
@@ -217,7 +207,7 @@ class WayPoint extends Component {
           tripName={this.state.tripName}
           closeModal={this.closeModal}
           openRatingModal={this.openRatingModal}
-          starIcons={images}
+          starIcons={starIcons}
         />
       </View>
       );

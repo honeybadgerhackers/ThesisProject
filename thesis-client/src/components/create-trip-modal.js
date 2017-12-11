@@ -6,11 +6,6 @@ import Rating from 'react-native-rating';
 import PropTypes from 'prop-types';
 import { appColors } from '../constants';
 
-const images = {
-  starFilled: require('../assets/icons/star_filled.png'),
-  starUnfilled: require('../assets/icons/star_unfilled.png'),
-};
-
 const buttonColor = appColors.aquamarine;
 
 const ModalView = ({
@@ -65,7 +60,7 @@ const ModalView = ({
                   closeModal();
                   setTimeout(() => {
                     openRatingModal();
-                  }, 400);
+                  }, 500);
                 }}
                 title="Yes"
                 color={buttonColor}
@@ -96,8 +91,8 @@ const ModalView = ({
               <View style={styles.rating}>
                 <Rating
                   onChange={rating => console.log(rating)}
-                  selectedStar={images.starFilled}
-                  unselectedStar={images.starUnfilled}
+                  selectedStar={starIcons.filled}
+                  unselectedStar={starIcons.unfilled}
                   config={{
                     easing: Easing.inOut(Easing.ease),
                     duration: 350,
@@ -210,8 +205,8 @@ ModalView.propTypes = {
   closeModal: PropTypes.func.isRequired,
   openRatingModal: PropTypes.func.isRequired,
   starIcons: PropTypes.shape({
-    filled: PropTypes.string.isRequired,
-    unfilled: PropTypes.string.isRequired,
+    filled: PropTypes.number.isRequired,
+    unfilled: PropTypes.number.isRequired,
   }).isRequired,
 };
 
