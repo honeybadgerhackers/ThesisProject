@@ -124,7 +124,7 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 
 const getActiveTripAsync = function* (action) {
   let filter = {
-    'id_route': action.payload.id,
+    'id_route': 315,
   };
   try {
     const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
@@ -132,12 +132,13 @@ const getActiveTripAsync = function* (action) {
     yield put({
       type: 'UPDATE_MAP_REGION',
       payload: {
-        latitude: 29.939993,
-        longitude: -90.074832,
+        latitude: Number(activeTripWaypoints[0].lat),
+        longitude: Number(activeTripWaypoints[0].lng),
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
         },
       });
+
     const coords = activeTripWaypoints.map(waypoint => {
       return {
         latitude: Number(waypoint.lat),

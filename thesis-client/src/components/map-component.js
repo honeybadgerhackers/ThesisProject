@@ -29,7 +29,6 @@ class Map extends Component {
     this.props.navigate('Home');
   }
   render() {
-    console.log(this.props.activeTrip.coords);
     return (
       <View style={styles.container}>
         <MapView

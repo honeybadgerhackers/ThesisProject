@@ -1,15 +1,15 @@
 export default function (state = 
   { 
-    latitude: 30.3249980, 
-    longitude: -90.9129380, 
-    latitudeDelta: 3.0, 
-    longitudeDelta: 3.0 
+    latitude: 0, 
+    longitude: 0, 
+    latitudeDelta: 0.05, 
+    longitudeDelta: 0.05 
   }, action) {
   switch (action.type) {
     case "UPDATE_MAP_REGION":
       return action.payload;
-    // case "CLEAR_MAP":
-    //   return {};
+    case "CLEAR_ACTIVE_TRIP":
+      return {...state};
     default:
       return state;
   }

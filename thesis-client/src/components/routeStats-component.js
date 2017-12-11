@@ -7,7 +7,7 @@ var { width, height } = Dimensions.get("window");
 
 const RouteStats = () => (
   <View style={[styles.overlay, { height: 360}]}>
-  <Text>Stats</Text>
+    <Text>Stats</Text>
   </View>
 );
 

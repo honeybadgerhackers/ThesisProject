@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';import { connect } from 'react-redux';
 import Map from '../components/map-component';
 import CustomTripMap from '../components/location';
 import { clearActiveTrip } from '../actions/activeTrip-action';
+import { getDirections } from "../actions/getDirections-action";
+
 
 // eslint-disable-next-line
 class MapScreen extends Component {
@@ -27,29 +27,39 @@ class MapScreen extends Component {
       mapRegion,
       routeCoords,
       clearActiveTrip,
-      navigation: {navigate}
+      navigation: {navigate},
+      getDirectionsSaga,
     } = this.props;
 
-    // return <CustomeTripMap />;
-    console.log("ROUTE COORDS", this.props.routeCoords);
-
     return (
-      <Map 
+      <CustomTripMap
         activeTrip={activeTrip}
         userLocation={userLocation}
         mapRegion={mapRegion}
         routeCoords={routeCoords}
         clearActiveTrip={clearActiveTrip}
         navigate={navigate}
+        getDirectionsSaga={getDirectionsSaga}
       />
-    );
+    )
+
+    // return (
+    //   <Map
+    //     activeTrip={activeTrip}
+    //     userLocation={userLocation}
+    //     mapRegion={mapRegion}
+    //     routeCoords={routeCoords}
+    //     clearActiveTrip={clearActiveTrip}
+    //     navigate={navigate}
+    //   />
+    // );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    activeTrip: state.activeTrip,
     userLocation: state.userLocation,
+    activeTrip: state.activeTrip,
     mapRegion: state.mapRegion,
     routeCoords: state.routeCoords.coordsArray,
   };
@@ -58,6 +68,9 @@ const mapDispatchToProps = dispatch => ({
   clearActiveTrip: () => {
     dispatch(clearActiveTrip());
   },
+  getDirectionsSaga: (origin, destination, joinedWaypoints) => {
+    dispatch(getDirections(origin, destination, joinedWaypoints));
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
