@@ -1,6 +1,19 @@
 
 export const STORAGE_KEY = 'access_token';
 
+export const appColors = {
+  logoBlue: 'rgb(104, 146, 179)',
+  lightBlue: 'rgb(248, 252, 255)',
+  midLightBlue: 'rgb(210, 222, 232)',
+  spanishBlue: '#016fb9',
+  navyBlue: 'rgb(28, 38, 65)',
+  begonia: '#f7717d',
+  mossGreen: '#b2ffa9',
+  aquamarine: '#59c9a5',
+  oriolesOrange: '#ff4a1c',
+  citrine: '#e3b505',
+};
+
 export const INITIATE_LOGIN = 'INITIATE_LOGIN';
 export const INITIATE_LOGIN_DEMO = 'INITIATE_LOGIN_DEMO';
 export const LOGIN = 'LOGIN';
@@ -13,8 +26,13 @@ export const GET_DIRECTIONS = 'GET_DIRECTIONS';
 export const GET_TRIPS = 'GET_TRIPS';
 
 export const CREATE_TRIP = 'CREATE_TRIP';
+export const CREATE_TRIP_SAVE = 'CREATE_TRIP_SAVE';
 export const CREATE_TRIP_SUCCESS = 'CREATE_TRIP_SUCCESS';
 export const CREATE_TRIP_FAILED = 'CREATE_TRIP_FAILED';
+export const CREATE_TRIP_CANCELLED = 'CREATE_TRIP_CANCELLED';
+
+export const RETRIEVED_MAP_IMAGE = 'RETRIEVED_MAP_IMAGE';
+export const RETRIEVED_TRIP_DATA = 'RETRIEVED_TRIP_DATA';
 
 export const GET_USER_LOCATION = 'GET_USER_LOCATION';
 export const GET_USER_LOCATION_FAILED = 'GET_USER_LOCATION_FAILED';
@@ -29,6 +47,11 @@ export const GET_USER_TRIPS = "GET_USER_TRIPS";
 export const GET_USER_SESSIONS = "GET_USER_SESSIONS";
 export const GET_USER_TRIPS_SUCCESS = 'GET_USER_TRIPS_SUCCESS';
 export const GET_USER_SESSIONS_SUCCESS = 'GET_USER_SESSIONS SUCCESS';
+
+
+export const GET_USER_FAVORITES_SUCCESS = "GET_USER_FAVORITES_SUCCESS";
+export const GET_USER_FAVORITES = "GET_USER_FAVORITES";
+export const POST_FAVORITE = 'POST_FAVORITE';
 
 export const inactive = 'inactive';
 export const inProgress = 'in progress';

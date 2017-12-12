@@ -7,7 +7,15 @@ import HomeStack from './home-stack';
 import MapStack from './map-stack';
 import ProfileStack from './profile-stack';
 
-const tabBarIcon = ({ tintColor, focused }) => (
+const tabBarHomeIcon = ({ tintColor, focused }) => (
+  <Ionicons
+    name={focused ? 'ios-home' : 'ios-home-outline'}
+    size={26}
+    style={{ color: tintColor }}
+  />
+);
+
+const tabBarMapIcon = ({ tintColor, focused }) => (
   <Ionicons
     name={focused ? 'ios-map' : 'ios-map-outline'}
     size={26}
@@ -15,33 +23,35 @@ const tabBarIcon = ({ tintColor, focused }) => (
   />
 );
 
+const tabBarProfileIcon = ({ tintColor, focused }) => (
+  <Ionicons
+    name={focused ? 'ios-person' : 'ios-person-outline'}
+    size={26}
+    style={{ color: tintColor }}
+  />
+)
+
 const RootNavigator = TabNavigator(
   {
     Home: {
       screen: HomeStack,
       navigationOptions: {
         tabBarLabel: 'Home',
-        tabBarIcon,
+        tabBarIcon: tabBarHomeIcon,
       },
     },
     Map: {
       screen: MapStack,
       navigationOptions: {
         tabBarLabel: 'Map',
-        tabBarIcon,
+        tabBarIcon: tabBarMapIcon,
       },
     },        
     Profile: {
       screen: ProfileStack,
       navigationOptions: {
         tabBarLabel: 'Profile',
-        tabBarIcon: ({ tintColor, focused }) => (
-          <Ionicons
-            name={focused ? 'ios-person' : 'ios-person-outline'}
-            size={26}
-            style={{ color: tintColor }}
-          />
-        )
+        tabBarIcon: tabBarProfileIcon,
       }
     }
   },
@@ -68,7 +78,17 @@ const RootNavigator = TabNavigator(
   }
 );
 
-tabBarIcon.propTypes = {
+tabBarHomeIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired,
+  focused: PropTypes.string.isRequired,
+};
+
+tabBarMapIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired,
+  focused: PropTypes.string.isRequired,
+};
+
+tabBarProfileIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
   focused: PropTypes.string.isRequired,
 };

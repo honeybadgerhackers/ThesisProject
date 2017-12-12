@@ -9,4 +9,4 @@ export default (state = { trips: [], loading: false }, action) => {
     default:
       return state;
   }
-} 
+};
