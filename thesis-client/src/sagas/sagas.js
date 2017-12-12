@@ -113,9 +113,6 @@ const getUserLocationAsync = function* () {
 };
 
 const getUserDirectionsAsync = function* ({ payload: { origin, destination, joinedWaypoints } }) {
-  // const origin = action.payload.origin;
-  // const destination = action.payload.destination;
-  // const joinedWaypoints = action.payload.joinedWaypoints;
 
   try {
       let res;
@@ -142,6 +139,35 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
+const getActiveTripAsync = function* (action) {
+  let filter = {
+    'id_route': 315,
+  };
+  try {
+    const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
+    const activeTripWaypoints = activeTrip.waypoints;
+    yield put({
+      type: 'UPDATE_MAP_REGION',
+      payload: {
+        latitude: Number(activeTripWaypoints[0].lat),
+        longitude: Number(activeTripWaypoints[0].lng),
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+        },
+      });
+
+    const coords = activeTripWaypoints.map(waypoint => {
+      return {
+        latitude: Number(waypoint.lat),
+        longitude: Number(waypoint.lng),
+      };
+    });
+    activeTrip['coords'] = coords;
+    yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });
+  } catch (error) {
+    console.log(error);
+  }
+};
 const createTripAsync = function* (payload) {
   const { payload: waypoints, userId} = payload;
   try {
@@ -248,6 +274,10 @@ const watchGetFavorite = function* () {
 };
 //combine watcher sagas to root saga
 
+const watchGetActiveTrip = function* () {  
+  yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);
+};
+
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
@@ -255,6 +285,7 @@ const rootSaga = function* () {
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
+    watchGetActiveTrip(),
     watchUserTrips(),
     watchUserSessions(),
     watchPostFavorite(),

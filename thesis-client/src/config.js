@@ -1,0 +1,4 @@
+const googleAPIKey = 'AIzaSyCOOtYSaPTBcndnIobK2RjKp6qpLFdnWWY';
+const authToken =
+  "BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJiaWtlTWFwQXBwIiwiYXVkIjoiY3ljbGlzdHMiLCJleHAiOjE1MTI2OTk2MzIsImp0aSI6Im5iWHQyaHVLbG5rZGZOanQiLCJzY29wZSI6ImZ1bGxfYWNjZXNzIiwiYWxnIjoiSFMyNTYiLCJpYXQiOjE1MTI2OTYwMzJ9.L_DNqSHVIiHfRb6Qh9R6kHv9o1EpWKWxewLAUH2ZU_4";
+export {googleAPIKey, authToken}
