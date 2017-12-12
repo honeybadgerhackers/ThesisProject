@@ -148,7 +148,7 @@ const getActiveTripAsync = function* (action) {
     'id_route': 315,
   };
   try {
-    const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
+    const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({
       type: 'UPDATE_MAP_REGION',
