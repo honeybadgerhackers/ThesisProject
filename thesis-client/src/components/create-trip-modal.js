@@ -14,6 +14,7 @@ const ModalView = ({
   cancelTrip,
   googleMapImage,
   tripName,
+  tripData,
   speedCounter,
   avgSpeed,
   rating,
@@ -121,7 +122,7 @@ const ModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveTrip(speedCounter, avgSpeed, rating);
+                    saveTrip({ speedCounter, avgSpeed, rating }, tripData);
                     closeModal();
                   }
                 }}

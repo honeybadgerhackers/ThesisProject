@@ -7,7 +7,8 @@ export default (state = { image: null }, { payload, type }) => {
     case RETRIEVED_MAP_IMAGE:
       return {
         ...state,
-        image: payload,
+        image: payload.mapImage,
+        routeTitle: payload.routeTitle,
        };
     case CREATE_TRIP_CANCELLED:
       return {

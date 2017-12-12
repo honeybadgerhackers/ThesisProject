@@ -18,13 +18,12 @@ export const cancelCreateTrip = () => {
   };
 };
 
-export const createTripSave = (tripStats) => {
+export const createTripSave = (tripStats, tripData) => {
   return {
     type: CREATE_TRIP_SAVE,
     payload: {
-      speedCounter: tripStats.speedCounter,
-      avgSpeed: tripStats.avgSpeed,
-      rating: tripStats.rating,
+      tripStats,
+      tripData,
     },
   };
 };

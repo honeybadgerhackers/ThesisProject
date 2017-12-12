@@ -30,4 +30,4 @@ export const googleDirectionsCall = async (url) => (
 
 export const getGoogleRouteImage = coords => (
   `https://maps.googleapis.com/maps/api/staticmap?size=600x600&path=weight:4|color:red|enc:${coords}&key=${googleAPIKEY}`
-);
+)

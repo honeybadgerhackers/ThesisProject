@@ -49,10 +49,8 @@ export default (state = initialState, { payload, type }) => {
         ...state,
         status: inProgress,
         data: {
-          ...state.data,
-          speedCounter: payload.speedCounter,
-          avgSpeed: payload.avgSpeed,
-          rating: payload.rating,
+          tripStats: payload.tripStats,
+          tripData: payload.tripData,
         },
       };
 

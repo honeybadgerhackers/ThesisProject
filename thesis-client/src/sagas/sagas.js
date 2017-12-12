@@ -179,7 +179,7 @@ const createTripAsync = function* (payload) {
       } = res;
       const routeTitle = `${start_address.split(',')[0]} to ${end_address.split(',')[0]}`;
       const mapImage = yield call(getGoogleRouteImage, points);
-      yield put({ type: RETRIEVED_MAP_IMAGE, payload: mapImage });
+      yield put({ type: RETRIEVED_MAP_IMAGE, payload: { mapImage, routeTitle } });
       yield put({
         type: RETRIEVED_TRIP_DATA, payload: {
           text, routeTitle, via_waypoint, userId,
@@ -191,6 +191,16 @@ const createTripAsync = function* (payload) {
   }
 };
 
+const saveTripAsync = function* (payload) {
+  const { tripData, tripStats } = payload;
+  try {
+    const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
+    yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const loginFlow = function* () {
   while (true) {
     const initiateAction = yield take([INITIATE_LOGIN, INITIATE_LOGIN_DEMO]);
@@ -199,19 +209,6 @@ const loginFlow = function* () {
     const action = yield take([LOGOUT, LOGIN_ERROR]);
 
     if (action.type === LOGOUT) {
-      yield cancel(task);
-    }
-  }
-};
-
-const watchCreateTrip = function* () {
-  while (true) {
-    const initiateAction = yield take(CREATE_TRIP);
-
-    const task = yield fork(createTripAsync, initiateAction);
-    const action = yield take([CREATE_TRIP_CANCELLED, CREATE_TRIP_FAILED]);
-
-    if (action.type === CREATE_TRIP_CANCELLED) {
       yield cancel(task);
     }
   }
@@ -242,6 +239,23 @@ const getUserSessions = function* ({ payload: { userId } }) {
 };
 //watcher saga - listen for actions to be dispatched, will call worker
 
+const watchCreateTrip = function* () {
+  while (true) {
+    const initiateAction = yield take(CREATE_TRIP);
+
+    const task = yield fork(createTripAsync, initiateAction);
+    const action = yield take([CREATE_TRIP_CANCELLED, CREATE_TRIP_FAILED]);
+
+    if (action.type === CREATE_TRIP_CANCELLED) {
+      yield cancel(task);
+    }
+  }
+};
+
+const watchSaveTrip = function* () {
+  yield takeLatest(CREATE_TRIP_SAVE, saveTripAsync);
+};
+
 const watchGetTrips = function* () {
   yield takeEvery(GET_TRIPS, getTripsAsync);
 };
@@ -267,6 +281,7 @@ const rootSaga = function* () {
   yield all([
     watchGetTrips(),
     watchCreateTrip(),
+    watchSaveTrip(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),

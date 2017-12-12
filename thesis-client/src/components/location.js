@@ -28,11 +28,15 @@ class WayPoint extends Component {
     // eslint-disable-next-line
     routeCoords: PropTypes.array,
     mapImage: PropTypes.string,
+    routeTitle: PropTypes.string,
+    newTripData: PropTypes.shape({}),
   }
 
   static defaultProps = {
     routeCoords: [],
     mapImage: null,
+    routeTitle: null,
+    newTripData: null,
   }
 
   state = {
@@ -55,7 +59,6 @@ class WayPoint extends Component {
     avgSpeed: 0,
     visibleModal: 0,
     rating: 0,
-    tripName: 'Julia St to Soniat St',
   };
 
   componentWillMount() {
@@ -65,8 +68,6 @@ class WayPoint extends Component {
           'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
       });
     }
-    // const image = getGoogleRouteImage('cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE');
-    // this.setState({ googleMapImage: image });
   }
 
   componentWillUnmount() {
@@ -81,12 +82,6 @@ class WayPoint extends Component {
   }
 
   _processTrip = () => {
-    this.state.wayPoints.forEach(wayPoint => {
-      setTimeout(() => {
-        this._handleSpeedChange(wayPoint.speed);
-      }, 5);
-    });
-
     const tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
     const origin = tripWayPoints.splice(0, 1).join(',');
     const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
@@ -155,14 +150,12 @@ class WayPoint extends Component {
     // this._handleSpeedChange(speed);
     const wayPoints = this.state.wayPoints.slice();
 
-    // ? location.coords.speed is maybe meters/second, apparently multiplying
-    // ? by 2.2369 will conver to miles per hour. We'll see?
-    this.setState({ speed: location.coords.speed });
     // ! Re-enable 
     // wayPoints.push(wayPoint);
     this.setState({
       wayPoints, localUserLocation: location,
     });
+    this.setState({ speed: location.coords.speed });
   };
 
   _stopTrackLocation = () => {
@@ -218,7 +211,8 @@ class WayPoint extends Component {
           saveTrip={this.props.saveTripDispatch}
           cancelTrip={this.props.cancelTripDispatch}
           googleMapImage={this.props.mapImage}
-          tripName={this.state.tripName}
+          tripName={this.props.routeTitle}
+          tripData={this.props.newTripData}
           speedCounter={this.state.speedCounter}
           avgSpeed={this.state.avgSpeed}
           rating={this.state.rating}
@@ -239,6 +233,8 @@ function mapStateToProps(state) {
     routeCoords: state.routeCoords.coordsArray,
     userId: state.user.id,
     mapImage: state.mapImage.image,
+    routeTitle: state.mapImage.routeTitle,
+    newTripData: state.createTrip.data,
   };
 }
 const mapDispatchToProps = (dispatch) => ({
@@ -251,8 +247,8 @@ const mapDispatchToProps = (dispatch) => ({
   cancelTripDispatch: () => {
     dispatch(cancelCreateTrip());
   },
-  saveTripDispatch: (speedCounter, avgSpeed, rating) => {
-    dispatch(createTripSave({ speedCounter, avgSpeed, rating }));
+  saveTripDispatch: (tripStats, tripData) => {
+    dispatch(createTripSave(tripStats, tripData));
   },
 });
 
