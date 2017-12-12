@@ -1,9 +1,12 @@
-import { TRIP_SELECTED } from '../constants';
-
-export default (trip, cb) => {
+export const getActiveTrip = (trip, cb) => {
   cb();
   return {
-    type: TRIP_SELECTED,
+    type: "GET_ACTIVE_TRIP",
     payload: trip,
   };
 };
+
+export const clearActiveTrip = () => {
+  return {type: "CLEAR_ACTIVE_TRIP"};
+};
+

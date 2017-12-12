@@ -35,6 +35,9 @@ import {
   GET_USER_SESSIONS,
   GET_DIRECTIONS,
   GET_USER_LOCATION,
+  POST_FAVORITE,
+  GET_USER_FAVORITES_SUCCESS,
+  GET_USER_FAVORITES,
   } from '../constants';
 import { googleAPIKEY } from '../../config';
 
@@ -114,9 +117,6 @@ const getUserLocationAsync = function* () {
 };
 
 const getUserDirectionsAsync = function* ({ payload: { origin, destination, joinedWaypoints } }) {
-  // const origin = action.payload.origin;
-  // const destination = action.payload.destination;
-  // const joinedWaypoints = action.payload.joinedWaypoints;
 
   try {
       let res;
@@ -143,6 +143,35 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
     }
 };
 
+const getActiveTripAsync = function* (action) {
+  let filter = {
+    'id_route': 315,
+  };
+  try {
+    const activeTrip = yield call(dbSecureGET, 'route&location', JSON.stringify(filter));
+    const activeTripWaypoints = activeTrip.waypoints;
+    yield put({
+      type: 'UPDATE_MAP_REGION',
+      payload: {
+        latitude: Number(activeTripWaypoints[0].lat),
+        longitude: Number(activeTripWaypoints[0].lng),
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+        },
+      });
+
+    const coords = activeTripWaypoints.map(waypoint => {
+      return {
+        latitude: Number(waypoint.lat),
+        longitude: Number(waypoint.lng),
+      };
+    });
+    activeTrip['coords'] = coords;
+    yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });
+  } catch (error) {
+    console.log(error);
+  }
+};
 const createTripAsync = function* (payload) {
   const {
     payload: {
@@ -193,13 +222,11 @@ const createTripAsync = function* (payload) {
 
 const saveTripAsync = function* ({payload}) {
   const { tripData, tripStats } = payload;
-  console.log(payload);
   try {
     const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
-    console.log(result);
     yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -221,7 +248,7 @@ const getUserTrips = function* ({ payload: { userId } }) {
     id_user_account: userId,
   };
   try {
-  const userTripRequest = yield call(dbSecureGET, 'route', JSON.stringify(filter));
+  const userTripRequest = yield call(dbSecureGET, 'route', filter);
     yield put({type: GET_USER_TRIPS_SUCCESS, payload: userTripRequest});
   } catch (error) {
     console.error(error);
@@ -233,8 +260,33 @@ const getUserSessions = function* ({ payload: { userId } }) {
     id_user_account: userId,
   };
   try {
-  const userSessionRequest = yield call(dbSecureGET, 'session', JSON.stringify(filter));
+  const userSessionRequest = yield call(dbSecureGET, 'session', filter);
     yield put({type: GET_USER_SESSIONS_SUCCESS, payload: userSessionRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const postFavorite = function* ({payload: {userId, routeId}}) {
+  try {
+    const data = {
+      id_user_account: userId,
+      id_route: routeId,
+    };
+    const favoritePostRequest = yield call(dbSecurePOST, 'favorite', data);
+    console.info(favoritePostRequest);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getFavorite = function* ({payload: {userId}}) {
+  try {
+    const filter = {
+      "favorite.id_user_account": userId,
+    };
+    const userFavorites = yield call(dbSecureGET, 'favorite', filter);
+    yield put({type: GET_USER_FAVORITES_SUCCESS, payload: userFavorites});
   } catch (error) {
     console.error(error);
   }
@@ -277,7 +329,19 @@ const watchUserTrips = function* () {
 const watchUserSessions = function* () {
   yield takeLatest(GET_USER_SESSIONS, getUserSessions);
 };
+
+const watchPostFavorite = function* () {
+  yield takeEvery(POST_FAVORITE, postFavorite);
+};
+
+const watchGetFavorite = function* () {
+  yield takeLatest(GET_USER_FAVORITES, getFavorite);
+};
 //combine watcher sagas to root saga
+
+const watchGetActiveTrip = function* () {  
+  yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);
+};
 
 const rootSaga = function* () {
   yield all([
@@ -287,9 +351,12 @@ const rootSaga = function* () {
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
+    watchGetActiveTrip(),
     watchUserTrips(),
     watchUserSessions(),
+    watchPostFavorite(),
+    watchGetFavorite(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions};
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite };

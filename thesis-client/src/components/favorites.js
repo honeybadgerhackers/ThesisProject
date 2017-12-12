@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import mapIcon from '../assets/icons/mapIcon.png';
 
-const Trip = ({ navigate, trips, showTripLocation }) => {
+const Favorite = ({ navigate, favorites, showTripLocation }) => {
   const goToMap = () => {
     navigate('Map');
   };
-  const createTrip = () => trips.map(trip => (
+
+  const createTrip = () => favorites.map(trip => (
     <TouchableOpacity
       key={trip.id}
       onPress={() => showTripLocation(trip, goToMap)}
@@ -30,9 +31,9 @@ const Trip = ({ navigate, trips, showTripLocation }) => {
   return <View>{createTrip()}</View>;
 };
 
-Trip.propTypes = {
+Favorite.propTypes = {
   navigate: PropTypes.func.isRequired,
-  trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   showTripLocation: PropTypes.func.isRequired,
 };
 
@@ -98,5 +99,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Trip;
+export default Favorite;
 

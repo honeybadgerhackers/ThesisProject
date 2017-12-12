@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Platform, Text, View, StyleSheet, Button, Alert } from 'react-native';
-import { MapView, Constants, Location } from 'expo';
+import { Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
-import Polyline from "@mapbox/polyline";
-// import { join } from 'redux-saga/effects';
 import CreateTripModal from './create-trip-modal';
+import Stats from '../components/routeStats-component';
 import getDirections from '../actions/getDirections-action';
 import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-trip-action';
 import { createPolyline } from '../utilities/processors';
-import { juliaToSoniat } from '../testing/long-route';
-
 
 const starIcons = {
   filled: require('../assets/icons/star_filled.png'),
@@ -23,6 +20,12 @@ class WayPoint extends Component {
     createTripDispatch: PropTypes.func.isRequired,
     saveTripDispatch: PropTypes.func.isRequired,
     cancelTripDispatch: PropTypes.func.isRequired,
+    clearActiveTrip: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
+    activeTrip: PropTypes.shape({
+      route_name: PropTypes.string.isRequired,
+      coords: PropTypes.string.isRequired,
+    }),
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
     // eslint-disable-next-line
@@ -31,8 +34,8 @@ class WayPoint extends Component {
     routeTitle: PropTypes.string,
     newTripData: PropTypes.shape({}),
   }
-
   static defaultProps = {
+    activeTrip: {},
     routeCoords: [],
     mapImage: null,
     routeTitle: null,
@@ -42,33 +45,19 @@ class WayPoint extends Component {
   state = {
     localUserLocation: null,
     speed: null,
-    errorMessage: null,
     disableButton: false,
     followUserLocation: false,
     showsUserLocation: true,
-    // ! Switch back to array 
-    wayPoints: juliaToSoniat,
-    // [
-      // { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
-      // { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
-      // { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
-      // { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
-    // ],
+    wayPoints: [],
     speedCounter: 1,
     topSpeed: 0,
     avgSpeed: 0,
     visibleModal: 0,
     rating: 0,
+    buttonStart: true,
+    secondCounter: 0,
+    minuteCounter: 0,
   };
-
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage:
-          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    }
-  }
 
   componentWillUnmount() {
     if (this.track) {
@@ -91,36 +80,22 @@ class WayPoint extends Component {
   }
 
   _getDirections = async (origin, destination, joinedWaypoints) => {
-  if (!origin) {
-    let filteredWayPoints;
-    const wayPointsObjects = this.state.wayPoints;
-    const wayPoints = wayPointsObjects.map(wayPoint => [wayPoint.lat, wayPoint.lng]);
-
-    origin = wayPoints.splice(0, 1).join(',');
-    destination = wayPoints.splice(wayPoints.length - 1, 1).join(',');
-    if (wayPoints.length > 23) {
-      const interval = Math.floor(wayPoints.length / 23);
-      const indicesToSave = Array(23).fill(interval);
-
-      for (let i = 1; i < indicesToSave.length; i++) {
-        indicesToSave[i] = indicesToSave[i - 1] + indicesToSave[i];
-      }
-
-      filteredWayPoints = wayPoints.filter((wayPoint, index) => {
-        if (indicesToSave.indexOf(index) > - 1) {
-          return true;
-        }
-        return false;
-      });
+    if (!origin) {
+      const wayPointsObjects = this.state.wayPoints;
+      const wayPoints = wayPointsObjects.map((wayPoint) =>
+        Object.values(wayPoint).join());
+      origin = wayPoints.splice(0, 1);
+      destination = wayPoints.splice(wayPoints.length - 1, 1);
+      joinedWaypoints = wayPoints.join("|");
     }
-
-    joinedWaypoints = filteredWayPoints ? Polyline.encode(filteredWayPoints) : Polyline.encode(wayPoints);
-  }
     this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
   };
 
   _trackLocationAsync = async () => {
-    this.setState({ disableButton: true, followUserLocation: true });
+    this.setState({
+      buttonStart: !this.state.buttonStart,
+      followUserLocation: true,
+    });
     this.track = await Location.watchPositionAsync(
       { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
       this._handlePositionChange,
@@ -134,38 +109,73 @@ class WayPoint extends Component {
     this.setState({
       topSpeed: speed > topSpeed ? speed : topSpeed,
       avgSpeed: Math.round(((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter) * 100) / 100,
+      speedCounter: speedCounter + 1,
+      speed,
     });
-    this.setState({ speedCounter: speedCounter + 1 });
   }
 
   _handlePositionChange = async (location) => {
-    // ! Re-enable 
-    // const wayPoint = {
-      //   lat: location.coords.latitude,
-      //   lng: location.coords.longitude,
-      //   speed: location.coords.speed,
-      //   timestamp: location.timestamp,
-      // };
+    const wayPoint = {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+        speed: location.coords.speed,
+        timestamp: location.timestamp,
+      };
 
-    // this._handleSpeedChange(speed);
+    this._handleSpeedChange(location.coords.speed);
     const wayPoints = this.state.wayPoints.slice();
-
-    // ! Re-enable 
-    // wayPoints.push(wayPoint);
+    wayPoints.push(wayPoint);
     this.setState({
-      wayPoints, localUserLocation: location,
+      wayPoints,
     });
-    this.setState({ speed: location.coords.speed });
+    // this.setState({ speed: location.coords.speed });
   };
 
   _stopTrackLocation = () => {
     if (this.track) {
       this.track.remove();
-      this.setState({ disableButton: false, followUserLocation: false });
+      this.setState({
+        buttonStart: !this.state.buttonStart,
+        followUserLocation: false,
+      });
     }
     this._processTrip();
     this.setState({ visibleModal: 1 });
   };
+
+  goToHomeScreen() {
+    this.props.clearActiveTrip();
+    this.props.navigate("Home");
+  }
+
+  customTripStartOrEnd = () => {
+      if (this.state.buttonStart) {
+        this._trackLocationAsync();
+        this.startTimer();
+      } else {
+      this._stopTrackLocation();
+      Alert.alert(
+        'Save',
+        'Would you like to save this trip to your routes?',
+        [
+          { text: 'No', onPress: () => console.log('pressed no', this.props.userId)},
+          {
+            text: 'Yes',
+            onPress: () => this.props.createTripDispatch(this.state.wayPoints, this.props.userId),
+          },
+        ]
+      );
+    }
+  };
+  startTimer = () => {
+    setInterval(() => {
+      this.setState({secondCounter: this.state.secondCounter + 1});
+      if (this.state.secondCounter % 60 === 0) {
+        this.setState({minuteCounter: this.state.minuteCounter + 1});
+        this.setState({secondCounter: 0});
+      }
+    }, 1000);
+  }
 
   openRatingModal = () => {
     this.setState({ visibleModal: 2 });
@@ -176,55 +186,100 @@ class WayPoint extends Component {
   }
 
   render() {
-    let text = 'Waiting..';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.localUserLocation) {
-      text = JSON.stringify(this.state.localUserLocation);
-    }
-    return (
-      <View style={styles.container}>
-        <MapView
-          style={{ flex: 7 }}
-          initialRegion={this.props.mapRegion}
-          showsUserLocation={this.state.showsUserLocation}
-          followsUserLocation={this.state.followUserLocation}
-        >
-          <MapView.Polyline
-            coordinates={this.props.routeCoords}
-            strokeWidth={2}
-            strokeColor="red"
+    const {secondCounter, minuteCounter} = this.state;
+
+    if (this.props.activeTrip.route_name === undefined) {
+      return (
+        <View style={styles.container}>
+          <MapView
+            provider="google"
+            style={styles.map}
+            region={this.props.mapRegion}
+            showsUserLocation={this.state.showsUserLocation}
+            followsUserLocation={this.state.followUserLocation}
+          >
+            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            <MapView.Polyline
+              coordinates={this.props.routeCoords}
+              strokeWidth={3}
+              strokeColor="red"
+            />
+            {/* )} */}
+          </MapView>
+          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                this.customTripStartOrEnd()
+              }
+            >
+              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
+            </TouchableOpacity>
+          </View>
+          <CreateTripModal
+            visibleModal={this.state.visibleModal}
+            saveTrip={this.props.saveTripDispatch}
+            cancelTrip={this.props.cancelTripDispatch}
+            googleMapImage={this.props.mapImage}
+            tripName={this.props.routeTitle}
+            tripData={this.props.newTripData}
+            speedCounter={this.state.speedCounter}
+            avgSpeed={this.state.avgSpeed}
+            rating={this.state.rating}
+            closeModal={this.closeModal}
+            openRatingModal={this.openRatingModal}
+            setRating={this.setRating}
+            starIcons={starIcons}
           />
-        </MapView>
-        <View style={{ flex: 3 }}>
-          <Button
-            disabled={this.state.disableButton}
-            title="Watch Location"
-            onPress={this._trackLocationAsync}
-          />
-          <Button title="Stop Watching" onPress={this._stopTrackLocation} />
-          <Text style={styles.paragraph}>Speed: {this.state.speed}</Text>
-          <Text style={styles.paragraph}>{text}</Text>
         </View>
-        <CreateTripModal
-          visibleModal={this.state.visibleModal}
-          saveTrip={this.props.saveTripDispatch}
-          cancelTrip={this.props.cancelTripDispatch}
-          googleMapImage={this.props.mapImage}
-          tripName={this.props.routeTitle}
-          tripData={this.props.newTripData}
-          speedCounter={this.state.speedCounter}
-          avgSpeed={this.state.avgSpeed}
-          rating={this.state.rating}
-          closeModal={this.closeModal}
-          openRatingModal={this.openRatingModal}
-          setRating={this.setRating}
-          starIcons={starIcons}
-        />
-      </View>
       );
+    } else {
+      return (
+        <View style={styles.container}>
+          <MapView
+            provider="google"
+            style={styles.map}
+            region={this.props.mapRegion}
+            showsUserLocation={this.state.showsUserLocation}
+            followsUserLocation={this.state.followUserLocation}
+          >
+            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            <MapView.Polyline
+              coordinates={this.props.activeTrip.coords}
+              strokeWidth={3}
+              strokeColor="red"
+            />
+            {/* )} */}
+          </MapView>
+          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+
+          <View style={styles.cancelButtonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                this.setState({
+                  // buttonStartStop: !this.state.buttonStartStop,
+                })
+              }
+            >
+              <Text>{this.state.buttonStartStop ? "End" : "Start"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => this.goToHomeScreen()
+              }
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
   }
 }
+
 
 function mapStateToProps(state) {
   return {
@@ -255,10 +310,35 @@ const mapDispatchToProps = (dispatch) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "space-between",
+    alignItems: "stretch",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
   paragraph: {
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
+  },
+  cancelButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    borderRadius: 20,
+    padding: 12,
+    width: 160,
+    marginBottom: 5,
   },
 });
 
