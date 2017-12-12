@@ -5,7 +5,7 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { getRedirectUrl, facebookAuth, googleDirectionsCall } from '../utilities/api-calls';
+import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
 import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
@@ -16,6 +16,12 @@ import {
   ENABLE_LOGIN,
   DISABLE_LOGIN,
   CREATE_TRIP,
+  CREATE_TRIP_SAVE,
+  CREATE_TRIP_SUCCESS,
+  CREATE_TRIP_FAILED,
+  CREATE_TRIP_CANCELLED,
+  RETRIEVED_MAP_IMAGE,
+  RETRIEVED_TRIP_DATA,
   demoUser,
   GET_TRIPS_SUCCESS,
   GET_USER_LOCATION_SUCCESS,
@@ -31,7 +37,6 @@ import {
   GET_USER_LOCATION,
   } from '../constants';
 import { googleAPIKEY } from '../../config';
-
 
 const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
@@ -80,7 +85,7 @@ const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
 
-    yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
+    // yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
@@ -139,19 +144,48 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 };
 
 const createTripAsync = function* (payload) {
-  const { payload: origin, destination, waypoints, userId} = payload;
+  const {
+    payload: {
+      origin,
+      destination,
+      wayPoints,
+      userId,
+    },
+  } = payload;
   try {
-    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
+    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });)
     const res = yield call(
       googleDirectionsCall,
-      `https://maps.googleapis.com/maps/api/directions/json?
-      &mode=bicycling
-      &origin=${origin}
-      &destination=${destination}
-      &waypoints=via:enc:${waypoints}:
-      &key=${googleAPIKEY}`
+      'https://maps.googleapis.com/maps/api/directions/json?' +
+      '&mode=bicycling' +
+      `&origin=${origin}` +
+      `&destination=${destination}` +
+      `&waypoints=via:enc:${wayPoints}:` +
+      `&key=${googleAPIKEY}`
     );
-    console.log(res);
+    if (res.status === 200) {
+      const {
+        data: {
+          routes: [{
+            legs: [{
+              distance: { text },
+              end_address,
+              start_address,
+              via_waypoint,
+            }],
+            overview_polyline: { points },
+          }],
+        },
+      } = res;
+      const routeTitle = `${start_address.split(',')[0]} to ${end_address.split(',')[0]}`;
+      const mapImage = yield call(getGoogleRouteImage, points);
+      yield put({ type: RETRIEVED_MAP_IMAGE, payload: mapImage });
+      yield put({
+        type: RETRIEVED_TRIP_DATA, payload: {
+          text, routeTitle, via_waypoint, userId,
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -171,7 +205,16 @@ const loginFlow = function* () {
 };
 
 const watchCreateTrip = function* () {
-  yield takeLatest(CREATE_TRIP, createTripAsync);
+  while (true) {
+    const initiateAction = yield take(CREATE_TRIP);
+
+    const task = yield fork(createTripAsync, initiateAction);
+    const action = yield take([CREATE_TRIP_CANCELLED, CREATE_TRIP_FAILED]);
+
+    if (action.type === CREATE_TRIP_CANCELLED) {
+      yield cancel(task);
+    }
+  }
 };
 
 const getUserTrips = function* ({ payload: { userId } }) {

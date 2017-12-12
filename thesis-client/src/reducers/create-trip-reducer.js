@@ -1,7 +1,9 @@
 import {
   CREATE_TRIP,
+  CREATE_TRIP_SAVE,
   CREATE_TRIP_SUCCESS,
   CREATE_TRIP_FAILED,
+  RETRIEVED_TRIP_DATA,
   inactive,
   inProgress,
   success,
@@ -31,7 +33,30 @@ export default (state = initialState, { payload, type }) => {
         ...state,
         status: failed,
       };
+    case RETRIEVED_TRIP_DATA:
+      return {
+        ...state,
+        status: inProgress,
+        data: {
+          routeTitle: payload.routeTitle,
+          distance: payload.text,
+          wayPoints: payload.via_waypoint,
+          userId: payload.userId,
+        },
+      };
+    case CREATE_TRIP_SAVE:
+      return {
+        ...state,
+        status: inProgress,
+        data: {
+          ...state.data,
+          speedCounter: payload.speedCounter,
+          avgSpeed: payload.avgSpeed,
+          rating: payload.rating,
+        },
+      };
+
     default:
       return state;
   }
-}
+};

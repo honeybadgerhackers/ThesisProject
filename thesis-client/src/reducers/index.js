@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import trips from './trips-reducer';
 import activeTrip from './active-trip-reducer';
 import createTrip from './create-trip-reducer';
+import mapImage from './map-image-reducer';
 import user from './user-reducer';
 import navigation from './navigation-reducer';
 import loginButton from './login-button-reducer';
@@ -10,7 +11,6 @@ import mapRegion from './map-region-reducer';
 import routeCoords from './update-route-coords';
 import userRoutes from './user-route-reducer';
 import userSessions from './user-session-reducer';
-
 
 export default combineReducers({
   userRoutes,
@@ -21,6 +21,7 @@ export default combineReducers({
   trips,
   activeTrip,
   createTrip,
+  mapImage,
   user,
   navigation,
   loginButton,

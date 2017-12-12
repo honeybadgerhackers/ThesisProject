@@ -7,10 +7,9 @@ import Polyline from "@mapbox/polyline";
 // import { join } from 'redux-saga/effects';
 import CreateTripModal from './create-trip-modal';
 import getDirections from '../actions/getDirections-action';
-import createTrip from '../actions/create-trip-action';
+import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-trip-action';
 import { createPolyline } from '../utilities/processors';
 import { juliaToSoniat } from '../testing/long-route';
-import { getGoogleRouteImage } from '../utilities/api-calls';
 
 
 const starIcons = {
@@ -22,14 +21,18 @@ class WayPoint extends Component {
   static propTypes = {
     getDirectionsSaga: PropTypes.func.isRequired,
     createTripDispatch: PropTypes.func.isRequired,
+    saveTripDispatch: PropTypes.func.isRequired,
+    cancelTripDispatch: PropTypes.func.isRequired,
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
     // eslint-disable-next-line
     routeCoords: PropTypes.array,
+    mapImage: PropTypes.string,
   }
 
   static defaultProps = {
     routeCoords: [],
+    mapImage: null,
   }
 
   state = {
@@ -47,11 +50,10 @@ class WayPoint extends Component {
       // { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
       // { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
     // ],
-    speedCounter: 0,
+    speedCounter: 1,
     topSpeed: 0,
     avgSpeed: 0,
     visibleModal: 0,
-    googleMapImage: null,
     rating: 0,
     tripName: 'Julia St to Soniat St',
   };
@@ -63,8 +65,8 @@ class WayPoint extends Component {
           'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
       });
     }
-    const image = getGoogleRouteImage('cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE');
-    this.setState({ googleMapImage: image });
+    // const image = getGoogleRouteImage('cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE');
+    // this.setState({ googleMapImage: image });
   }
 
   componentWillUnmount() {
@@ -78,18 +80,19 @@ class WayPoint extends Component {
     this.setState({ rating: selectedRating });
   }
 
-  processTrip = () => {
-    let tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
-    const { speedCounter, avgSpeed, rating } = this.state;
-    const tripStats = {
-      speedCounter,
-      avgSpeed,
-      rating,
-    };
+  _processTrip = () => {
+    this.state.wayPoints.forEach(wayPoint => {
+      setTimeout(() => {
+        this._handleSpeedChange(wayPoint.speed);
+      }, 5);
+    });
+
+    const tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
     const origin = tripWayPoints.splice(0, 1).join(',');
     const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
     const joinedWayPoints = createPolyline(tripWayPoints);
-    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId, tripStats);
+
+    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId);
   }
 
   _getDirections = async (origin, destination, joinedWaypoints) => {
@@ -129,14 +132,15 @@ class WayPoint extends Component {
     );
   };
 
-  _handleSpeedChange = async (speed) => {
-    const { state: {topSpeed, avgSpeed, speedCounter }} = this;
+  _handleSpeedChange = (speedMetersPerSecond) => {
+    const { topSpeed, avgSpeed, speedCounter } = this.state;
+    const speed = speedMetersPerSecond * 2.2369;
     const currentSpeed = speed < 0 ? 0 : Math.round(speed * 100) / 100;
-    this.setState({ speedCounter: speedCounter + 1 });
     this.setState({
       topSpeed: speed > topSpeed ? speed : topSpeed,
-      avgSpeed: Math.round((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter),
+      avgSpeed: Math.round(((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter) * 100) / 100,
     });
+    this.setState({ speedCounter: speedCounter + 1 });
   }
 
   _handlePositionChange = async (location) => {
@@ -153,7 +157,7 @@ class WayPoint extends Component {
 
     // ? location.coords.speed is maybe meters/second, apparently multiplying
     // ? by 2.2369 will conver to miles per hour. We'll see?
-    this.setState({ speed: location.coords.speed * 2.2369 });
+    this.setState({ speed: location.coords.speed });
     // ! Re-enable 
     // wayPoints.push(wayPoint);
     this.setState({
@@ -166,7 +170,7 @@ class WayPoint extends Component {
       this.track.remove();
       this.setState({ disableButton: false, followUserLocation: false });
     }
-    this._getDirections();
+    this._processTrip();
     this.setState({ visibleModal: 1 });
   };
 
@@ -211,8 +215,13 @@ class WayPoint extends Component {
         </View>
         <CreateTripModal
           visibleModal={this.state.visibleModal}
-          googleMapImage={this.state.googleMapImage}
+          saveTrip={this.props.saveTripDispatch}
+          cancelTrip={this.props.cancelTripDispatch}
+          googleMapImage={this.props.mapImage}
           tripName={this.state.tripName}
+          speedCounter={this.state.speedCounter}
+          avgSpeed={this.state.avgSpeed}
+          rating={this.state.rating}
           closeModal={this.closeModal}
           openRatingModal={this.openRatingModal}
           setRating={this.setRating}
@@ -229,6 +238,7 @@ function mapStateToProps(state) {
     mapRegion: state.mapRegion,
     routeCoords: state.routeCoords.coordsArray,
     userId: state.user.id,
+    mapImage: state.mapImage.image,
   };
 }
 const mapDispatchToProps = (dispatch) => ({
@@ -237,6 +247,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   createTripDispatch: (origin, destination, waypoints, userId) => {
     dispatch(createTrip(origin, destination, waypoints, userId));
+  },
+  cancelTripDispatch: () => {
+    dispatch(cancelCreateTrip());
+  },
+  saveTripDispatch: (speedCounter, avgSpeed, rating) => {
+    dispatch(createTripSave({ speedCounter, avgSpeed, rating }));
   },
 });
 
