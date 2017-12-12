@@ -5,7 +5,11 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
+<<<<<<< 348b3ae5fd3dce8800b8f28cd08cc4549454bb17
 import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
+=======
+import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
+>>>>>>> (add) method for retrieving routes by distance
 import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
@@ -84,11 +88,36 @@ const authorizeUser = function* (params) {
   }
 };
 
-const getTripsAsync = function* () {
+const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
   try {
-    const tripsRequest = yield call(dbSecureGET, 'route');
+    const filter = {
+      lat: latitude,
+      lng: longitude,
+    };
+    const tripsRequest = yield call(dbSecureGET, 'routenearby', filter);
 
-    yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
+    const unique = (arr) => {
+      const result = [];
+      arr.reduce((prev, current) => {
+        if (!prev[current.id_route]) {
+          result.push(current);
+          prev[current.id] = true;
+        }
+        return prev;
+      }, {});
+      return result;
+    };
+
+    const uniqueTrips = unique(tripsRequest);
+
+    const mappedClosest = uniqueTrips.map((e) => {
+      e.distance = Math.sqrt((latitude - e.lat) ** 2 + (longitude - e.lng) ** 2);
+      return e;
+    }).sort((a, b) => a.distance - b.distance);
+
+    console.log(mappedClosest);
+
+    yield put({ type: GET_TRIPS_SUCCESS, payload: mappedClosest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
@@ -311,7 +340,7 @@ const watchSaveTrip = function* () {
 };
 
 const watchGetTrips = function* () {
-  yield takeEvery(GET_TRIPS, getTripsAsync);
+  yield takeEvery(GET_USER_LOCATION_SUCCESS, getTripsAsync);
 };
 
 const watchGetUserLocation = function* () {
