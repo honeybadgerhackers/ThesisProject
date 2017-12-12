@@ -84,11 +84,34 @@ const authorizeUser = function* (params) {
   }
 };
 
-const getTripsAsync = function* () {
+const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
   try {
-    const tripsRequest = yield call(dbSecureGET, 'route');
+    const filter = {
+      lat: latitude,
+      lng: longitude,
+    };
+    const tripsRequest = yield call(dbSecureGET, 'routenearby', filter);
 
-    yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
+    const unique = (arr) => {
+      const result = [];
+      arr.reduce((prev, current) => {
+        if (!prev[current.id_route]) {
+          result.push(current);
+          prev[current.id] = true;
+        }
+        return prev;
+      }, {});
+      return result;
+    };
+
+    const uniqueTrips = unique(tripsRequest);
+
+    const mappedClosest = uniqueTrips.map((e) => {
+      e.distance = Math.sqrt((latitude - e.lat) ** 2 + (longitude - e.lng) ** 2);
+      return e;
+    }).sort((a, b) => a.distance - b.distance);
+
+    yield put({ type: GET_TRIPS_SUCCESS, payload: mappedClosest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
@@ -147,7 +170,11 @@ const getActiveTripAsync = function* (action) {
   let filter = {
     'id_route': 315,
   };
+<<<<<<< HEAD
   try { 
+=======
+  try {
+>>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({
@@ -307,7 +334,7 @@ const watchSaveTrip = function* () {
 };
 
 const watchGetTrips = function* () {
-  yield takeEvery(GET_TRIPS, getTripsAsync);
+  yield takeEvery(GET_USER_LOCATION_SUCCESS, getTripsAsync);
 };
 
 const watchGetUserLocation = function* () {

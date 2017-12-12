@@ -60,6 +60,10 @@ class WayPoint extends Component {
     minuteCounter: 0,
   };
 
+  componentDidMount = () => {
+    this.setState({ followUserLocation: false })
+  }
+
   componentWillUnmount() {
     if (this.track) {
       this.track.remove();
@@ -129,7 +133,6 @@ class WayPoint extends Component {
     this.setState({
       wayPoints,
     });
-    // this.setState({ speed: location.coords.speed });
   };
 
   _stopTrackLocation = () => {
@@ -191,10 +194,16 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
+<<<<<<< HEAD
             followsUserLocation={this.state.followUserLocation}
             region={this.props.mapRegion}
             provider="google"
             style={styles.map}
+=======
+            // provider="google"
+            style={styles.map}
+            // initialRegion={this.props.mapRegion}
+>>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
             showsUserLocation={this.state.showsUserLocation}
           >
             {this.props.activeTrip.coords !== undefined && (

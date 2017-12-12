@@ -3,8 +3,8 @@ import { View, ScrollView, Platform, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
-import { getActiveTrip } from '../actions/activeTrip-action';
 import Swiper from 'react-native-swiper';
+import { getActiveTrip } from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
 import { getUserFavorites } from '../actions/getUserInfo-action';
@@ -28,7 +28,7 @@ class HomeScreen extends Component {
     user: PropTypes.object.isRequired,
     getUserLocation: PropTypes.func.isRequired,
     getUserFavorites: PropTypes.func.isRequired,
-    getAllTrips: PropTypes.func.isRequired,
+    // getAllTrips: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -43,7 +43,7 @@ class HomeScreen extends Component {
     this.props.getUserLocation();
     this._loadAssetsAsync();
     this.props.getUserFavorites(this.props.user.id);
-    this.props.getAllTrips();
+    // this.props.getAllTrips(this.props.userLocation.coords);
   }
 
   _loadAssetsAsync = async () => {
@@ -54,9 +54,14 @@ class HomeScreen extends Component {
 
   render() {
     const {
+<<<<<<< HEAD
       navigation: { navigate }, trips, showTripLocation, favorites,
     } = this.props;
   console.log(favorites);
+=======
+   navigation: { navigate }, trips, showTripLocation, favorites, userLocation,
+  } = this.props;
+>>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
     return (
       <Swiper
         style={styles.wrapper}
@@ -93,9 +98,10 @@ class HomeScreen extends Component {
 
 function mapStateToProps(state) {
   return {
+    userLocation: state.userLocation,
     user: state.user,
-    trips: state.trips.trips.slice(0, 10),
     favorites: state.favorites.favorites,
+    trips: state.trips.trips,
   };
 }
 
@@ -103,9 +109,9 @@ const mapDispatchToProps = dispatch => ({
   showTripLocation: (trip, cb) => {
     dispatch(getActiveTrip(trip, cb));
   },
-  getAllTrips: () => {
-    dispatch(getTrips());
-  },
+  // getAllTrips: (coords) => {
+  //   dispatch(getTrips(coords));
+  // },
   getUserLocation: () => {
     dispatch(getUserLocation());
   },

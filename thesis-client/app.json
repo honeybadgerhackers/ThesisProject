@@ -3,7 +3,7 @@
     "name": "Bike Map",
     "description": "Thesis Project",
     "orientation": "portrait",
-    "sdkVersion": "22.0.0",
+    "sdkVersion": "23.0.0",
     "icon": "./src/assets/icons/bikeIcon.png",
     "loading": {
       "icon": "./src/assets/images/bikemap_logo.png",
