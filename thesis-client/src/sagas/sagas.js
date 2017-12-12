@@ -5,11 +5,7 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-<<<<<<< 348b3ae5fd3dce8800b8f28cd08cc4549454bb17
 import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
-=======
-import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
->>>>>>> (add) method for retrieving routes by distance
 import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
