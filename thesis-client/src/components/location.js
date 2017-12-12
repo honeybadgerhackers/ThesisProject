@@ -46,7 +46,8 @@ class WayPoint extends Component {
     localUserLocation: null,
     speed: null,
     disableButton: false,
-    followUserLocation: true,
+    followUserLocationCustom: true,
+    followUserLocation: false,
     showsUserLocation: true,
     wayPoints: [],
     speedCounter: 1,
@@ -61,13 +62,13 @@ class WayPoint extends Component {
   };
 
   componentDidMount = () => {
-    this.setState({ followUserLocation: false });
+    // this.setState({ followUserLocation: false });
   }
 
   componentWillUnmount() {
     if (this.track) {
       this.track.remove();
-      this.setState({ disableButton: false, followUserLocation: false });
+      this.setState({ followUserLocation: false });
     }
   }
 
@@ -99,7 +100,7 @@ class WayPoint extends Component {
   _trackLocationAsync = async () => {
     this.setState({
       buttonStart: !this.state.buttonStart,
-      followUserLocation: true,
+      followUserLocationCustom: true,
     });
     this.track = await Location.watchPositionAsync(
       { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
@@ -140,7 +141,7 @@ class WayPoint extends Component {
       this.track.remove();
       this.setState({
         buttonStart: !this.state.buttonStart,
-        followUserLocation: false,
+        // followUserLocation: false,
       });
     }
     clearInterval(this.state.timer);
@@ -194,11 +195,10 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
-            // provider="google"
             style={styles.map}
-            // initialRegion={this.props.mapRegion}
+            // region={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
-            followsUserLocation={this.state.followUserLocation}
+            followsUserLocation={this.state.followUserLocationCustom}
           >
             {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
@@ -240,7 +240,6 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
-            provider="google"
             style={styles.map}
             region={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
@@ -255,7 +254,6 @@ class WayPoint extends Component {
             )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
-
           <View style={styles.cancelButtonContainer}>
             <TouchableOpacity
               style={styles.button}

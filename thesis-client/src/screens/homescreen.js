@@ -20,7 +20,7 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    header: null
+    header: null,
   });
 
   static propTypes = {
@@ -54,14 +54,8 @@ class HomeScreen extends Component {
 
   render() {
     const {
-<<<<<<< HEAD
-      navigation: { navigate }, trips, showTripLocation, favorites,
-    } = this.props;
-  console.log(favorites);
-=======
    navigation: { navigate }, trips, showTripLocation, favorites, userLocation,
   } = this.props;
->>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
     return (
       <Swiper
         style={styles.wrapper}
