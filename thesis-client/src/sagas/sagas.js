@@ -1,4 +1,3 @@
-import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
@@ -6,8 +5,8 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { getRedirectUrl, facebookAuth } from '../utilities/api-calls';
-import { 
+import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
+import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
   LOGIN,
@@ -17,6 +16,12 @@ import {
   ENABLE_LOGIN,
   DISABLE_LOGIN,
   CREATE_TRIP,
+  CREATE_TRIP_SAVE,
+  CREATE_TRIP_SUCCESS,
+  CREATE_TRIP_FAILED,
+  CREATE_TRIP_CANCELLED,
+  RETRIEVED_MAP_IMAGE,
+  RETRIEVED_TRIP_DATA,
   demoUser,
   GET_TRIPS_SUCCESS,
   GET_USER_LOCATION_SUCCESS,
@@ -35,7 +40,6 @@ import {
   GET_USER_FAVORITES,
   } from '../constants';
 import { googleAPIKEY } from '../../config';
-
 
 const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
@@ -116,12 +120,12 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 
   try {
       let res;
-      if (!joinedWaypoints) {
-        res = yield call(axios.get, `https://maps.googleapis.com/maps/api/directions/json?origin=${
+      if (joinedWaypoints) {
+        res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&waypoints=${joinedWaypoints}&key=${googleAPIKEY}`);
+          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${googleAPIKEY}`);
       } else {
-        res = yield call(axios.get, `https://maps.googleapis.com/maps/api/directions/json?origin=${
+        res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
           }&destination=${destination}&key=${googleAPIKEY}`);
       }
@@ -169,10 +173,58 @@ const getActiveTripAsync = function* (action) {
   }
 };
 const createTripAsync = function* (payload) {
-  const { payload: waypoints, userId} = payload;
+  const {
+    payload: {
+      origin,
+      destination,
+      wayPoints,
+      userId,
+    },
+  } = payload;
   try {
-    const result = yield call(dbSecurePOST, 'route', { waypoints, userId });
-    console.log(result);
+    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });)
+    const res = yield call(
+      googleDirectionsCall,
+      'https://maps.googleapis.com/maps/api/directions/json?' +
+      '&mode=bicycling' +
+      `&origin=${origin}` +
+      `&destination=${destination}` +
+      `&waypoints=via:enc:${wayPoints}:` +
+      `&key=${googleAPIKEY}`
+    );
+    if (res.status === 200) {
+      const {
+        data: {
+          routes: [{
+            legs: [{
+              distance: { text },
+              end_address,
+              start_address,
+              via_waypoint,
+            }],
+            overview_polyline: { points },
+          }],
+        },
+      } = res;
+      const routeTitle = `${start_address.split(',')[0]} to ${end_address.split(',')[0]}`;
+      const mapImage = yield call(getGoogleRouteImage, points);
+      yield put({ type: RETRIEVED_MAP_IMAGE, payload: { mapImage, routeTitle } });
+      yield put({
+        type: RETRIEVED_TRIP_DATA, payload: {
+          text, routeTitle, via_waypoint, userId,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const saveTripAsync = function* ({payload}) {
+  const { tripData, tripStats } = payload;
+  try {
+    const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
+    yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
     console.error(error);
   }
@@ -189,10 +241,6 @@ const loginFlow = function* () {
       yield cancel(task);
     }
   }
-};
-
-const watchCreateTrip = function* () {
-  yield takeLatest(CREATE_TRIP, createTripAsync);
 };
 
 const getUserTrips = function* ({ payload: { userId } }) {
@@ -245,6 +293,23 @@ const getFavorite = function* ({payload: {userId}}) {
 };
 //watcher saga - listen for actions to be dispatched, will call worker
 
+const watchCreateTrip = function* () {
+  while (true) {
+    const initiateAction = yield take(CREATE_TRIP);
+
+    const task = yield fork(createTripAsync, initiateAction);
+    const action = yield take([CREATE_TRIP_CANCELLED, CREATE_TRIP_FAILED]);
+
+    if (action.type === CREATE_TRIP_CANCELLED) {
+      yield cancel(task);
+    }
+  }
+};
+
+const watchSaveTrip = function* () {
+  yield takeLatest(CREATE_TRIP_SAVE, saveTripAsync);
+};
+
 const watchGetTrips = function* () {
   yield takeEvery(GET_TRIPS, getTripsAsync);
 };
@@ -282,6 +347,7 @@ const rootSaga = function* () {
   yield all([
     watchGetTrips(),
     watchCreateTrip(),
+    watchSaveTrip(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),
