@@ -88,7 +88,7 @@ const getTripsAsync = function* () {
   try {
     const tripsRequest = yield call(dbSecureGET, 'route');
 
-    // yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
+    yield put({ type: GET_TRIPS_SUCCESS, payload: tripsRequest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
   }
