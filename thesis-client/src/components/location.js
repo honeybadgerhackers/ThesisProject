@@ -23,8 +23,8 @@ class WayPoint extends Component {
     clearActiveTrip: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     activeTrip: PropTypes.shape({
-      route_name: PropTypes.string.isRequired,
-      coords: PropTypes.string.isRequired,
+      route_name: PropTypes.string,
+      coords: PropTypes.string,
     }),
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
@@ -55,6 +55,7 @@ class WayPoint extends Component {
     visibleModal: 0,
     rating: 0,
     buttonStart: true,
+    timer: null,
     secondCounter: 0,
     minuteCounter: 0,
   };
@@ -139,6 +140,7 @@ class WayPoint extends Component {
         followUserLocation: false,
       });
     }
+    clearInterval(this.state.timer)
     this._processTrip();
     this.setState({ visibleModal: 1 });
   };
@@ -154,27 +156,18 @@ class WayPoint extends Component {
         this.startTimer();
       } else {
       this._stopTrackLocation();
-      Alert.alert(
-        'Save',
-        'Would you like to save this trip to your routes?',
-        [
-          { text: 'No', onPress: () => console.log('pressed no', this.props.userId)},
-          {
-            text: 'Yes',
-            onPress: () => this.props.createTripDispatch(this.state.wayPoints, this.props.userId),
-          },
-        ]
-      );
     }
   };
+
   startTimer = () => {
-    setInterval(() => {
-      this.setState({secondCounter: this.state.secondCounter + 1});
-      if (this.state.secondCounter % 60 === 0) {
-        this.setState({minuteCounter: this.state.minuteCounter + 1});
-        this.setState({secondCounter: 0});
-      }
-    }, 1000);
+    const timer = setInterval(() => {
+        this.setState({secondCounter: this.state.secondCounter + 1});
+        if (this.state.secondCounter % 60 === 0) {
+          this.setState({minuteCounter: this.state.minuteCounter + 1});
+          this.setState({secondCounter: 0});
+        }
+      }, 1000);
+    this.setState({timer});
   }
 
   openRatingModal = () => {
@@ -207,17 +200,6 @@ class WayPoint extends Component {
             {/* )} */}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() =>
-                this.customTripStartOrEnd()
-              }
-            >
-              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
-            </TouchableOpacity>
-          </View>
           <CreateTripModal
             visibleModal={this.state.visibleModal}
             saveTrip={this.props.saveTripDispatch}
@@ -233,6 +215,16 @@ class WayPoint extends Component {
             setRating={this.setRating}
             starIcons={starIcons}
           />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                this.customTripStartOrEnd()
+              }
+            >
+              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     } else {
