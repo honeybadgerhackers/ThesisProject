@@ -3,8 +3,8 @@ import { View, ScrollView, Platform, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
-import { getActiveTrip } from '../actions/activeTrip-action';
 import Swiper from 'react-native-swiper';
+import { getActiveTrip } from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
 import { getUserFavorites } from '../actions/getUserInfo-action';
@@ -57,10 +57,10 @@ class HomeScreen extends Component {
    navigation: { navigate }, trips, showTripLocation, favorites, userLocation,
   } = this.props;
     return (
-      // <Swiper
-      //   style={styles.wrapper}
-      //   loop={false}
-      // >
+      <Swiper
+        style={styles.wrapper}
+        loop={false}
+      >
         <View style={styles.homeScreenView}>
           <Text style={styles.title}>
               Routes Near You
@@ -73,19 +73,19 @@ class HomeScreen extends Component {
             />
           </ScrollView>
         </View>
-      //   <View style={styles.homeScreenView}>
-      //     <Text style={styles.title}>
-      //         Favorited
-      //     </Text>
-      //     <ScrollView>
-      //       <Favorite
-      //         navigate={navigate}
-      //         favorites={favorites}
-      //         showTripLocation={showTripLocation}
-      //       />
-      //     </ScrollView>
-      //   </View>
-      // </Swiper>
+        <View style={styles.homeScreenView}>
+          <Text style={styles.title}>
+              Favorited
+          </Text>
+          <ScrollView>
+            <Favorite
+              navigate={navigate}
+              favorites={favorites}
+              showTripLocation={showTripLocation}
+            />
+          </ScrollView>
+        </View>
+      </Swiper>
     );
   }
 }
