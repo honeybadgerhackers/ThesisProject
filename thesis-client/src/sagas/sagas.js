@@ -111,8 +111,6 @@ const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
       return e;
     }).sort((a, b) => a.distance - b.distance);
 
-    console.log(mappedClosest);
-
     yield put({ type: GET_TRIPS_SUCCESS, payload: mappedClosest });
   } catch (error) {
     console.log('async', JSON.stringify(error));
