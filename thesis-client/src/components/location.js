@@ -129,7 +129,6 @@ class WayPoint extends Component {
     this.setState({
       wayPoints,
     });
-    // this.setState({ speed: location.coords.speed });
   };
 
   _stopTrackLocation = () => {
