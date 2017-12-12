@@ -195,9 +195,9 @@ const saveTripAsync = function* ({payload}) {
   const { tripData, tripStats } = payload;
   console.log(payload);
   try {
-    // const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
-    // console.log(result);
-    // yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
+    const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
+    console.log(result);
+    yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
     console.log(error);
   }
