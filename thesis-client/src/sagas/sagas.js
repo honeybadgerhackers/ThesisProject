@@ -170,11 +170,7 @@ const getActiveTripAsync = function* (action) {
   let filter = {
     'id_route': 315,
   };
-<<<<<<< HEAD
   try { 
-=======
-  try {
->>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({

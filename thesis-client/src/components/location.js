@@ -61,7 +61,7 @@ class WayPoint extends Component {
   };
 
   componentDidMount = () => {
-    this.setState({ followUserLocation: false })
+    this.setState({ followUserLocation: false });
   }
 
   componentWillUnmount() {
@@ -194,17 +194,11 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
-<<<<<<< HEAD
-            followsUserLocation={this.state.followUserLocation}
-            region={this.props.mapRegion}
-            provider="google"
-            style={styles.map}
-=======
             // provider="google"
             style={styles.map}
             // initialRegion={this.props.mapRegion}
->>>>>>> fcacac9bbc2e5e0498f2d9dd9d91bf02a8c321f7
             showsUserLocation={this.state.showsUserLocation}
+            followsUserLocation={this.state.followUserLocation}
           >
             {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
