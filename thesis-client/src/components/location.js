@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Alert} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
 import CreateTripModal from './create-trip-modal';
@@ -14,13 +14,6 @@ const starIcons = {
   unfilled: require('../assets/icons/star_unfilled.png'),
 };
 
-const screen = Dimensions.get('window');
-const ASPECT_RATIO = screen.width / screen.height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
 class WayPoint extends Component {
   static propTypes = {
     getDirectionsSaga: PropTypes.func.isRequired,
@@ -31,8 +24,7 @@ class WayPoint extends Component {
     navigate: PropTypes.func.isRequired,
     activeTrip: PropTypes.shape({
       route_name: PropTypes.string,
-      // eslint-disable-next-line
-      coords: PropTypes.array,
+      coords: PropTypes.string,
     }),
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
@@ -54,7 +46,6 @@ class WayPoint extends Component {
     localUserLocation: null,
     speed: null,
     disableButton: false,
-    region: new MapView.AnimatedRegion(this.props.mapRegion),
     followUserLocation: false,
     showsUserLocation: true,
     wayPoints: [],
@@ -69,29 +60,10 @@ class WayPoint extends Component {
     minuteCounter: 0,
   };
 
-  componentWillReceiveProps = (nextProps) => {
-    const currentMapRegion = this.props.mapRegion;
-    const nextMapRegion = nextProps.mapRegion;
-    if (currentMapRegion.latitude !== nextMapRegion.latitude) {
-      this.state.region.setValue(nextMapRegion);
-    }
-    console.log('current props', this.props);
-    console.log('received props', nextProps);
-
-  }
-
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     if (this.track) {
       this.track.remove();
       this.setState({ disableButton: false, followUserLocation: false });
-    }
-  }
-
-  onRegionChange = (region, locationChange) => {
-    if (!this.state.followUserLocation) {
-      this.state.region.setValue(region);
-    } else if (locationChange) {
-      this.state.region.setValue(locationChange);
     }
   }
 
@@ -126,7 +98,7 @@ class WayPoint extends Component {
       followUserLocation: true,
     });
     this.track = await Location.watchPositionAsync(
-      { /* distanceInterval: 5, timeInterval: 30000,*/ enableHighAccuracy: true },
+      { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
       this._handlePositionChange,
     );
   };
@@ -150,13 +122,7 @@ class WayPoint extends Component {
         speed: location.coords.speed,
         timestamp: location.timestamp,
       };
-    const locationChange = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    };
-    this.onRegionChange(null, locationChange);
+
     this._handleSpeedChange(location.coords.speed);
     const wayPoints = this.state.wayPoints.slice();
     wayPoints.push(wayPoint);
@@ -179,11 +145,11 @@ class WayPoint extends Component {
       visibleModal: 1,
     });
   };
-  
-  goToHomeScreen = () => {
+
+  goToHomeScreen() {
     this.props.clearActiveTrip();
     this.props.navigate("Home");
-  };
+  }
 
   customTripStartOrEnd = () => {
       if (this.state.buttonStart) {
@@ -223,13 +189,12 @@ class WayPoint extends Component {
     if (this.props.activeTrip.route_name === undefined) {
       return (
         <View style={styles.container}>
-          <MapView.Animated
-            provider="google"
+          <MapView
+            // provider="google"
             style={styles.map}
-            region={this.state.region}
+            initialRegion={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
-            onRegionChange={this.onRegionChange}
-            // followsUserLocation={this.state.followUserLocation}
+            followsUserLocation={this.state.followUserLocation}
           >
             {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
@@ -238,7 +203,7 @@ class WayPoint extends Component {
               strokeColor="red"
             />
             )}
-          </MapView.Animated>
+          </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <CreateTripModal
             visibleModal={this.state.visibleModal}
