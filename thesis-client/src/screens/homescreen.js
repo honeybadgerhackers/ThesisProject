@@ -4,11 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
+import Swiper from 'react-native-swiper';
 import getTrips from '../actions/getTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
+import { getUserFavorites } from '../actions/getUserInfo-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
+import Favorite from '../components/favorites';
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
@@ -21,9 +24,14 @@ class HomeScreen extends Component {
   });
 
   static propTypes = {
+    //eslint-disable-next-line
+    user: PropTypes.object.isRequired,
+    getUserLocation: PropTypes.func.isRequired,
+    getUserFavorites: PropTypes.func.isRequired,
     getAllTrips: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
   };
 
@@ -34,7 +42,8 @@ class HomeScreen extends Component {
   componentWillMount() {
     this.props.getUserLocation();
     this._loadAssetsAsync();
-    this.props.getAllTrips();    
+    this.props.getUserFavorites(this.props.user.id);
+    this.props.getAllTrips();
   }
 
   _loadAssetsAsync = async () => {
@@ -44,24 +53,49 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const { navigation: { navigate }, trips, showTripLocation } = this.props;
+    const {
+   navigation: { navigate }, trips, showTripLocation, favorites,
+  } = this.props;
+  console.log(favorites);
     return (
-      <View style={styles.homeScreenView}>
-        <ScrollView>
-          <Trip
-            navigate={navigate}
-            trips={trips}
-            showTripLocation={showTripLocation}
-          />
-        </ScrollView>
-      </View>
+      <Swiper
+        style={styles.wrapper}
+        loop={false}
+      >
+        <View style={styles.homeScreenView}>
+          <Text style={styles.title}>
+              Routes Near You
+          </Text>
+          <ScrollView>
+            <Trip
+              navigate={navigate}
+              trips={trips}
+              showTripLocation={showTripLocation}
+            />
+          </ScrollView>
+        </View>
+        <View style={styles.homeScreenView}>
+          <Text style={styles.title}>
+              Favorited
+          </Text>
+          <ScrollView>
+            <Favorite
+              navigate={navigate}
+              favorites={favorites}
+              showTripLocation={showTripLocation}
+            />
+          </ScrollView>
+        </View>
+      </Swiper>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
+    user: state.user,
     trips: state.trips.trips.slice(0, 10),
+    favorites: state.favorites.favorites,
   };
 }
 
@@ -74,10 +108,22 @@ const mapDispatchToProps = dispatch => ({
   },
   getUserLocation: () => {
     dispatch(getUserLocation());
-  }
+  },
+  getUserFavorites: (userId) => {
+    dispatch(getUserFavorites(userId));
+  },
 });
 
 const styles = {
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 10,
+    backgroundColor: 'lightblue',
+    borderWidth: 2,
+  },
   imageStyle: {
     marginLeft: 10,
     width: 40,
