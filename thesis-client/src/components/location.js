@@ -46,7 +46,7 @@ class WayPoint extends Component {
     localUserLocation: null,
     speed: null,
     disableButton: false,
-    followUserLocation: false,
+    followUserLocation: true,
     showsUserLocation: true,
     wayPoints: [],
     speedCounter: 1,
@@ -59,6 +59,10 @@ class WayPoint extends Component {
     secondCounter: 0,
     minuteCounter: 0,
   };
+
+  componentDidMount = () => {
+    this.setState({ followUserLocation: false })
+  }
 
   componentWillUnmount() {
     if (this.track) {
@@ -192,7 +196,7 @@ class WayPoint extends Component {
           <MapView
             // provider="google"
             style={styles.map}
-            initialRegion={this.props.mapRegion}
+            // initialRegion={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
