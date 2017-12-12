@@ -30,6 +30,8 @@ class WayPoint extends Component {
         showsUserLocation: true,
         wayPoints: [],
         buttonStart: true,
+        secondCounter: 0,
+        minuteCounter: 0,
       }
   
   // componentWillMount() {
@@ -133,9 +135,11 @@ class WayPoint extends Component {
   customTripStartOrEnd = () => {
       if (this.state.buttonStart) {
         this._trackLocationAsync();
+        this.startTimer();
         // this.setState({ buttonStartStop: !this.state.buttonStartStop });
       } else {
-        this._stopTrackLocation();
+      this._stopTrackLocation();
+      this.stopTimer();
         // this.setState({ buttonStartStop: !this.state.buttonStartStop });
       Alert.alert(
         'Save',
@@ -148,8 +152,21 @@ class WayPoint extends Component {
           },
         ]
       );
-    };
+    }
   };
+  startTimer = () => {
+    setInterval(() => {
+      this.setState({secondCounter: this.state.secondCounter + 1});
+      if (this.state.secondCounter % 60 === 0) {
+        this.setState({minuteCounter: this.state.minuteCounter + 1});
+        this.setState({secondCounter: 0});
+      }
+    }, 1000);    
+  }
+
+  stopTimer = () => {
+    this.setState({secondCounter: 0});
+  }
 
   // render() {
   //   let text = 'Waiting..';
@@ -160,6 +177,8 @@ class WayPoint extends Component {
   //   }
   // }
   render() {
+    const {secondCounter, minuteCounter} = this.state;
+
     if (this.props.activeTrip.route_name === undefined) {
       console.log(this.props.routeCoords);
       return (
@@ -179,6 +198,8 @@ class WayPoint extends Component {
             />
             )}
           </MapView>
+          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
@@ -209,7 +230,9 @@ class WayPoint extends Component {
               />            
             )}
           </MapView>
-          <View style={styles.buttonContainer}>
+          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+
+          <View style={styles.cancelButtonContainer}>
             <TouchableOpacity
               style={styles.button}
               onPress={() =>
@@ -255,8 +278,8 @@ const mapDispatchToProps = (dispatch) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center"
+    justifyContent: "space-between",
+    alignItems: "stretch"
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -265,19 +288,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center"
   },
+  cancelButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginBottom: 20,
+  },
   buttonContainer: {
-    marginVertical: 20
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20
   },
   button: {
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.7)",
     borderRadius: 20,
     padding: 12,
     width: 160,
-    marginBottom: 5,
+    marginBottom: 5
   },
   statBar: {
-    backgroundColor: "black"
+    // justifyContent: "space-between",
+    // alignItems: "center"
   }
 });
 

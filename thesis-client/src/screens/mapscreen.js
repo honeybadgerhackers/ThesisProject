@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { View, StyleSheet, Dimensions, Text } from "react-native";
 import PropTypes from 'prop-types';import { connect } from 'react-redux';
 import Map from '../components/map-component';
 import CustomTripMap from '../components/location';
@@ -43,6 +44,7 @@ class MapScreen extends Component {
       />
     )
 
+
     // return (
     //   <Map
     //     activeTrip={activeTrip}
@@ -56,6 +58,17 @@ class MapScreen extends Component {
   }
 }
 
+var styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // flexDirection: "row",
+    // justifyContent: "space-around",
+    // alignItems: "flex-start",
+    // backgroundColor: "black"
+  },
+
+});
+
 function mapStateToProps(state) {
   return {
     userLocation: state.userLocation,
@@ -64,6 +77,7 @@ function mapStateToProps(state) {
     routeCoords: state.routeCoords.coordsArray,
   };
 }
+
 const mapDispatchToProps = dispatch => ({
   clearActiveTrip: () => {
     dispatch(clearActiveTrip());
