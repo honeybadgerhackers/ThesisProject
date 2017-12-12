@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Platform, Text, View, StyleSheet, Button, TouchableOpacity, StatusBar, Alert} from 'react-native';
-import { MapView, Constants, Location, Permissions } from 'expo';
+import { Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
-import { join } from 'redux-saga/effects';
-import Polyline from "@mapbox/polyline";
 import { getDirections } from '../actions/getDirections-action';
 import createTrip from '../actions/create-trip-action';
 import Stats from '../components/routeStats-component';
@@ -18,12 +16,10 @@ class WayPoint extends Component {
     // eslint-disable-next-line
     routeCoords: PropTypes.array,
   }
-  
   static defaultProps = {
     routeCoords: [],
   }
       state = {
-        localUserLocation: null,
         speed: null,
         // errorMessage: null,
         followUserLocation: false,
@@ -33,34 +29,6 @@ class WayPoint extends Component {
         secondCounter: 0,
         minuteCounter: 0,
       }
-  
-  // componentWillMount() {
-    //   // if (Platform.OS === "android" && !Constants.isDevice) {
-  //   //   this.setState({
-  //   //     errorMessage:
-  //   //       "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
-  //   //   });
-  //   // }
-  //   wayPoints: [
-  //     // { lat: 29.935865, lng: -90.077473, speed: 5.36448 },
-  //     // { lat: 29.932741, lng: -90.082687, speed: 5.36448 },
-  //     // { lat: 29.935330, lng: -90.084586, speed: 5.36448 },
-  //     // { lat: 29.935646, lng: -90.083974, speed: 5.36448 },
-  //   ],
-  //   speedCounter: 0,
-  //   topSpeed: 0,
-  //   avgSpeed: 0,
-  // };
-
-
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage:
-          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    }
-  }
 
   componentWillUnmount() {
     this._stopTrackLocation();
@@ -109,12 +77,11 @@ class WayPoint extends Component {
     const wayPoints = this.state.wayPoints.slice();
 
     // ? location.coords.speed is maybe meters/second, apparently multiplying
-    // ? by 2.2369 will conver to miles per hour. We'll see?
+    // ? by 2.2369 will convert to miles per hour. We'll see?
     this.setState({ speed: location.coords.speed * 2.2369 });
     wayPoints.push(wayPoint);
-    console.log(wayPoint, this.state.speed);
     this.setState({
-      wayPoints, localUserLocation: location,
+      wayPoints,
     });
   };
 
@@ -127,6 +94,7 @@ class WayPoint extends Component {
       });
     }
     this._getDirections();
+    console.log(this.props.routeCoords);
   };
   goToHomeScreen() {
     this.props.clearActiveTrip();
@@ -136,11 +104,8 @@ class WayPoint extends Component {
       if (this.state.buttonStart) {
         this._trackLocationAsync();
         this.startTimer();
-        // this.setState({ buttonStartStop: !this.state.buttonStartStop });
       } else {
       this._stopTrackLocation();
-      this.stopTimer();
-        // this.setState({ buttonStartStop: !this.state.buttonStartStop });
       Alert.alert(
         'Save',
         'Would you like to save this trip to your routes?',
@@ -161,26 +126,13 @@ class WayPoint extends Component {
         this.setState({minuteCounter: this.state.minuteCounter + 1});
         this.setState({secondCounter: 0});
       }
-    }, 1000);    
+    }, 1000);
   }
 
-  stopTimer = () => {
-    this.setState({secondCounter: 0});
-  }
-
-  // render() {
-  //   let text = 'Waiting..';
-  //   if (this.state.errorMessage) {
-  //     text = this.state.errorMessage;
-  //   } else if (this.state.localUserLocation) {
-  //     text = JSON.stringify(this.state.localUserLocation);
-  //   }
-  // }
   render() {
     const {secondCounter, minuteCounter} = this.state;
 
     if (this.props.activeTrip.route_name === undefined) {
-      console.log(this.props.routeCoords);
       return (
         <View style={styles.container}>
           <MapView
@@ -190,13 +142,13 @@ class WayPoint extends Component {
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
-            {this.props.activeTrip.coords !== undefined && (
+            {/* {this.props.activeTrip.coords !== undefined && ( */}
             <MapView.Polyline
               coordinates={this.props.routeCoords}
               strokeWidth={3}
               strokeColor="red"
             />
-            )}
+            {/* )} */}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
 
@@ -222,13 +174,13 @@ class WayPoint extends Component {
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
-            {this.props.activeTrip.coords !== undefined && (
-              <MapView.Polyline
-                coordinates={this.props.activeTrip.coords}
-                strokeWidth={3}
-                strokeColor="red"
-              />            
-            )}
+            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            <MapView.Polyline
+              coordinates={this.props.activeTrip.coords}
+              strokeWidth={3}
+              strokeColor="red"
+            />            
+            {/* )} */}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
 
@@ -279,14 +231,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    alignItems: "stretch"
+    alignItems: "stretch",
   },
   map: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   paragraph: {
     fontSize: 18,
-    textAlign: "center"
+    textAlign: "center",
   },
   cancelButtonContainer: {
     flexDirection: 'row',
@@ -297,7 +249,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: 20,
   },
   button: {
     justifyContent: "center",
@@ -306,13 +258,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 12,
     width: 160,
-    marginBottom: 5
+    marginBottom: 5,
   },
-  statBar: {
-    // justifyContent: "space-between",
-    // alignItems: "center"
-  }
 });
 
-// export default connect(mapStateToProps, mapDispatchToProps)(WayPoint);
-export default WayPoint;
+export default connect(mapStateToProps, mapDispatchToProps)(WayPoint);

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, Text } from "react-native";
 import PropTypes from 'prop-types';import { connect } from 'react-redux';
-import Map from '../components/map-component';
 import CustomTripMap from '../components/location';
 import { clearActiveTrip } from '../actions/activeTrip-action';
 import { getDirections } from "../actions/getDirections-action";
@@ -10,9 +8,8 @@ import { getDirections } from "../actions/getDirections-action";
 // eslint-disable-next-line
 class MapScreen extends Component {
   static navigationOptions = () => ({
-    header: null
+    header: null,
   });
-  
   static propTypes = {
     activeTrip: PropTypes.shape({}),
   };
@@ -42,32 +39,9 @@ class MapScreen extends Component {
         navigate={navigate}
         getDirectionsSaga={getDirectionsSaga}
       />
-    )
-
-
-    // return (
-    //   <Map
-    //     activeTrip={activeTrip}
-    //     userLocation={userLocation}
-    //     mapRegion={mapRegion}
-    //     routeCoords={routeCoords}
-    //     clearActiveTrip={clearActiveTrip}
-    //     navigate={navigate}
-    //   />
-    // );
+    );
   }
 }
-
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // flexDirection: "row",
-    // justifyContent: "space-around",
-    // alignItems: "flex-start",
-    // backgroundColor: "black"
-  },
-
-});
 
 function mapStateToProps(state) {
   return {
