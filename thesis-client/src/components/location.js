@@ -102,7 +102,7 @@ class WayPoint extends Component {
       followUserLocation: true,
     });
     this.track = await Location.watchPositionAsync(
-      { distanceInterval: 5, timeInterval: 30000, enableHighAccuracy: true },
+      { /*distanceInterval: 5,*/ timeInterval: 3000, enableHighAccuracy: true },
       this._handlePositionChange,
     );
   };
@@ -126,7 +126,6 @@ class WayPoint extends Component {
         speed: location.coords.speed,
         timestamp: location.timestamp,
       };
-
     this._handleSpeedChange(location.coords.speed);
     const wayPoints = this.state.wayPoints.slice();
     wayPoints.push(wayPoint);
@@ -196,6 +195,7 @@ class WayPoint extends Component {
           <MapView
             // provider="google"
             style={styles.map}
+            ref={ref => { this.map = ref; }}
             // initialRegion={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
