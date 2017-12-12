@@ -54,8 +54,8 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, favorites,
-  } = this.props;
+      navigation: { navigate }, trips, showTripLocation, favorites,
+    } = this.props;
   console.log(favorites);
     return (
       <Swiper

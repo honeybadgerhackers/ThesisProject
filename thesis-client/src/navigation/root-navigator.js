@@ -29,7 +29,7 @@ const tabBarProfileIcon = ({ tintColor, focused }) => (
     size={26}
     style={{ color: tintColor }}
   />
-)
+);
 
 const RootNavigator = TabNavigator(
   {

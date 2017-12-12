@@ -46,7 +46,7 @@ class WayPoint extends Component {
     localUserLocation: null,
     speed: null,
     disableButton: false,
-    followUserLocation: false,
+    followUserLocation: true,
     showsUserLocation: true,
     wayPoints: [],
     speedCounter: 1,
@@ -191,19 +191,19 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
+            followsUserLocation={this.state.followUserLocation}
+            region={this.props.mapRegion}
             provider="google"
             style={styles.map}
-            region={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
-            followsUserLocation={this.state.followUserLocation}
           >
-            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
               coordinates={this.props.routeCoords}
               strokeWidth={3}
               strokeColor="red"
             />
-            {/* )} */}
+            )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <CreateTripModal
@@ -243,13 +243,13 @@ class WayPoint extends Component {
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
-            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
               coordinates={this.props.activeTrip.coords}
               strokeWidth={3}
               strokeColor="red"
             />
-            {/* )} */}
+            )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
 
