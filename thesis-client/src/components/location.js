@@ -140,9 +140,11 @@ class WayPoint extends Component {
         followUserLocation: false,
       });
     }
-    clearInterval(this.state.timer)
+    clearInterval(this.state.timer);
     this._processTrip();
-    this.setState({ visibleModal: 1 });
+    this.setState({
+      visibleModal: 1,
+    });
   };
 
   goToHomeScreen() {
@@ -175,7 +177,11 @@ class WayPoint extends Component {
   }
 
   closeModal = () => {
-    this.setState({ visibleModal: 0 });
+    this.setState({
+      visibleModal: 0,
+      secondCounter: 0,
+      minuteCounter: 0,
+    });
   }
 
   render() {
