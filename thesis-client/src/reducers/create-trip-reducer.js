@@ -48,7 +48,7 @@ export default (state = initialState, { payload, type }) => {
       return {
         ...state,
         status: inProgress,
-        data: {
+        postData: {
           tripStats: payload.tripStats,
           tripData: payload.tripData,
         },
