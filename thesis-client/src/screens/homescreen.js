@@ -28,7 +28,7 @@ class HomeScreen extends Component {
     user: PropTypes.object.isRequired,
     getUserLocation: PropTypes.func.isRequired,
     getUserFavorites: PropTypes.func.isRequired,
-    getAllTrips: PropTypes.func.isRequired,
+    // getAllTrips: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -43,7 +43,7 @@ class HomeScreen extends Component {
     this.props.getUserLocation();
     this._loadAssetsAsync();
     this.props.getUserFavorites(this.props.user.id);
-    this.props.getAllTrips();
+    // this.props.getAllTrips(this.props.userLocation.coords);
   }
 
   _loadAssetsAsync = async () => {
@@ -54,14 +54,13 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, favorites,
+   navigation: { navigate }, trips, showTripLocation, favorites, userLocation,
   } = this.props;
-  console.log(favorites);
     return (
-      <Swiper
-        style={styles.wrapper}
-        loop={false}
-      >
+      // <Swiper
+      //   style={styles.wrapper}
+      //   loop={false}
+      // >
         <View style={styles.homeScreenView}>
           <Text style={styles.title}>
               Routes Near You
@@ -74,28 +73,29 @@ class HomeScreen extends Component {
             />
           </ScrollView>
         </View>
-        <View style={styles.homeScreenView}>
-          <Text style={styles.title}>
-              Favorited
-          </Text>
-          <ScrollView>
-            <Favorite
-              navigate={navigate}
-              favorites={favorites}
-              showTripLocation={showTripLocation}
-            />
-          </ScrollView>
-        </View>
-      </Swiper>
+      //   <View style={styles.homeScreenView}>
+      //     <Text style={styles.title}>
+      //         Favorited
+      //     </Text>
+      //     <ScrollView>
+      //       <Favorite
+      //         navigate={navigate}
+      //         favorites={favorites}
+      //         showTripLocation={showTripLocation}
+      //       />
+      //     </ScrollView>
+      //   </View>
+      // </Swiper>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
+    userLocation: state.userLocation,
     user: state.user,
-    trips: state.trips.trips.slice(0, 10),
     favorites: state.favorites.favorites,
+    trips: state.trips.trips,
   };
 }
 
@@ -103,9 +103,9 @@ const mapDispatchToProps = dispatch => ({
   showTripLocation: (trip, cb) => {
     dispatch(getActiveTrip(trip, cb));
   },
-  getAllTrips: () => {
-    dispatch(getTrips());
-  },
+  // getAllTrips: (coords) => {
+  //   dispatch(getTrips(coords));
+  // },
   getUserLocation: () => {
     dispatch(getUserLocation());
   },
