@@ -46,7 +46,7 @@ class WayPoint extends Component {
     localUserLocation: null,
     speed: null,
     disableButton: false,
-    followUserLocation: false,
+    followUserLocation: true,
     showsUserLocation: true,
     wayPoints: [],
     speedCounter: 1,
@@ -59,6 +59,10 @@ class WayPoint extends Component {
     secondCounter: 0,
     minuteCounter: 0,
   };
+
+  componentDidMount = () => {
+    this.setState({ followUserLocation: false })
+  }
 
   componentWillUnmount() {
     if (this.track) {
@@ -129,7 +133,6 @@ class WayPoint extends Component {
     this.setState({
       wayPoints,
     });
-    // this.setState({ speed: location.coords.speed });
   };
 
   _stopTrackLocation = () => {
@@ -191,19 +194,19 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
-            provider="google"
+            // provider="google"
             style={styles.map}
-            region={this.props.mapRegion}
+            // initialRegion={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
-            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
               coordinates={this.props.routeCoords}
               strokeWidth={3}
               strokeColor="red"
             />
-            {/* )} */}
+            )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <CreateTripModal
@@ -243,13 +246,13 @@ class WayPoint extends Component {
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
-            {/* {this.props.activeTrip.coords !== undefined && ( */}
+            {this.props.activeTrip.coords !== undefined && (
             <MapView.Polyline
               coordinates={this.props.activeTrip.coords}
               strokeWidth={3}
               strokeColor="red"
             />
-            {/* )} */}
+            )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
 
