@@ -27,7 +27,6 @@ class ProfileScreen extends Component {
   }
 
   render() {
-    console.log(this.props.user);
     return (
       <Swiper
         style={styles.wrapper}
