@@ -13,8 +13,7 @@ const ModalView = ({
   saveTrip,
   cancelTrip,
   googleMapImage,
-tripDatatripName,
-  tripNameshape({}).isRequired
+  tripName,
   tripData,
   speedCounter,
   avgSpeed,
@@ -52,7 +51,6 @@ tripDatatripName,
             </View>
             <View style={styles.paragraph}>
               <Text style={styles.text}>{tripName}</Text>
-              <Text style={styles.tripData}>{tripName}</shape({}).isRequired>
             </View>
           </View>
           <View style={styles.buttons}>
@@ -251,7 +249,6 @@ ModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
   tripName: PropTypes.string,
-  tripData: PropTypes.shape({}).isRequired,
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
