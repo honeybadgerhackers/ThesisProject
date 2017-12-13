@@ -13,8 +13,7 @@ const ModalView = ({
   saveTrip,
   cancelTrip,
   googleMapImage,
-tripDatatripName,
-  tripNameshape({}).isRequired
+  tripName,
   tripData,
   speedCounter,
   avgSpeed,
@@ -52,7 +51,7 @@ tripDatatripName,
             </View>
             <View style={styles.paragraph}>
               <Text style={styles.text}>{tripName}</Text>
-              <Text style={styles.tripData}>{tripName}</shape({}).isRequired>
+              <Text style={styles.tripData}>{tripName}</Text>
             </View>
           </View>
           <View style={styles.buttons}>
