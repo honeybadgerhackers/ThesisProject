@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text, Image, Easing, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Button, View, Text, Easing, Alert } from 'react-native';
 import { LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
@@ -10,7 +10,7 @@ const buttonColor = appColors.aquamarine;
 
 const ModalView = ({
   visibleModal,
-  saveTrip,
+  saveSession,
   cancelTrip,
   googleMapImage,
   tripName,
@@ -27,58 +27,6 @@ const ModalView = ({
     <View>
       <Modal
         isVisible={visibleModal === 1}
-        backdropOpacity={0.70}
-        backdropColor={appColors.logoBlue}
-      >
-        <View style={styles.modalContent}>
-          <LinearGradient
-            colors={['rgba(0,96,255,0.02)', 'transparent']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 600,
-            }}
-          />
-          <Text style={styles.header}>Save Trip</Text>
-          <View style={styles.modalBody}>
-            <View style={styles.imageContainer}>
-              <View style={styles.imageInnerContainer}>
-                {loadingImage()}
-                { googleMapImage === null ? null : mapImage(googleMapImage) }
-              </View>
-            </View>
-            <View style={styles.paragraph}>
-              <Text style={styles.text}>{tripName}</Text>
-            </View>
-          </View>
-          <View style={styles.buttons}>
-            <View style={styles.buttonLeft}>
-              <Button
-                onPress={() => {
-                  cancelTrip();
-                  closeModal();
-                }}
-                title="No"
-                color={buttonColor}
-              />
-            </View>
-            <View style={styles.buttonRight}>
-              <Button
-                onPress={() => {
-                  closeModal();
-                  setTimeout(openRatingModal, 500);
-                }}
-                title="Yes"
-                color={buttonColor}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        isVisible={visibleModal === 2}
         backdropOpacity={0.70}
         backdropColor={appColors.logoBlue}
       >
@@ -122,7 +70,7 @@ const ModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveTrip({ speedCounter, avgSpeed, rating }, tripData);
+                    saveSession({ speedCounter, avgSpeed, rating }, tripData);
                     closeModal();
                   }
                 }}
@@ -229,31 +177,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapImage = (googleMapImage) => (
-  <Image
-    style={styles.image}
-    source={{uri: googleMapImage}}
-  />
-);
-
-const loadingImage = () => (
-  <View style={styles.imageLoading}>
-    <ActivityIndicator
-      size="large"
-      color={appColors.begonia}
-    />
-  </View>
-);
-
 ModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
   tripName: PropTypes.string,
+  tripData: PropTypes.shape({}).isRequired,
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
   closeModal: PropTypes.func.isRequired,
-  saveTrip: PropTypes.func.isRequired,
+  saveSession: PropTypes.func.isRequired,
   cancelTrip: PropTypes.func.isRequired,
   openRatingModal: PropTypes.func.isRequired,
   setRating: PropTypes.func.isRequired,
