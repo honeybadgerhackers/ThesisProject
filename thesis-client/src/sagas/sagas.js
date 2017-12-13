@@ -303,6 +303,12 @@ const postFavorite = function* ({payload: {userId, routeId}}) {
   }
 };
 
+// const deleteFavorite = function* ({payload: {userId, routeId}}) {
+//   try {
+//     const data = {}
+//   }
+// }
+
 const getFavorite = function* ({payload: {userId}}) {
   try {
     const filter = {
