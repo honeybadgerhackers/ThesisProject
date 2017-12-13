@@ -6,6 +6,7 @@ import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getTrips from '../actions/getTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
+import postFavorite from '../actions/postFavorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
@@ -24,7 +25,7 @@ class HomeScreen extends Component {
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
     getUserLocation: PropTypes.func.isRequired,
-    // getAllTrips: PropTypes.func.isRequired,
+    addFavorite: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
@@ -47,7 +48,7 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation,
+   navigation: { navigate }, trips, showTripLocation, userLocation, user, addFavorite
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
@@ -56,6 +57,8 @@ class HomeScreen extends Component {
         </Text>
         <ScrollView>
           <Trip
+            user={user}
+            addFavorite={addFavorite}
             navigate={navigate}
             trips={trips}
             showTripLocation={showTripLocation}
@@ -81,6 +84,9 @@ const mapDispatchToProps = dispatch => ({
   getUserLocation: () => {
     dispatch(getUserLocation());
   },
+  addFavorite: (userId, routeId) => {
+    dispatch(postFavorite(userId, routeId));
+  }
 });
 
 const styles = {

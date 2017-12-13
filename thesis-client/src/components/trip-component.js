@@ -2,29 +2,39 @@ import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import mapIcon from '../assets/icons/mapIcon.png';
+import heartIcon from '../assets/icons/heart.png';
 
-const Trip = ({ navigate, trips, showTripLocation }) => {
+const Trip = ({
+   navigate, trips, showTripLocation, addFavorite, user,
+}) => {
   const goToMap = () => {
     navigate('Map');
   };
   const createTrip = () => trips.map(trip => (
-    <TouchableOpacity
+    <View
+      style={styles.container}
       key={trip.id}
-      onPress={() => showTripLocation(trip, goToMap)}
     >
-      <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{trip.route_name}</Text>
-          <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
-          <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
-        </View>
-        <View style={styles.imageContainer}>
-          <Text style={styles.imageContainerText}>{trip.type}</Text>
-          <Image source={mapIcon} style={styles.imageStyle} />
-          <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
-        </View>
+      <TouchableOpacity
+        onPress={() => addFavorite(user.id, trip.id)}
+      >
+        <Image source={heartIcon} showIcon style={styles.imageStyle} />
+      </TouchableOpacity>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{trip.route_name}</Text>
+        <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
+        <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
       </View>
-    </TouchableOpacity>
+      <View style={styles.imageContainer}>
+        <Text style={styles.imageContainerText}>{trip.type}</Text>
+        <TouchableOpacity
+          onPress={() => showTripLocation(trip, goToMap)}
+        >
+          <Image source={mapIcon} showIcon style={styles.imageStyle} />
+        </TouchableOpacity>
+        <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
+      </View>
+    </View>
   ));
 
   return <View>{createTrip()}</View>;
@@ -32,6 +42,8 @@ const Trip = ({ navigate, trips, showTripLocation }) => {
 
 Trip.propTypes = {
   navigate: PropTypes.func.isRequired,
+  addFavorite: PropTypes.func.isRequired,
+  // user: PropTypes.object.func.isRequired,
   trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   showTripLocation: PropTypes.func.isRequired,
 };
