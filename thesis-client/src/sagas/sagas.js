@@ -22,6 +22,9 @@ import {
   CREATE_TRIP_CANCELLED,
   RETRIEVED_MAP_IMAGE,
   RETRIEVED_TRIP_DATA,
+  SAVE_SESSION,
+  SAVE_SESSION_SUCCESS,
+  SAVE_SESSION_FAILED,
   demoUser,
   GET_TRIPS_SUCCESS,
   GET_USER_LOCATION_SUCCESS,
@@ -90,7 +93,8 @@ const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
       lat: latitude,
       lng: longitude,
     };
-    const tripsRequest = yield call(dbSecureGET, 'routenearby', filter);
+
+    const tripsRequest = yield call(dbSecureGET, 'route&nearby', filter);
 
     const unique = (arr) => {
       const result = [];
@@ -192,6 +196,7 @@ const getActiveTripAsync = function* (action) {
     console.log(error);
   }
 };
+
 const createTripAsync = function* (payload) {
   const {
     payload: {
@@ -202,7 +207,6 @@ const createTripAsync = function* (payload) {
     },
   } = payload;
   try {
-    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });)
     const res = yield call(
       googleDirectionsCall,
       'https://maps.googleapis.com/maps/api/directions/json?' +
@@ -246,6 +250,17 @@ const saveTripAsync = function* ({payload}) {
     const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
     yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
+    console.error(error);
+  }
+};
+
+const saveSessionAsync = function* ({payload}) {
+  const { tripData, tripStats } = payload;
+  try {
+    const result = yield call(dbSecurePOST, 'session', { tripData, tripStats });
+    yield put({ type: SAVE_SESSION_SUCCESS, payload: result });
+  } catch (error) {
+    yield put({ type: SAVE_SESSION_FAILED });
     console.error(error);
   }
 };
@@ -329,6 +344,10 @@ const watchSaveTrip = function* () {
   yield takeLatest(CREATE_TRIP_SAVE, saveTripAsync);
 };
 
+const watchSaveSession = function* () {
+  yield takeLatest(SAVE_SESSION, saveSessionAsync);
+};
+
 const watchGetTrips = function* () {
   yield takeEvery(GET_USER_LOCATION_SUCCESS, getTripsAsync);
 };
@@ -366,6 +385,7 @@ const rootSaga = function* () {
     watchGetTrips(),
     watchCreateTrip(),
     watchSaveTrip(),
+    watchSaveSession(),
     loginFlow(),
     watchGetUserLocation(),
     watchGetDirections(),

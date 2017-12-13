@@ -54,6 +54,7 @@ const ModalView = ({
             </View>
             <View style={styles.paragraph}>
               <Text style={styles.text}>{tripName}</Text>
+              <Text style={styles.tripData}>{tripName}</Text>
             </View>
           </View>
           <View style={styles.buttons}>
@@ -265,6 +266,7 @@ ModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
   tripName: PropTypes.string,
+  tripData: PropTypes.shape({}),
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
@@ -283,6 +285,7 @@ ModalView.defaultProps = {
   visibleModal: null,
   googleMapImage: null,
   tripName: null,
+  tripData: null,
 };
 
 export default ModalView;
