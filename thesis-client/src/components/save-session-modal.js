@@ -8,7 +8,7 @@ import { appColors } from '../constants';
 
 const buttonColor = appColors.aquamarine;
 
-const ModalView = ({
+const SessionModalView = ({
   visibleModal,
   saveSession,
   cancelSaveSession,
@@ -176,10 +176,10 @@ const styles = StyleSheet.create({
   },
 });
 
-ModalView.propTypes = {
+SessionModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
-  tripData: PropTypes.shape({}).isRequired,
+  tripData: PropTypes.shape({}),
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
@@ -194,9 +194,10 @@ ModalView.propTypes = {
   }).isRequired,
 };
 
-ModalView.defaultProps = {
+SessionModalView.defaultProps = {
+  tripData: null,
   visibleModal: null,
   googleMapImage: null,
 };
 
-export default ModalView;
+export default SessionModalView;

@@ -10,6 +10,7 @@ import getDirections from '../actions/getDirections-action';
 import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-trip-action';
 import { saveSession, cancelSaveSession } from '../actions/save-session-action';
 import { createPolyline } from '../utilities/processors';
+import { appColors } from '../constants';
 
 const starIcons = {
   filled: require('../assets/icons/star_filled.png'),
@@ -25,8 +26,10 @@ class WayPoint extends Component {
     clearActiveTrip: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     activeTrip: PropTypes.shape({
+      id: PropTypes.number,
+      type: PropTypes.string,
       route_name: PropTypes.string,
-      coords: PropTypes.string,
+      coords: PropTypes.array,
     }),
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
@@ -67,6 +70,7 @@ class WayPoint extends Component {
   componentWillUnmount() {
     if (this.track) {
       this.track.remove();
+      this.trackInaccurate.remove();
       this.setState({ followUserLocation: false });
     }
   }
@@ -129,9 +133,12 @@ class WayPoint extends Component {
       followUserLocation: true,
     });
     this.track = await Location.watchPositionAsync(
-      { /*distanceInterval: 5,*/ timeInterval: 3000, enableHighAccuracy: true },
+      { distanceInterval: 5, timeInterval: 3000, enableHighAccuracy: true },
       this._handlePositionChange,
     );
+    // this.trackHeading = await Location.watchHeadingAsync((heading) => {
+    //   console.log(heading);
+    // });
   };
 
   //*  Custom Trips  *//
@@ -184,6 +191,8 @@ class WayPoint extends Component {
   };
 
   sessionStartOrEnd = () => {
+    const { id, route_name, type } = this.props.activeTrip;
+    console.log(id, route_name, type);
       if (this.state.buttonStart) {
         this._trackLocationAsync();
         this.startTimer();
@@ -308,14 +317,15 @@ class WayPoint extends Component {
                 this.sessionStartOrEnd()
               }
             >
-              <Text>{this.state.buttonStartStop ? "End" : "Start"}</Text>
+              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
+              disabled={!this.state.buttonStart}
               onPress={() => this.goToHomeScreen()
               }
             >
-              <Text>Cancel</Text>
+              <Text style={this.state.buttonStart ? null : styles.buttonDisabled }>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -389,6 +399,9 @@ const styles = StyleSheet.create({
     padding: 12,
     width: 160,
     marginBottom: 5,
+  },
+  buttonDisabled: {
+    color: appColors.logoBlue,
   },
 });
 

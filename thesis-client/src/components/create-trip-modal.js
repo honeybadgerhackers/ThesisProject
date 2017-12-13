@@ -250,7 +250,7 @@ ModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
   tripName: PropTypes.string,
-  tripData: PropTypes.shape({}).isRequired,
+  tripData: PropTypes.shape({}),
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
@@ -269,6 +269,7 @@ ModalView.defaultProps = {
   visibleModal: null,
   googleMapImage: null,
   tripName: null,
+  tripData: null,
 };
 
 export default ModalView;
