@@ -12,13 +12,13 @@ import { SAVE_SESSION, SAVE_SESSION_CANCELLED } from '../constants/';
 //   };
 // };
 
-export const cancelCreateTrip = () => {
+export const cancelSaveSession = () => {
   return {
     type: SAVE_SESSION_CANCELLED,
   };
 };
 
-export const createTripSave = (tripStats, tripData) => {
+export const saveSession = (tripStats, tripData) => {
   return {
     type: SAVE_SESSION,
     payload: {

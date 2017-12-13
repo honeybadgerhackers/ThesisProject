@@ -4,9 +4,11 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
 import CreateTripModal from './create-trip-modal';
+import SaveSessionModal from './save-session-modal';
 import Stats from '../components/routeStats-component';
 import getDirections from '../actions/getDirections-action';
 import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-trip-action';
+import { saveSession, cancelSaveSession } from '../actions/save-session-action';
 import { createPolyline } from '../utilities/processors';
 
 const starIcons = {
@@ -214,7 +216,6 @@ class WayPoint extends Component {
             saveTrip={this.props.saveTripDispatch}
             cancelTrip={this.props.cancelTripDispatch}
             googleMapImage={this.props.mapImage}
-            tripName={this.props.routeTitle}
             tripData={this.props.newTripData}
             speedCounter={this.state.speedCounter}
             avgSpeed={this.state.avgSpeed}
@@ -255,7 +256,20 @@ class WayPoint extends Component {
             )}
           </MapView>
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
-
+          <SaveSessionModal
+            visibleModal={this.state.visibleModal}
+            saveSession={this.props.saveTripDispatch}
+            cancelSaveSession={this.props.cancelTripDispatch}
+            tripName={this.props.routeTitle}
+            tripData={this.props.activeTrip}
+            speedCounter={this.state.speedCounter}
+            avgSpeed={this.state.avgSpeed}
+            rating={this.state.rating}
+            closeModal={this.closeModal}
+            openRatingModal={this.openRatingModal}
+            setRating={this.setRating}
+            starIcons={starIcons}
+          />
           <View style={styles.cancelButtonContainer}>
             <TouchableOpacity
               style={styles.button}
@@ -305,6 +319,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   saveTripDispatch: (tripStats, tripData) => {
     dispatch(createTripSave(tripStats, tripData));
+  },
+  cancelSessionDispatch: () => {
+    dispatch(cancelSaveSession());
+  },
+  saveSessionDispatch: (tripStats, tripData) => {
+    dispatch(saveSession(tripStats, tripData));
   },
 });
 

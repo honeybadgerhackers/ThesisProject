@@ -11,9 +11,8 @@ const buttonColor = appColors.aquamarine;
 const ModalView = ({
   visibleModal,
   saveSession,
-  cancelTrip,
+  cancelSaveSession,
   googleMapImage,
-  tripName,
   tripData,
   speedCounter,
   avgSpeed,
@@ -180,14 +179,13 @@ const styles = StyleSheet.create({
 ModalView.propTypes = {
   visibleModal: PropTypes.number,
   googleMapImage: PropTypes.string,
-  tripName: PropTypes.string,
   tripData: PropTypes.shape({}).isRequired,
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
   closeModal: PropTypes.func.isRequired,
   saveSession: PropTypes.func.isRequired,
-  cancelTrip: PropTypes.func.isRequired,
+  cancelSaveSession: PropTypes.func.isRequired,
   openRatingModal: PropTypes.func.isRequired,
   setRating: PropTypes.func.isRequired,
   starIcons: PropTypes.shape({
@@ -199,7 +197,6 @@ ModalView.propTypes = {
 ModalView.defaultProps = {
   visibleModal: null,
   googleMapImage: null,
-  tripName: null,
 };
 
 export default ModalView;
