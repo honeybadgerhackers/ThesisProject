@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
 import CreateTripModal from './create-trip-modal';
@@ -45,9 +45,7 @@ class WayPoint extends Component {
   }
 
   state = {
-    localUserLocation: null,
     speed: null,
-    disableButton: false,
     followUserLocation: true,
     showsUserLocation: true,
     wayPoints: [],
@@ -63,51 +61,40 @@ class WayPoint extends Component {
   };
 
   componentDidMount = () => {
-    this.setState({ followUserLocation: false })
+    this.setState({ followUserLocation: false });
   }
 
   componentWillUnmount() {
     if (this.track) {
       this.track.remove();
-      this.setState({ disableButton: false, followUserLocation: false });
+      this.setState({ followUserLocation: false });
     }
   }
+
+  //*  Modals  *//
 
   setRating = (selectedRating) => {
     this.setState({ rating: selectedRating });
   }
 
-  _processTrip = () => {
-    const tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
-    const origin = tripWayPoints.splice(0, 1).join(',');
-    const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
-    const joinedWayPoints = createPolyline(tripWayPoints);
-
-    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId);
+  openRatingModal = () => {
+    this.setState({ visibleModal: 2 });
   }
 
-  _getDirections = async (origin, destination, joinedWaypoints) => {
-    if (!origin) {
-      const wayPointsObjects = this.state.wayPoints;
-      const wayPoints = wayPointsObjects.map((wayPoint) =>
-        Object.values(wayPoint).join());
-      origin = wayPoints.splice(0, 1);
-      destination = wayPoints.splice(wayPoints.length - 1, 1);
-      joinedWaypoints = wayPoints.join("|");
-    }
-    this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
-  };
-
-  _trackLocationAsync = async () => {
+  closeModal = () => {
     this.setState({
-      buttonStart: !this.state.buttonStart,
-      followUserLocation: true,
+      visibleModal: 0,
+      secondCounter: 0,
+      minuteCounter: 0,
     });
-    this.track = await Location.watchPositionAsync(
-      { /*distanceInterval: 5,*/ timeInterval: 3000, enableHighAccuracy: true },
-      this._handlePositionChange,
-    );
-  };
+  }
+
+  // *  Event Handlers  *//
+
+  goToHomeScreen() {
+    this.props.clearActiveTrip();
+    this.props.navigate("Home");
+  }
 
   _handleSpeedChange = (speedMetersPerSecond) => {
     const { topSpeed, avgSpeed, speedCounter } = this.state;
@@ -136,6 +123,37 @@ class WayPoint extends Component {
     });
   };
 
+  _trackLocationAsync = async () => {
+    this.setState({
+      buttonStart: !this.state.buttonStart,
+      followUserLocation: true,
+    });
+    this.track = await Location.watchPositionAsync(
+      { /*distanceInterval: 5,*/ timeInterval: 3000, enableHighAccuracy: true },
+      this._handlePositionChange,
+    );
+  };
+
+  //*  Custom Trips  *//
+
+  customTripStartOrEnd = () => {
+      if (this.state.buttonStart) {
+        this._trackLocationAsync();
+        this.startTimer();
+      } else {
+      this._stopTrackLocation();
+    }
+  };
+
+  _processTrip = () => {
+    const tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
+    const origin = tripWayPoints.splice(0, 1).join(',');
+    const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
+    const joinedWayPoints = createPolyline(tripWayPoints);
+
+    this.props.createTripDispatch(origin, destination, joinedWayPoints, this.props.userId);
+  }
+
   _stopTrackLocation = () => {
     if (this.track) {
       this.track.remove();
@@ -151,19 +169,45 @@ class WayPoint extends Component {
     });
   };
 
-  goToHomeScreen() {
-    this.props.clearActiveTrip();
-    this.props.navigate("Home");
-  }
+  //*  Sessions  *//
 
-  customTripStartOrEnd = () => {
+  _getDirections = async (origin, destination, joinedWaypoints) => {
+    if (!origin) {
+      const wayPointsObjects = this.state.wayPoints;
+      const wayPoints = wayPointsObjects.map((wayPoint) =>
+        Object.values(wayPoint).join());
+      origin = wayPoints.splice(0, 1);
+      destination = wayPoints.splice(wayPoints.length - 1, 1);
+      joinedWaypoints = wayPoints.join("|");
+    }
+    this.props.getDirectionsSaga(origin, destination, joinedWaypoints);
+  };
+
+  sessionStartOrEnd = () => {
       if (this.state.buttonStart) {
         this._trackLocationAsync();
         this.startTimer();
       } else {
-      this._stopTrackLocation();
+      this._stopSessionTrackLocation();
     }
   };
+
+  _stopSessionTrackLocation = () => {
+    if (this.track) {
+      this.track.remove();
+      this.setState({
+        buttonStart: !this.state.buttonStart,
+        followUserLocation: false,
+      });
+    }
+    clearInterval(this.state.timer);
+    this._processTrip();
+    this.setState({
+      visibleModal: 1,
+    });
+  };
+
+  //*  Stats  *//
 
   startTimer = () => {
     const timer = setInterval(() => {
@@ -174,18 +218,6 @@ class WayPoint extends Component {
         }
       }, 1000);
     this.setState({timer});
-  }
-
-  openRatingModal = () => {
-    this.setState({ visibleModal: 2 });
-  }
-
-  closeModal = () => {
-    this.setState({
-      visibleModal: 0,
-      secondCounter: 0,
-      minuteCounter: 0,
-    });
   }
 
   render() {
@@ -210,7 +242,7 @@ class WayPoint extends Component {
             />
             )}
           </MapView>
-          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+          <Stats speed={this.state.speed} style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <CreateTripModal
             visibleModal={this.state.visibleModal}
             saveTrip={this.props.saveTripDispatch}
@@ -274,9 +306,7 @@ class WayPoint extends Component {
             <TouchableOpacity
               style={styles.button}
               onPress={() =>
-                this.setState({
-                  // buttonStartStop: !this.state.buttonStartStop,
-                })
+                this.sessionStartOrEnd()
               }
             >
               <Text>{this.state.buttonStartStop ? "End" : "Start"}</Text>
