@@ -27,8 +27,8 @@ export default class AddPhoto extends Component {
             {
               backgroundColor: "rgba(0,0,0,0.4)",
               alignItems: "center",
-              justifyContent: "center"
-            }
+              justifyContent: "center",
+            },
           ]}
         >
           <ActivityIndicator color="#fff" animating size="large" />
@@ -44,17 +44,12 @@ export default class AddPhoto extends Component {
     }
 
     return (
-      <View
-        style={{
-          marginTop: 30,
-          width: 50,
-          borderRadius: 3,
-          elevation: 2,
-          shadowColor: "rgba(0,0,0,1)",
-          shadowOpacity: 0.2,
-          shadowOffset: { width: 4, height: 4 },
-          shadowRadius: 5,
-        }}
+      <View style={{
+        shadowColor: 'rgba(0,0,0,1)',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 4, height: 4 },
+        shadowRadius: 5,
+      }}
       >
         <TouchableHighlight onPress={() => this._share()}>
           <Image source={{ uri: image }} style={{ width: 50, height: 50 }} />
@@ -84,49 +79,38 @@ export default class AddPhoto extends Component {
     let imagePicked = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      base64: true
+      base64: true,
     });
     this._handleImagePicked(imagePicked);
   };
 
-  _handleImagePicked = async imageResult => {
-    try {
+  _handleImagePicked = imageResult => {
       this.setState({ uploading: true });
 
       if (!imageResult.cancelled) {
+        this.props.getImage(imageResult.base64);
         this.setState({
           image: imageResult.uri,
         });
-        this.props.imageBase64 = imageResult.base64;
       }
-    } catch (e) {
-      console.log({ e });
-      alert("Upload failed, sorry :(");
-    } finally {
-      this.setState({ uploading: false });
-    }
+    this.setState({ uploading: false });
   };
 
   render() {
     let { image } = this.state;
 
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text
-          style={{
-            fontSize: 20,
-            marginBottom: 20,
-            textAlign: "center",
-            marginHorizontal: 15
-          }}
-        />
+      <View style={{
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "space-around",
+        }}
+      >
         <Button onPress={this._pickImage} title="Upload Photo" />
         <Button onPress={this._takePhoto} title="Take Photo" />
 
         {this._maybeRenderImage()}
         {this._maybeRenderUploadingOverlay()}
-
-        <StatusBar barStyle="default" />
       </View>
     );
   }

@@ -61,7 +61,7 @@ class WayPoint extends Component {
     minuteCounter: 0,
     image: null,
     imageUploading: false,
-    imageBase64: null,
+    imageBase64: '',
   };
 
   componentDidMount = () => {
@@ -191,9 +191,15 @@ class WayPoint extends Component {
     });
   }
 
-  render() {
-    const {secondCounter, minuteCounter} = this.state;
+  getImage = (imageBase64) => {
+    this.setState({
+      imageBase64: imageBase64,
+    });
+  }
 
+  render() {
+    const {secondCounter, minuteCounter, imageBase64} = this.state;
+    console.log('LocationJS', imageBase64);
     if (this.props.activeTrip.route_name === undefined) {
       return (
         <View style={styles.container}>
@@ -226,8 +232,7 @@ class WayPoint extends Component {
             openRatingModal={this.openRatingModal}
             setRating={this.setRating}
             starIcons={starIcons}
-            image={this.state.image}
-            imageUploading={this.state.imageUploading}
+            getImage={this.getImage}
             imageBase64={this.state.imageBase64}
           />
           <View style={styles.buttonContainer}>

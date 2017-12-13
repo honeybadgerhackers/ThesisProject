@@ -23,8 +23,7 @@ const ModalView = ({
   openRatingModal,
   setRating,
   starIcons,
-  image,
-  imageUploading,
+  getImage,
   imageBase64,
 }) => {
   return (
@@ -117,8 +116,10 @@ const ModalView = ({
                   }}
                 />
               </View>
-              <AddPhoto />
             </View>
+            <View style={styles.addPhotoContainer}>
+              <AddPhoto style={styles.addPhoto} getImage={getImage} />
+            </View>            
           </View>
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
@@ -127,7 +128,7 @@ const ModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveTrip({ speedCounter, avgSpeed, rating }, tripData);
+                    saveTrip({ speedCounter, avgSpeed, rating, imageBase64 }, tripData);
                     closeModal();
                   }
                 }}
@@ -211,6 +212,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 5,
+  },
+  addPhotoContainer: {
+    flexDirection: 'row',
+    // backgroundColor: 'red',
+  },
+  addPhoto: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 5,
   },
   buttons: {
     flexDirection: 'row',
