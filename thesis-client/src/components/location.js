@@ -59,6 +59,9 @@ class WayPoint extends Component {
     timer: null,
     secondCounter: 0,
     minuteCounter: 0,
+    image: null,
+    imageUploading: false,
+    imageBase64: null,
   };
 
   componentDidMount = () => {
@@ -223,6 +226,9 @@ class WayPoint extends Component {
             openRatingModal={this.openRatingModal}
             setRating={this.setRating}
             starIcons={starIcons}
+            image={this.state.image}
+            imageUploading={this.state.imageUploading}
+            imageBase64={this.state.imageBase64}
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity

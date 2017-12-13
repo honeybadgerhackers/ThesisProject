@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
 import PropTypes from 'prop-types';
 import { appColors } from '../constants';
+import AddPhoto from './addPhotoButton';
 
 const buttonColor = appColors.aquamarine;
 
@@ -22,6 +23,9 @@ const ModalView = ({
   openRatingModal,
   setRating,
   starIcons,
+  image,
+  imageUploading,
+  imageBase64,
 }) => {
   return (
     <View>
@@ -113,6 +117,7 @@ const ModalView = ({
                   }}
                 />
               </View>
+              <AddPhoto />
             </View>
           </View>
           <View style={styles.buttons}>
