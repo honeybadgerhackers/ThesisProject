@@ -9,7 +9,8 @@ const axiosRequest = (params) => (
     return response.data;
   })
   .catch((err) => {
-    throw new Error(err);
+    console.log(typeof err);
+    // throw new Error(err);
     // const test = err.response.data
     // throw new Error('UnauthorizedError: No authorization token was found');
     // throw new Error('Request could not complete');
@@ -38,6 +39,7 @@ export async function dbSecureGET(endpoint, filter) {
 export async function dbSecurePOST(endpoint, data) {
   const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
+
   const params = {
     url: `${SERVER_URI}${endpoint}`,
     method: 'POST',
