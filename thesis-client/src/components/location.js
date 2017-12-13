@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { MapView, Location } from 'expo';
 import PropTypes from 'prop-types';
 import CreateTripModal from './create-trip-modal';
@@ -163,7 +163,7 @@ class WayPoint extends Component {
       });
     }
     clearInterval(this.state.timer);
-    this._processTrip();
+    if (this.state.wayPoints.length > 1) { this._processTrip(); } else { Alert.alert('Cancelled'); }
     this.setState({
       visibleModal: 1,
     });
@@ -201,7 +201,6 @@ class WayPoint extends Component {
       });
     }
     clearInterval(this.state.timer);
-    this._processTrip();
     this.setState({
       visibleModal: 1,
     });
