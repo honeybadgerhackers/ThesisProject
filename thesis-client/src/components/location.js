@@ -23,6 +23,8 @@ class WayPoint extends Component {
     createTripDispatch: PropTypes.func.isRequired,
     saveTripDispatch: PropTypes.func.isRequired,
     cancelTripDispatch: PropTypes.func.isRequired,
+    saveSessionDispatch: PropTypes.func.isRequired,
+    cancelSessionDispatch: PropTypes.func.isRequired,
     clearActiveTrip: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     activeTrip: PropTypes.shape({
@@ -30,6 +32,7 @@ class WayPoint extends Component {
       type: PropTypes.string,
       route_name: PropTypes.string,
       coords: PropTypes.array,
+      distance: PropTypes.number,
     }),
     mapRegion: PropTypes.shape({}).isRequired,
     userId: PropTypes.number.isRequired,
@@ -191,8 +194,6 @@ class WayPoint extends Component {
   };
 
   sessionStartOrEnd = () => {
-    const { id, route_name, type } = this.props.activeTrip;
-    console.log(id, route_name, type);
       if (this.state.buttonStart) {
         this._trackLocationAsync();
         this.startTimer();
@@ -209,9 +210,16 @@ class WayPoint extends Component {
         followUserLocation: false,
       });
     }
+    const tripWayPoints = this.state.wayPoints.slice().map(wayPoint => [wayPoint.lat, wayPoint.lng]);
+    const origin = tripWayPoints.splice(0, 1).join(',');
+    const destination = tripWayPoints.splice(tripWayPoints.length - 1, 1).join(',');
+    const joinedWayPoints = createPolyline(tripWayPoints);
     clearInterval(this.state.timer);
     this.setState({
       visibleModal: 1,
+      joinedWayPoints,
+      origin,
+      destination,
     });
   };
 
@@ -278,6 +286,20 @@ class WayPoint extends Component {
         </View>
       );
     } else {
+      const {
+        activeTrip: {
+          id,
+          route_name,
+          type,
+          distance,
+        },
+        userId,
+      } = this.props;
+      const {
+        origin,
+        destination,
+        joinedWayPoints,
+      } = this.state;
       return (
         <View style={styles.container}>
           <MapView
@@ -298,12 +320,21 @@ class WayPoint extends Component {
           <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <SaveSessionModal
             visibleModal={this.state.visibleModal}
-            saveSession={this.props.saveTripDispatch}
-            cancelSaveSession={this.props.cancelTripDispatch}
+            saveSession={this.props.saveSessionDispatch}
+            cancelSaveSession={this.props.cancelSessionDispatch}
             tripName={this.props.routeTitle}
-            tripData={this.props.activeTrip}
+            tripData={{
+              id,
+              route_name,
+              type,
+              userId,
+            }}
             speedCounter={this.state.speedCounter}
             avgSpeed={this.state.avgSpeed}
+            time={this.state.minuteCounter + (this.state.secondCounter / 100)}
+            origin={origin}
+            destination={destination}
+            wayPoints={joinedWayPoints}
             rating={this.state.rating}
             closeModal={this.closeModal}
             openRatingModal={this.openRatingModal}
@@ -325,7 +356,7 @@ class WayPoint extends Component {
               onPress={() => this.goToHomeScreen()
               }
             >
-              <Text style={this.state.buttonStart ? null : styles.buttonDisabled }>Cancel</Text>
+              <Text style={this.state.buttonStart ? null : styles.buttonDisabled}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -346,6 +377,7 @@ function mapStateToProps(state) {
     newTripData: state.createTrip.data,
   };
 }
+
 const mapDispatchToProps = (dispatch) => ({
   getDirectionsSaga: (origin, destination, joinedWaypoints) => {
     dispatch(getDirections(origin, destination, joinedWaypoints));

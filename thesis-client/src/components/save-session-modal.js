@@ -16,6 +16,10 @@ const SessionModalView = ({
   tripData,
   speedCounter,
   avgSpeed,
+  time,
+  origin,
+  destination,
+  wayPoints,
   rating,
   closeModal,
   openRatingModal,
@@ -69,7 +73,15 @@ const SessionModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveSession({ speedCounter, avgSpeed, rating }, tripData);
+                    saveSession({
+                      speedCounter,
+                      avgSpeed,
+                      rating,
+                      time,
+                      origin,
+                      destination,
+                      wayPoints,
+                    }, tripData);
                     closeModal();
                   }
                 }}
@@ -183,6 +195,10 @@ SessionModalView.propTypes = {
   rating: PropTypes.number.isRequired,
   speedCounter: PropTypes.number.isRequired,
   avgSpeed: PropTypes.number.isRequired,
+  time: PropTypes.number.isRequired,
+  origin: PropTypes.string,
+  destination: PropTypes.string,
+  wayPoints: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
   saveSession: PropTypes.func.isRequired,
   cancelSaveSession: PropTypes.func.isRequired,
@@ -198,6 +214,9 @@ SessionModalView.defaultProps = {
   tripData: null,
   visibleModal: null,
   googleMapImage: null,
+  origin: '',
+  destination: '',
+  wayPoints: '',
 };
 
 export default SessionModalView;

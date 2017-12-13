@@ -93,7 +93,8 @@ const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
       lat: latitude,
       lng: longitude,
     };
-    const tripsRequest = yield call(dbSecureGET, 'routenearby', filter);
+
+    const tripsRequest = yield call(dbSecureGET, 'route&nearby', filter);
 
     const unique = (arr) => {
       const result = [];
