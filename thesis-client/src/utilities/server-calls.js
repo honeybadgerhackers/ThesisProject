@@ -53,6 +53,22 @@ export async function dbSecurePOST(endpoint, data) {
   return await axiosRequest(params);
 }
 
+export async function dbSecureDELETE(endpoint, data) {
+  const ACCESS_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
+  if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
+  const params = {
+    url: `${SERVER_URI}${endpoint}`,
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `BEARER ${ACCESS_TOKEN}`,
+    },
+    data: JSON.stringify(data),
+  };
+
+  return await axiosRequest(params);
+}
+
 export async function dbPOST(endpoint, data) {
   if (endpoint[0] !== '/') { endpoint = `/${endpoint}`; }
 

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import HomeStack from './home-stack';
 import MapStack from './map-stack';
 import ProfileStack from './profile-stack';
+import FavoriteStack from './favorite-stack';
 
 const tabBarHomeIcon = ({ tintColor, focused }) => (
   <Ionicons
@@ -29,6 +30,14 @@ const tabBarProfileIcon = ({ tintColor, focused }) => (
     size={26}
     style={{ color: tintColor }}
   />
+);
+
+const tabBarFavoriteIcon = ({ tintColor, focused }) => (
+  <Ionicons
+    name={focused ? 'ios-heart' : 'ios-heart-outline'}
+    size={26}
+    style={{ color: tintColor }}
+  />
 )
 
 const RootNavigator = TabNavigator(
@@ -38,6 +47,13 @@ const RootNavigator = TabNavigator(
       navigationOptions: {
         tabBarLabel: 'Home',
         tabBarIcon: tabBarHomeIcon,
+      },
+    },
+    Favorite: {
+      screen: FavoriteStack,
+      navigationOptions: {
+        tabBarLabel: 'Favorites',
+        tabBarIcon: tabBarFavoriteIcon,
       },
     },
     Map: {

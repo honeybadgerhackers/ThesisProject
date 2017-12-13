@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { Location, Permissions } from 'expo';
 import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
-import { dbPOST, dbSecureGET, dbSecurePOST } from '../utilities/server-calls';
+import { dbPOST, dbSecureGET, dbSecurePOST, dbSecureDELETE } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
 import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
 import {
@@ -41,6 +41,7 @@ import {
   POST_FAVORITE,
   GET_USER_FAVORITES_SUCCESS,
   GET_USER_FAVORITES,
+  REMOVE_FAVORITE,
   } from '../constants';
 import { googleAPIKEY } from '../../config';
 
@@ -93,9 +94,7 @@ const getTripsAsync = function* ({payload: {coords: {latitude, longitude}}}) {
       lat: latitude,
       lng: longitude,
     };
-
     const tripsRequest = yield call(dbSecureGET, 'route&nearby', filter);
-
     const unique = (arr) => {
       const result = [];
       arr.reduce((prev, current) => {
@@ -312,7 +311,20 @@ const postFavorite = function* ({payload: {userId, routeId}}) {
       id_route: routeId,
     };
     const favoritePostRequest = yield call(dbSecurePOST, 'favorite', data);
-    console.info(favoritePostRequest);
+    yield put({type: GET_USER_FAVORITES_SUCCESS, payload: favoritePostRequest});
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const removeFavorite = function* ({payload: {userId, routeId}}) {
+  try {
+    const data = {
+      id_user_account: userId,
+      id_route: routeId,
+    };
+    const favoriteDeleteRequest = yield call(dbSecureDELETE, 'favorite', data);
+    yield put({type: GET_USER_FAVORITES_SUCCESS, payload: favoriteDeleteRequest});
   } catch (error) {
     console.error(error);
   }
@@ -376,6 +388,10 @@ const watchPostFavorite = function* () {
   yield takeEvery(POST_FAVORITE, postFavorite);
 };
 
+const watchRemoveFavorite = function* () {
+  yield takeEvery(REMOVE_FAVORITE, removeFavorite);
+};
+
 const watchGetFavorite = function* () {
   yield takeLatest(GET_USER_FAVORITES, getFavorite);
 };
@@ -399,7 +415,8 @@ const rootSaga = function* () {
     watchUserSessions(),
     watchPostFavorite(),
     watchGetFavorite(),
+    watchRemoveFavorite(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite };

@@ -5,17 +5,18 @@ import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
-import { postFavorite } from '../actions/favorite-action';
+import { getUserFavorites } from '../actions/getUserInfo-action';
+import { removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
-import Trip from '../components/trip-component';
+import Favorite from '../components/favorites';
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
     return Expo.Asset.fromModule(image).downloadAsync();
 });
 
-class HomeScreen extends Component {
+class FavoriteScreen extends Component {
   static navigationOptions = () => ({
     header: null
   });
@@ -23,47 +24,36 @@ class HomeScreen extends Component {
   static propTypes = {
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
-    getUserLocation: PropTypes.func.isRequired,
-    addFavorite: PropTypes.func.isRequired,
+    getUserFavorites: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
-    trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
-  };
-
-  state = {
-    appIsReady: false,
+    deleteFavorite: PropTypes.func.isRequired,
   };
 
   componentWillMount() {
-    this.props.getUserLocation();
-    this._loadAssetsAsync();
-  }
-
-  _loadAssetsAsync = async () => {
-    const imageAssets = cacheImages([icon]);
-    await Promise.all([...imageAssets]);
-    this.setState({ appIsReady: true });
+    this.props.getUserFavorites(this.props.user.id);
   }
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, addFavorite
+   navigation: { navigate }, showTripLocation, favorites, userLocation, deleteFavorite, user,
   } = this.props;
     return (
-      <View style={styles.homeScreenView}>
-        <Text style={styles.title}>
-            Routes Near You
-        </Text>
-        <ScrollView>
-          <Trip
-            user={user}
-            addFavorite={addFavorite}
-            navigate={navigate}
-            trips={trips}
-            showTripLocation={showTripLocation}
-          />
-        </ScrollView>
-      </View>
+        <View style={styles.homeScreenView}>
+          <Text style={styles.title}>
+              Favorited
+          </Text>
+          <ScrollView>
+            <Favorite
+              user={user}
+              deleteFavorite={deleteFavorite}
+              navigate={navigate}
+              favorites={favorites}
+              showTripLocation={showTripLocation}
+            />
+          </ScrollView>
+        </View>
     );
   }
 }
@@ -72,7 +62,7 @@ function mapStateToProps(state) {
   return {
     userLocation: state.userLocation,
     user: state.user,
-    trips: state.trips.trips,
+    favorites: state.favorites.favorites,
   };
 }
 
@@ -83,9 +73,12 @@ const mapDispatchToProps = dispatch => ({
   getUserLocation: () => {
     dispatch(getUserLocation());
   },
-  addFavorite: (userId, routeId) => {
-    dispatch(postFavorite(userId, routeId));
-  }
+  getUserFavorites: (userId) => {
+    dispatch(getUserFavorites(userId));
+  },
+  deleteFavorite: (userId, routeId) => {
+    dispatch(removeFavorite(userId, routeId));
+  },
 });
 
 const styles = {
@@ -118,4 +111,4 @@ const styles = {
   },
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(FavoriteScreen);
