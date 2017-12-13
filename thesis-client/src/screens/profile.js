@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import Swiper from 'react-native-swiper';
 import { getUserRoutes, getUserSessions } from '../actions/getUserInfo-action';
+import { getActiveTrip } from '../actions/activeTrip-action';
 // import { STATUS_BAR_HEIGHT } from '../constants';
 import ProfileStats from '../components/profile-stats-component';
 import ProfileRoutes from '../components/profile-routes-component';
@@ -11,6 +12,8 @@ import ProfileRoutes from '../components/profile-routes-component';
 class ProfileScreen extends Component {
 
   static propTypes = {
+    showTripLocation: PropTypes.func.isRequired,
+    navigation: PropTypes.shape({}).isRequired,    
     getUserSessions: PropTypes.func.isRequired,
     getUserRoutes: PropTypes.func.isRequired,
     //eslint-disable-next-line
@@ -45,7 +48,11 @@ class ProfileScreen extends Component {
             Your Routes
           </Text>
           <ScrollView>
-            <ProfileRoutes routes={this.props.routes} />
+            <ProfileRoutes 
+              routes={this.props.routes}
+              navigate={this.props.navigation.navigate}
+              showTripLocation={this.props.showTripLocation}
+            />
           </ScrollView>
         </View>
       </Swiper>
@@ -62,6 +69,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = dispatch => ({
+  showTripLocation: (trip, cb) => {
+    dispatch(getActiveTrip(trip, cb));
+  },
   getUserSessions: (userId) => {
     dispatch(getUserSessions(userId));
   },

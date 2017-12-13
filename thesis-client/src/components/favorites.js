@@ -2,36 +2,49 @@ import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import mapIcon from '../assets/icons/mapIcon.png';
+import heartRemove from '../assets/icons/heartminus.png';
 
-const Favorite = ({ navigate, favorites, showTripLocation }) => {
+const Favorite = ({
+   navigate, favorites, showTripLocation, deleteFavorite, user,
+   }) => {
   const goToMap = () => {
     navigate('Map');
   };
 
   const createTrip = () => favorites.map(trip => (
-    <TouchableOpacity
+    <View
+      style={styles.container}
       key={trip.id}
-      onPress={() => showTripLocation(trip, goToMap)}
     >
-      <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{trip.route_name}</Text>
-          <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
-          <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
-        </View>
-        <View style={styles.imageContainer}>
-          <Text style={styles.imageContainerText}>{trip.type}</Text>
-          <Image source={mapIcon} style={styles.imageStyle} />
-          <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
-        </View>
+      <TouchableOpacity
+        onPress={() => deleteFavorite(user.id, trip.id)}
+      >
+        <Image source={heartRemove} showIcon style={styles.imageStyle} />
+      </TouchableOpacity>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{trip.route_name}</Text>
+        <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
+        <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
       </View>
-    </TouchableOpacity>
+      <View style={styles.imageContainer}>
+        <Text style={styles.imageContainerText}>{trip.type}</Text>
+        <TouchableOpacity
+          onPress={() => showTripLocation(trip, goToMap)}
+        >
+          <Image source={mapIcon} style={styles.imageStyle} />
+        </TouchableOpacity>
+        <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
+      </View>
+    </View>
   ));
 
   return <View>{createTrip()}</View>;
 };
 
 Favorite.propTypes = {
+  //eslint-disable-next-line
+  user: PropTypes.object.isRequired,
+  deleteFavorite: PropTypes.func.isRequired,
   navigate: PropTypes.func.isRequired,
   favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   showTripLocation: PropTypes.func.isRequired,
