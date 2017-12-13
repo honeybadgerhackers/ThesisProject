@@ -210,7 +210,6 @@ const createTripAsync = function* (payload) {
     },
   } = payload;
   try {
-    // const result = yield call(dbSecurePOST, 'route', { waypoints, userId });)
     const res = yield call(
       googleDirectionsCall,
       'https://maps.googleapis.com/maps/api/directions/json?' +
