@@ -7,7 +7,7 @@ import HomeStack from './home-stack';
 import MapStack from './map-stack';
 import ProfileStack from './profile-stack';
 import FavoriteStack from './favorite-stack';
-import { appColors } from '../constants'
+import { appColors } from '../constants';
 
 const tabBarHomeIcon = ({ tintColor, focused }) => (
   <Ionicons

@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import mapIcon from '../assets/icons/mapIcon.png';
-import { appColors } from '../constants';
+import defaultImage from '../assets/images/default.jpg';
+import { appColors, appColorsTransparency } from '../constants';
 
-const HeartIcon = ({ focused }) => (
+const HeartIcon = (favorite) => (
   <Ionicons
-    name={focused ? 'ios-heart' : 'ios-heart-outline'}
+    name={favorite ? 'ios-heart' : 'ios-heart-outline'}
     size={26}
     style={{ color: appColors.begonia }}
   />
 );
-
 
 const Trip = ({
    navigate, trips, showTripLocation, addFavorite, user, favorites, deleteFavorite
@@ -25,49 +25,64 @@ const Trip = ({
     return prev;
   }, {});
   const createTrip = () => trips.map(trip => {
-    let Icon = HeartIcon(!!favoriteId[trip.id]);
-    let action = favoriteId[trip.id] ? () => deleteFavorite(user.id, trip.id) : () => addFavorite(user.id, trip.id);
+    const {
+      photo_url,
+      id,
+      type,
+      route_name,
+      current_rating,
+      street,
+      favorite_count,
+    } = trip;
+    let Icon = HeartIcon(!!favoriteId[id]);
+    let action = favoriteId[id] ? () => deleteFavorite(user.id, id) : () => addFavorite(user.id, id);
     return (
-      <View
-        style={styles.container}
-        key={trip.id}
+      <ImageBackground
+        key={id}
+        style={{}}
+        source={photo_url ? { uri: photo_url } : require('../assets/images/default.jpg')}
       >
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{trip.route_name}</Text>
-          <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
-          <Text style={styles.startingAddress}>{trip.street}</Text>
-        </View>
-        <View style={styles.imageContainer}>
-          {/* <Text style={styles.imageContainerText}>{trip.type}</Text> */}
-          {/* <TouchableOpacity
-            onPress={action}
-          >
-            <Image source={icon} showIcon style={styles.imageStyle} />
-          </TouchableOpacity> */}
+        <View
+          style={styles.container}
+          key={id}
+        >
           <View style={styles.textContainer}>
-            <Text style={styles.title}>{trip.route_name}</Text>
-            <Text style={styles.subtitle}>Current Rating: {trip.current_rating}</Text>
-            <Text style={styles.startingAddress}>12345 N.Starting Address</Text>
+            <Text style={styles.title}>{route_name}</Text>
+            <Text style={styles.subtitle}>Current Rating: {current_rating}</Text>
+            <Text style={styles.startingAddress}>{street}</Text>
           </View>
           <View style={styles.imageContainer}>
-            <Text style={styles.imageContainerText}>{trip.type}</Text>
-            <TouchableOpacity
-              onPress={() => showTripLocation(trip, goToMap)}
+            {/* <Text style={styles.imageContainerText}>{type}</Text> */}
+            {/* <TouchableOpacity
+              onPress={action}
             >
-              <Image source={mapIcon} showIcon style={styles.imageStyle} />
+              <Image source={icon} showIcon style={styles.imageStyle} />
+            </TouchableOpacity> */}
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{route_name}</Text>
+              <Text style={styles.startingAddress}>{street}</Text>
+              <Text style={styles.subtitle}>Current Rating: {current_rating}</Text>
+            </View>
+            <View style={styles.imageContainer}>
+              {/* <Text style={styles.imageContainerText}>{type}</Text> */}
+              <TouchableOpacity
+                onPress={() => showTripLocation(trip, goToMap)}
+              >
+                <Image source={mapIcon} showIcon style={styles.imageStyle} />
+              </TouchableOpacity>
+              <Text style={styles.favoriteCount}>{favorite_count}</Text>
+            </View>
+          </View>
+          <View style={styles.favoriteContainer}>
+            <TouchableOpacity
+              onPress={action}
+            >
+              <Icon />
+              {/* <Image source={heartIcon} showIcon style={styles.imageStyle} /> */}
             </TouchableOpacity>
-            <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
           </View>
         </View>
-        <View style={styles.favoriteContainer}>
-          <TouchableOpacity
-            onPress={action}
-          >
-            <Icon />
-            {/* <Image source={heartIcon} showIcon style={styles.imageStyle} /> */}
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ImageBackground>
     );
   });
 
@@ -91,31 +106,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    backgroundColor: appColors.midLightBlue,
+    // backgroundColor: appColors.midLightBlue,
     height: 150,
     borderWidth: 1,
   },
   textContainer: {
     flex: 3,
-    height: 148,
+    // height: 148,
+    padding: 10,
+    margin: 10,
+    backgroundColor: appColorsTransparency(0.7).logoBlue,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: appColors.navyBlue,
-    textAlign: 'center',
-    marginTop: 25,
+    backgroundColor: appColors.transparent,
+    color: appColors.lightBlue,
+    textAlign: 'left',
+    fontFamily: 'Devanagari Sangam MN',
+    // marginTop: 25,
+  },
+  startingAddress: {
+    marginTop: 10,
+    fontSize: 15,
+    backgroundColor: appColors.transparent,
+    color: appColors.lightBlue,
+    textAlign: 'left',
   },
   subtitle: {
     marginTop: 10,
     fontSize: 15,
-    color: appColors.navyBlue,
-    textAlign: 'center',
+    color: appColors.lightBlue,
+    backgroundColor: appColors.transparent,
+    textAlign: 'left',
   },
   imageContainer: {
     flex: 1,
     height: 148,
     width: 50,
+    backgroundColor: appColors.transparent,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -123,6 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 148,
     width: 50,
+    backgroundColor: appColors.transparent,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -147,12 +177,6 @@ const styles = StyleSheet.create({
     color: appColors.navyBlue,
     textAlign: 'center',
     fontWeight: 'bold',
-  },
-  startingAddress: {
-    marginTop: 10,
-    fontSize: 15,
-    color: appColors.navyBlue,
-    textAlign: 'center',
   },
 });
 

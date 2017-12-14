@@ -12,6 +12,23 @@ export const appColors = {
   aquamarine: '#59c9a5',
   oriolesOrange: '#ff4a1c',
   citrine: '#e3b505',
+  transparent: 'rgba(0, 0, 0, 0)',
+};
+
+export const appColorsTransparency = (transparency) => {
+  return ({
+    logoBlue: `rgba(104, 146, 179, ${transparency})`,
+    lightBlue: `rgba(248, 252, 255, ${transparency})`,
+    midLightBlue: `rgba(210, 222, 232, ${transparency})`,
+    spanishBlue: `rgba(1,111,185, ${transparency})`,
+    navyBlue: `rgba(28, 38, 65, ${transparency})`,
+    begonia: `rgba(247,113,125, ${transparency})`,
+    mossGreen: `rgba(178,255,169, ${transparency})`,
+    aquamarine: `rgba(89,201,165, ${transparency})`,
+    oriolesOrange: `rgba(255,74,28, ${transparency})`,
+    citrine: `rgba(227,181,5, ${transparency})`,
+    black: `rgba(0, 0, 0, ${transparency})`,
+  });
 };
 
 export const INITIATE_LOGIN = 'INITIATE_LOGIN';
