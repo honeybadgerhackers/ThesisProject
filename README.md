@@ -27,7 +27,7 @@ The quickest way to get the server up and running is to use Docker-Compose. Ther
 
 If you need to make modifications to the servers and want to keep using Docker, you will need to fork the repos and add them to your own docker hub account. 
 ### Hosting Without Docker
-To run the app without docker, you will need to clone and start each of these repositories with the environmental variables listed. Once cloned with the environmental variables in place, each respective server's modules can be install with `npm install` and started with `npm start`.
+To run the app without docker, you will need to clone and start each of these repositories with the environmental variables listed. Once cloned with the environmental variables in place, each respective server's modules can be installed with `npm install` and started with `npm start`.
 
 * [bikeMap Proxy Server](https://github.com/honeybadgerhackers/bikeMap-Proxy)
 * [bikeMap Database Server](https://github.com/honeybadgerhackers/bikeMap-DBServer)
