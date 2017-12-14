@@ -114,7 +114,6 @@ Uphold the current code standard:
 * Follow STYLE-GUIDE.md
 * Run the **tests** before submitting a pull request.
 * Tests are very, very important. Submit tests if your pull request contains new, testable behavior.
-* Your pull request is comprised of a single **squashed** commit.
 
 #### Checklist:
 
