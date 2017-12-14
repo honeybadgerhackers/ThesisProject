@@ -110,4 +110,9 @@ tabBarProfileIcon.propTypes = {
   focused: PropTypes.string.isRequired,
 };
 
+tabBarFavoriteIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired,
+  focused: PropTypes.string.isRequired,
+};
+
 export default RootNavigator;

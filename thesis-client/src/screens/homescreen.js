@@ -19,7 +19,6 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    // title: 'Routes',
     header: () => (<View style={styles.header}><Text style={styles.title}>Routes</Text></View>),
   });
 
