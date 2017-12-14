@@ -114,32 +114,14 @@ const styles = {
     fontWeight: 'bold',
     color: appColors.midLightBlue,
     textAlign: 'center',
-    // marginTop: 10,
     backgroundColor: appColors.navyBlue,
-    // borderWidth: 2,
   },
   header: {
     height: 80,
-    // marginTop: -10, // only for IOS to give StatusBar Space
   },
-  // imageStyle: {
-  //   marginLeft: 10,
-  //   width: 40,
-  //   height: 40,
-  // },
-  // imageStyle2: {
-  //   marginRight: 10,
-  //   width: 40,
-  //   height: 40,
-  // },
   homeScreenView: {
     flex: 1,
   },
-  // headerTitle: {
-  //   fontSize: 20,
-  //   fontWeight: 'bold',
-  //   color: 'black',
-  // },
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
