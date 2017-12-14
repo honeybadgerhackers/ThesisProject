@@ -7,7 +7,7 @@ import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
 import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { appColors } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 import Trip from '../components/trip-component';
 import getUserPhotosAction from '../actions/getUserPhotos-action';
 
@@ -60,7 +60,10 @@ class HomeScreen extends Component {
         <StatusBar
           barStyle="light-content"
         />
-        <ScrollView>
+        <ScrollView 
+          style={{ backgroundColor: appColorsTransparency(0.8).navyBlue}}
+          contentContainerStyle={{flexGrow: 1, flexDirection: 'column'}}
+        >
           <Trip
             deleteFavorite={deleteFavorite}
             favorites={favorites}
@@ -116,10 +119,10 @@ const styles = {
     backgroundColor: appColors.navyBlue,
   },
   header: {
-    height: 80,
+
   },
   homeScreenView: {
-    flex: 1,
+    // flex: 1,
   },
 };
 

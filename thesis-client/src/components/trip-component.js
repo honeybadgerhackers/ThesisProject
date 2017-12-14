@@ -3,14 +3,34 @@ import { View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import mapIcon from '../assets/icons/mapIcon.png';
-import defaultImage from '../assets/images/default.jpg';
+import Rating from 'react-native-rating';
 import { appColors, appColorsTransparency } from '../constants';
 
-const HeartIcon = (favorite) => (
+const starIcons = {
+  filled: require('../assets/icons/star_filled.png'),
+  unfilled: require('../assets/icons/star_unfilled.png'),
+};
+
+const HeartIcon = ({favorite}) => (
   <Ionicons
-    name={favorite ? 'ios-heart' : 'ios-heart-outline'}
-    size={26}
-    style={{ color: appColors.begonia }}
+    name="ios-heart"
+    size={35}
+    style={favorite ? { color: appColors.begonia } : {color: appColors.logoBlue}}
+  />
+);
+
+const BackgroundHeartIcon = ({favorite}) => (
+  <Ionicons
+    name="ios-heart"
+    size={40}
+    style={favorite ?
+      {
+        color: appColorsTransparency(1).lightBlue, position: 'absolute', right: 2, top: 1, margin: -4,
+      } :
+      {
+        color: appColorsTransparency(1).midLightBlue, position: 'absolute', right: 2, top: 1, margin: -4,
+      }
+    }
   />
 );
 
@@ -28,13 +48,12 @@ const Trip = ({
     const {
       photo_url,
       id,
-      type,
       route_name,
       current_rating,
-      street,
+      display_name,
       favorite_count,
     } = trip;
-    let Icon = HeartIcon(!!favoriteId[id]);
+
     let action = favoriteId[id] ? () => deleteFavorite(user.id, id) : () => addFavorite(user.id, id);
     return (
       <ImageBackground
@@ -47,39 +66,44 @@ const Trip = ({
           key={id}
         >
           <View style={styles.textContainer}>
-            <Text style={styles.title}>{route_name}</Text>
-            <Text style={styles.subtitle}>Current Rating: {current_rating}</Text>
-            <Text style={styles.startingAddress}>{street}</Text>
-          </View>
-          <View style={styles.imageContainer}>
-            {/* <Text style={styles.imageContainerText}>{type}</Text> */}
-            {/* <TouchableOpacity
-              onPress={action}
-            >
-              <Image source={icon} showIcon style={styles.imageStyle} />
-            </TouchableOpacity> */}
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{route_name}</Text>
-              <Text style={styles.startingAddress}>{street}</Text>
-              <Text style={styles.subtitle}>Current Rating: {current_rating}</Text>
+            <Text style={styles.title}>{display_name}</Text>
+            <Text style={styles.startingAddress}>{route_name}</Text>
+            <View style={styles.subtitle}>
+              <Rating
+                initial={Math.floor(current_rating)}
+                selectedStar={starIcons.filled}
+                unselectedStar={starIcons.unfilled}
+                maxScale={1.4}
+                starStyle={{
+                  width: 17,
+                  height: 17,
+                }}
+                editable={false}
+              />
             </View>
+          </View>
+          <View style={styles.actionContainer}>
             <View style={styles.imageContainer}>
-              {/* <Text style={styles.imageContainerText}>{type}</Text> */}
               <TouchableOpacity
                 onPress={() => showTripLocation(trip, goToMap)}
               >
                 <Image source={mapIcon} showIcon style={styles.imageStyle} />
               </TouchableOpacity>
+            </View>
+            <View style={styles.favoriteContainer}>
+              <TouchableOpacity
+                onPress={action}
+              >
+                <BackgroundHeartIcon
+                  favorite={favoriteId[id]}
+                />
+                <HeartIcon
+                  favorite={favoriteId[id]}
+                />
+                {/* <Image source={heartIcon} showIcon style={styles.imageStyle} /> */}
+              </TouchableOpacity>
               <Text style={styles.favoriteCount}>{favorite_count}</Text>
             </View>
-          </View>
-          <View style={styles.favoriteContainer}>
-            <TouchableOpacity
-              onPress={action}
-            >
-              <Icon />
-              {/* <Image source={heartIcon} showIcon style={styles.imageStyle} /> */}
-            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
@@ -94,7 +118,6 @@ Trip.propTypes = {
   navigate: PropTypes.func.isRequired,
   addFavorite: PropTypes.func.isRequired,
   deleteFavorite: PropTypes.func.isRequired,
-  // user: PropTypes.object.func.isRequired,
   user: PropTypes.shape({}).isRequired,
   trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   showTripLocation: PropTypes.func.isRequired,
@@ -106,16 +129,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    // backgroundColor: appColors.midLightBlue,
-    height: 150,
-    borderWidth: 1,
+    height: 157,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   textContainer: {
-    flex: 3,
-    // height: 148,
-    padding: 10,
+    flex: 4,
+    borderRadius: 2,
+    padding: 5,
     margin: 10,
-    backgroundColor: appColorsTransparency(0.7).logoBlue,
+    backgroundColor: appColorsTransparency(0.7).navyBlue,
   },
   title: {
     fontSize: 18,
@@ -123,22 +145,18 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.transparent,
     color: appColors.lightBlue,
     textAlign: 'left',
-    fontFamily: 'Devanagari Sangam MN',
-    // marginTop: 25,
+    fontFamily: 'GurmukhiMN-Bold',
   },
   startingAddress: {
-    marginTop: 10,
+    marginTop: 3,
     fontSize: 15,
     backgroundColor: appColors.transparent,
     color: appColors.lightBlue,
     textAlign: 'left',
   },
   subtitle: {
-    marginTop: 10,
-    fontSize: 15,
-    color: appColors.lightBlue,
+    marginTop: 3,
     backgroundColor: appColors.transparent,
-    textAlign: 'left',
   },
   imageContainer: {
     flex: 1,
@@ -148,11 +166,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  favoriteContainer: {
+  actionContainer: {
     flex: 1,
-    height: 148,
-    width: 50,
+    margin: 9,
+    borderRadius: 100,
+    paddingTop: 5,
     backgroundColor: appColors.transparent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  favoriteContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -172,10 +196,14 @@ const styles = StyleSheet.create({
     width: 75,
   },
   favoriteCount: {
-    marginTop: 2,
+    position: 'absolute',
+    paddingLeft: 10,
+    paddingTop: 6,
+    paddingBottom: 10,
+    paddingRight: 10,
     fontSize: 10,
-    color: appColors.navyBlue,
-    textAlign: 'center',
+    color: appColors.lightBlue,
+    textAlign: 'left',
     fontWeight: 'bold',
   },
 });
