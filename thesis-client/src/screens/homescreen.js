@@ -5,10 +5,11 @@ import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
-import { postFavorite } from '../actions/favorite-action';
+import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
+
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
@@ -29,6 +30,7 @@ class HomeScreen extends Component {
     favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
+    deleteFavorite: PropTypes.func.isRequired,    
   };
 
   state = {
@@ -48,7 +50,7 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite,
+   navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite, deleteFavorite,
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
@@ -57,6 +59,7 @@ class HomeScreen extends Component {
         </Text>
         <ScrollView>
           <Trip
+            deleteFavorite={deleteFavorite}
             favorites={favorites}
             user={user}
             addFavorite={addFavorite}
@@ -88,7 +91,10 @@ const mapDispatchToProps = dispatch => ({
   },
   addFavorite: (userId, routeId) => {
     dispatch(postFavorite(userId, routeId));
-  }
+  },
+  deleteFavorite: (userId, routeId) => {
+    dispatch(removeFavorite(userId, routeId));
+  },
 });
 
 const styles = {
