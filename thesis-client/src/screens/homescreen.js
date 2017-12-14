@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform, Image, Text } from 'react-native';
+import { View, ScrollView, StatusBar, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
@@ -7,7 +7,7 @@ import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
 import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors } from '../constants';
 import Trip from '../components/trip-component';
 import getUserPhotosAction from '../actions/getUserPhotos-action';
 
@@ -19,19 +19,21 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    header: null,
+    // title: 'Routes',
+    header: () => (<View style={styles.header}><Text style={styles.title}>Routes</Text></View>),
   });
 
   static propTypes = {
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
     getUserLocation: PropTypes.func.isRequired,
+    getUserPhotos: PropTypes.func.isRequired,
     addFavorite: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
-    deleteFavorite: PropTypes.func.isRequired,    
+    deleteFavorite: PropTypes.func.isRequired,
   };
 
   state = {
@@ -56,7 +58,9 @@ class HomeScreen extends Component {
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
-
+        <StatusBar
+          barStyle="light-content"
+        />
         <ScrollView>
           <Trip
             deleteFavorite={deleteFavorite}
@@ -104,32 +108,38 @@ const mapDispatchToProps = dispatch => ({
 
 const styles = {
   title: {
+    padding: 10,
+    paddingTop: 25,
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: appColors.midLightBlue,
     textAlign: 'center',
-    marginTop: 10,
-    backgroundColor: 'lightblue',
-    borderWidth: 2,
+    // marginTop: 10,
+    backgroundColor: appColors.navyBlue,
+    // borderWidth: 2,
   },
-  imageStyle: {
-    marginLeft: 10,
-    width: 40,
-    height: 40,
+  header: {
+    height: 80,
+    // marginTop: -10, // only for IOS to give StatusBar Space
   },
-  imageStyle2: {
-    marginRight: 10,
-    width: 40,
-    height: 40,
-  },
+  // imageStyle: {
+  //   marginLeft: 10,
+  //   width: 40,
+  //   height: 40,
+  // },
+  // imageStyle2: {
+  //   marginRight: 10,
+  //   width: 40,
+  //   height: 40,
+  // },
   homeScreenView: {
     flex: 1,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-  },
+  // headerTitle: {
+  //   fontSize: 20,
+  //   fontWeight: 'bold',
+  //   color: 'black',
+  // },
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

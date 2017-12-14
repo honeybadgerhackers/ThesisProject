@@ -3,6 +3,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-na
 import PropTypes from 'prop-types';
 import mapIcon from '../assets/icons/mapIcon.png';
 import heartIcon from '../assets/icons/heart.png';
+import { appColors } from '../constants';
 
 const Trip = ({
    navigate, trips, showTripLocation, addFavorite, user, favorites, deleteFavorite

@@ -11,6 +11,7 @@ import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-
 import { saveSession, cancelSaveSession } from '../actions/save-session-action';
 import { createPolyline } from '../utilities/processors';
 import { appColors } from '../constants';
+import { juliaToSoniat } from '../testing/long-route';
 
 const starIcons = {
   filled: require('../assets/icons/star_filled.png'),
@@ -54,7 +55,7 @@ class WayPoint extends Component {
     speed: null,
     followUserLocation: true,
     showsUserLocation: true,
-    wayPoints: [],
+    wayPoints: juliaToSoniat,
     speedCounter: 1,
     topSpeed: 0,
     avgSpeed: 0,
@@ -115,10 +116,10 @@ class WayPoint extends Component {
     const speed = speedMetersPerSecond * 2.2369;
     const currentSpeed = speed < 0 ? 0 : Math.round(speed * 100) / 100;
     this.setState({
-      topSpeed: speed > topSpeed ? speed : topSpeed,
+      topSpeed: currentSpeed > topSpeed ? currentSpeed : topSpeed,
       avgSpeed: Math.round(((avgSpeed * (speedCounter - 1) + currentSpeed) / speedCounter) * 100) / 100,
       speedCounter: speedCounter + 1,
-      speed,
+      speed: currentSpeed,
     });
   }
 
@@ -133,8 +134,9 @@ class WayPoint extends Component {
     const wayPoints = this.state.wayPoints.slice();
     wayPoints.push(wayPoint);
     this.setState({
-      wayPoints,
+      // wayPoints,
     });
+    // console.log(this.state.wayPoints);
   };
 
   _trackLocationAsync = async () => {
@@ -243,8 +245,7 @@ class WayPoint extends Component {
     this.setState({timer});
   }
   render() {
-    const {secondCounter, minuteCounter, imageBase64} = this.state;
-    console.log('LocationJS', imageBase64);
+    const {secondCounter, minuteCounter} = this.state;
     if (this.props.activeTrip.route_name === undefined) {
       return (
         <View style={styles.container}>

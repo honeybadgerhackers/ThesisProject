@@ -173,7 +173,7 @@ const getActiveTripAsync = function* (action) {
   let filter = {
     'id_route': action.payload.id,
   };
-  try { 
+  try {
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({
@@ -190,7 +190,8 @@ const getActiveTripAsync = function* (action) {
         latitude: Number(waypoint.lat),
         longitude: Number(waypoint.lng),
       };
-    });    activeTrip['coords'] = coords;
+    });    
+    activeTrip['coords'] = coords;
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });  } catch (error) {
     console.log(error);
   }
@@ -245,8 +246,10 @@ const createTripAsync = function* (payload) {
 
 const saveTripAsync = function* ({payload}) {
   const { tripData, tripStats } = payload;
+  console.log(tripData, tripStats);
   try {
     const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
+    console.log(result);
     yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
     console.error(error);
