@@ -43,7 +43,7 @@ import {
   GET_USER_FAVORITES,
   REMOVE_FAVORITE,
   } from '../constants';
-import { googleAPIKEY } from '../../config';
+import { GOOGLE_API_KEY } from '../../config';
 
 const authorizeUser = function* (params) {
   const redirectUrl = getRedirectUrl;
@@ -149,11 +149,11 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
       if (joinedWaypoints) {
         res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${googleAPIKEY}`);
+          }&destination=${destination}&waypoints=via:enc:${joinedWaypoints}:&key=${GOOGLE_API_KEY}`);
       } else {
         res = yield call(googleDirectionsCall, `https://maps.googleapis.com/maps/api/directions/json?&mode=bicycling&origin=${
             origin
-          }&destination=${destination}&key=${googleAPIKEY}`);
+          }&destination=${destination}&key=${GOOGLE_API_KEY}`);
       }
       const points = Polyline.decode(res.data.routes[0].overview_polyline.points);
       const coords = points.map((point) => ({
@@ -171,7 +171,7 @@ const getUserDirectionsAsync = function* ({ payload: { origin, destination, join
 
 const getActiveTripAsync = function* (action) {
   let filter = {
-    'id_route': 315,
+    'id_route': action.payload.id,
   };
   try { 
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
@@ -213,7 +213,7 @@ const createTripAsync = function* (payload) {
       `&origin=${origin}` +
       `&destination=${destination}` +
       `&waypoints=via:enc:${wayPoints}:` +
-      `&key=${googleAPIKEY}`
+      `&key=${GOOGLE_API_KEY}`
     );
     if (res.status === 200) {
       const {
