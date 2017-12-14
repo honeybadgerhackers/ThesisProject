@@ -1,5 +1,8 @@
 # bikeMap
 
+## Database
+![alt text](./docs/image.png "Database Schema")
+
 ## Tech Stack 
 ![alt text](./docs/techstack.png "Tech Stack")
 
