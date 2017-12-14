@@ -26,6 +26,7 @@ class HomeScreen extends Component {
     getUserLocation: PropTypes.func.isRequired,
     addFavorite: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
+    favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
   };
@@ -47,7 +48,7 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, addFavorite
+   navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite,
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
@@ -56,6 +57,7 @@ class HomeScreen extends Component {
         </Text>
         <ScrollView>
           <Trip
+            favorites={favorites}
             user={user}
             addFavorite={addFavorite}
             navigate={navigate}
@@ -73,6 +75,7 @@ function mapStateToProps(state) {
     userLocation: state.userLocation,
     user: state.user,
     trips: state.trips.trips,
+    favorites: state.favorites.favorites,
   };
 }
 

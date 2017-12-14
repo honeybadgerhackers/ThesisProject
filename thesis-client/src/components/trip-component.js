@@ -5,12 +5,20 @@ import mapIcon from '../assets/icons/mapIcon.png';
 import heartIcon from '../assets/icons/heart.png';
 
 const Trip = ({
-   navigate, trips, showTripLocation, addFavorite, user,
+   navigate, trips, showTripLocation, addFavorite, user, favorites,
 }) => {
   const goToMap = () => {
     navigate('Map');
   };
-  const createTrip = () => trips.map(trip => (
+  const favoriteId = favorites.reduce((prev, current) => {
+    prev[current.id] = true;
+    return prev;
+  }, {});
+  const createTrip = () => trips.map(trip => {
+    console.log(trip.id, favoriteId);
+    let icon = favoriteId[trip.id] ? heartIcon : mapIcon;
+
+    return (
     <View
       style={styles.container}
       key={trip.id}
@@ -18,7 +26,7 @@ const Trip = ({
       <TouchableOpacity
         onPress={() => addFavorite(user.id, trip.id)}
       >
-        <Image source={heartIcon} showIcon style={styles.imageStyle} />
+        <Image source={icon} showIcon style={styles.imageStyle} />
       </TouchableOpacity>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{trip.route_name}</Text>
@@ -35,12 +43,13 @@ const Trip = ({
         <Text style={styles.favoriteCount}>{trip.favorite_count}</Text>
       </View>
     </View>
-  ));
-
+  );
+  })
   return <View>{createTrip()}</View>;
 };
 
 Trip.propTypes = {
+  favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   navigate: PropTypes.func.isRequired,
   addFavorite: PropTypes.func.isRequired,
   // user: PropTypes.object.func.isRequired,
