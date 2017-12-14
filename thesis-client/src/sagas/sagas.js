@@ -173,7 +173,7 @@ const getActiveTripAsync = function* (action) {
   let filter = {
     'id_route': 315,
   };
-  try {
+  try { 
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({
@@ -185,16 +185,13 @@ const getActiveTripAsync = function* (action) {
         longitudeDelta: 0.05,
         },
       });
-
     const coords = activeTripWaypoints.map(waypoint => {
       return {
         latitude: Number(waypoint.lat),
         longitude: Number(waypoint.lng),
       };
-    });
-    activeTrip['coords'] = coords;
-    yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });
-  } catch (error) {
+    });    activeTrip['coords'] = coords;
+    yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });  } catch (error) {
     console.log(error);
   }
 };
@@ -341,7 +338,6 @@ const getFavorite = function* ({payload: {userId}}) {
     console.error(error);
   }
 };
-//watcher saga - listen for actions to be dispatched, will call worker
 
 const watchCreateTrip = function* () {
   while (true) {
@@ -395,7 +391,6 @@ const watchRemoveFavorite = function* () {
 const watchGetFavorite = function* () {
   yield takeLatest(GET_USER_FAVORITES, getFavorite);
 };
-//combine watcher sagas to root saga
 
 const watchGetActiveTrip = function* () {
   yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);

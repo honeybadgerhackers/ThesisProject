@@ -4,3 +4,4 @@ testing/
 config.js
 npm-debug.*
 yarn-error.log
+src/config.js

@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
 import PropTypes from 'prop-types';
 import { appColors } from '../constants';
+import AddPhoto from './addPhotoButton';
 
 const buttonColor = appColors.aquamarine;
 
@@ -22,6 +23,8 @@ const ModalView = ({
   openRatingModal,
   setRating,
   starIcons,
+  getImage,
+  imageBase64,
 }) => {
   return (
     <View>
@@ -115,6 +118,9 @@ const ModalView = ({
                 />
               </View>
             </View>
+            <View style={styles.addPhotoContainer}>
+              <AddPhoto style={styles.addPhoto} getImage={getImage} />
+            </View>            
           </View>
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
@@ -123,7 +129,7 @@ const ModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveTrip({ speedCounter, avgSpeed, rating }, tripData);
+                    saveTrip({ speedCounter, avgSpeed, rating, imageBase64 }, tripData);
                     closeModal();
                   }
                 }}
@@ -207,6 +213,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 5,
+  },
+  addPhotoContainer: {
+    flexDirection: 'row',
+    // backgroundColor: 'red',
+  },
+  addPhoto: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 5,
   },
   buttons: {
     flexDirection: 'row',

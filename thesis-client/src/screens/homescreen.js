@@ -17,7 +17,7 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    header: null
+    header: null,
   });
 
   static propTypes = {

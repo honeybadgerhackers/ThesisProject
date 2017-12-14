@@ -64,6 +64,7 @@ class WayPoint extends Component {
     timer: null,
     secondCounter: 0,
     minuteCounter: 0,
+    imageBase64: '',
   };
 
   componentDidMount = () => {
@@ -73,9 +74,15 @@ class WayPoint extends Component {
   componentWillUnmount() {
     if (this.track) {
       this.track.remove();
-      this.trackInaccurate.remove();
+      // this.trackInaccurate.remove();
       this.setState({ followUserLocation: false });
     }
+  }
+  //* Get Image *//
+    getImage = (imageBase64) => {
+    this.setState({
+      imageBase64,
+    });
   }
 
   //*  Modals  *//
@@ -235,15 +242,13 @@ class WayPoint extends Component {
       }, 1000);
     this.setState({timer});
   }
-
   render() {
-    const {secondCounter, minuteCounter} = this.state;
-
+    const {secondCounter, minuteCounter, imageBase64} = this.state;
+    console.log('LocationJS', imageBase64);
     if (this.props.activeTrip.route_name === undefined) {
       return (
         <View style={styles.container}>
           <MapView
-            // provider="google"
             style={styles.map}
             ref={ref => { this.map = ref; }}
             // initialRegion={this.props.mapRegion}
@@ -272,6 +277,8 @@ class WayPoint extends Component {
             openRatingModal={this.openRatingModal}
             setRating={this.setRating}
             starIcons={starIcons}
+            getImage={this.getImage}
+            imageBase64={this.state.imageBase64}
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -303,9 +310,8 @@ class WayPoint extends Component {
       return (
         <View style={styles.container}>
           <MapView
-            provider="google"
             style={styles.map}
-            region={this.props.mapRegion}
+            initialRegion={this.props.mapRegion}
             showsUserLocation={this.state.showsUserLocation}
             followsUserLocation={this.state.followUserLocation}
           >
@@ -317,7 +323,7 @@ class WayPoint extends Component {
             />
             )}
           </MapView>
-          <Stats style={styles.statBar} secondCounter={secondCounter} minuteCounter={minuteCounter} />
+          <Stats style={styles.statBar} speed={this.state.speed} secondCounter={secondCounter} minuteCounter={minuteCounter} />
           <SaveSessionModal
             visibleModal={this.state.visibleModal}
             saveSession={this.props.saveSessionDispatch}
@@ -340,6 +346,8 @@ class WayPoint extends Component {
             openRatingModal={this.openRatingModal}
             setRating={this.setRating}
             starIcons={starIcons}
+            getImage={this.getImage}
+            imageBase64={this.state.imageBase64}
           />
           <View style={styles.cancelButtonContainer}>
             <TouchableOpacity
