@@ -8,7 +8,7 @@ import getUserLocation from '../actions/getUserLocation-action';
 import { getUserFavorites } from '../actions/getUserInfo-action';
 import { removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors } from '../constants';
 import Favorite from '../components/favorites';
 
 const cacheImages = images => images.map(image => {
@@ -18,7 +18,7 @@ const cacheImages = images => images.map(image => {
 
 class FavoriteScreen extends Component {
   static navigationOptions = () => ({
-    header: null
+    header: () => (<View style={styles.header}><Text style={styles.title}>Favorites</Text></View>),
   });
 
   static propTypes = {
@@ -40,20 +40,17 @@ class FavoriteScreen extends Component {
    navigation: { navigate }, showTripLocation, favorites, userLocation, deleteFavorite, user,
   } = this.props;
     return (
-        <View style={styles.homeScreenView}>
-          <Text style={styles.title}>
-              Favorited
-          </Text>
-          <ScrollView>
-            <Favorite
-              user={user}
-              deleteFavorite={deleteFavorite}
-              navigate={navigate}
-              favorites={favorites}
-              showTripLocation={showTripLocation}
-            />
-          </ScrollView>
-        </View>
+      <View style={styles.homeScreenView}>
+        <ScrollView>
+          <Favorite
+            user={user}
+            deleteFavorite={deleteFavorite}
+            navigate={navigate}
+            favorites={favorites}
+            showTripLocation={showTripLocation}
+          />
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -83,31 +80,19 @@ const mapDispatchToProps = dispatch => ({
 
 const styles = {
   title: {
+    padding: 10,
+    paddingTop: 25,
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: appColors.midLightBlue,
     textAlign: 'center',
-    marginTop: 10,
-    backgroundColor: 'lightblue',
-    borderWidth: 2,
+    backgroundColor: appColors.navyBlue,
   },
-  imageStyle: {
-    marginLeft: 10,
-    width: 40,
-    height: 40,
-  },
-  imageStyle2: {
-    marginRight: 10,
-    width: 40,
-    height: 40,
+  header: {
+    height: 80,
   },
   homeScreenView: {
     flex: 1,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
   },
 };
 
