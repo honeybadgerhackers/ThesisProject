@@ -51,9 +51,7 @@ class HomeScreen extends Component {
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
-        <Text style={styles.title}>
-            Routes Near You
-        </Text>
+
         <ScrollView>
           <Trip
             user={user}

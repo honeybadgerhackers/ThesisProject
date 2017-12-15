@@ -33,11 +33,8 @@ class ProfileStatsScreen extends Component {
 
   render() {
     return (
-      <View>
-        <Text style={styles.title}>Your Stats</Text>
-        <View>
-          <ProfileStats sessions={this.props.sessions} />
-        </View>
+      <View style={styles.container}>
+        <ProfileStats sessions={this.props.sessions} />
       </View>
     );
   }
@@ -64,21 +61,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const styles = StyleSheet.create({
-  wrapper: {},
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black",
-    textAlign: "center",
-    marginTop: 10,
-    backgroundColor: "lightblue",
-    borderWidth: 2
-  },
   container: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center"
   }
 });
 
