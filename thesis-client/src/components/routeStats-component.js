@@ -3,11 +3,24 @@ import { Platform, View, StyleSheet, Text } from "react-native";
 import PropTypes from "prop-types";
 import { appColors, appColorsTransparency } from '../constants';
 
-const RouteStats = ({secondCounter, minuteCounter, speed}) => {
+const RouteStats = ({secondCounter, minuteCounter, /* speed */}) => {
   const minuteDisplay = minuteCounter < 10 ? `0${minuteCounter}` : `${minuteCounter}`;
   const secondDisplay = secondCounter < 10 ? `0${secondCounter}` : `${secondCounter}`;
-  const splitSpeed = speed.toString().split('.');
-  const decimals = splitSpeed[1] ? splitSpeed[1].padEnd(2, '00') : '00';
+  let splitSpeed;
+  let decimals;
+  const speed = 1.1;
+  if (speed) {
+    splitSpeed = speed.toString().split('.');
+    if (String.prototype.padEnd) {
+      decimals = splitSpeed[1] ? splitSpeed[1].padEnd(2, '00') : '00';
+    } else {
+      // eslint-disable-next-line
+      decimals = splitSpeed[1];
+    }
+  } else {
+    splitSpeed = ['00'];
+    decimals = '00';
+  }
   return (
     <View style={styles.statBox}>
       <View style={styles.info}>

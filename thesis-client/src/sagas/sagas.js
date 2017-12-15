@@ -395,6 +395,10 @@ const watchUserTrips = function* () {
   yield takeLatest(GET_USER_TRIPS, getUserTrips);
 };
 
+const watchUserTripsSuccess = function* () {
+  yield takeLatest(CREATE_TRIP_SUCCESS, getUserTrips);
+};
+
 const watchUserSessions = function* () {
   yield takeLatest(GET_USER_SESSIONS, getUserSessions);
 };
@@ -435,7 +439,8 @@ const rootSaga = function* () {
     watchGetFavorite(),
     watchRemoveFavorite(),
     watchGetUserPhotos(),
+    watchUserTripsSuccess(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite, watchUserTripsSuccess  };
