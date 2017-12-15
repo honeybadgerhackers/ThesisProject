@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  proxy: 
+    image: robertaird/thesisprojectproxy
+    ports:
+      - 80:3000
+    links:
+      - api
+      - auth
+    environment:
+      - PORT=3000
+      - API_URL=http://api:3000
+      - AUTH_URL=http://auth:3000
+  api:
+    image: robertaird/thesisprojectdatabase
+    environment:
+      - PORT=3000
+      - DB_HOST="DATABASE URL"
+      - DB_PORT="DATABASE PORT"
+      - DB_USER="DATABASE USER"
+      - DB_PASS="DATABASE PASSWORD"
+      - DB_DATABASE="DATABASE NAME"
+      - SECRET="YOUR SUPER SECURE SECRET:
+      - AUDIENCE=cyclists
+      - ISSUER="UP TO YOU"
+  auth:
+    image: robertaird/thesisprojectauth
+    environment:
+      - PORT=3000
+      - FB_SECRET="FACEBOOK SECRET"
+      - FB_APP_ID="YOUR APP ID"

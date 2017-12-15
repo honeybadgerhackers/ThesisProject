@@ -97,6 +97,9 @@ const SessionModalView = ({
             </View>
           </View>
         </View>
+        <View style={styles.test}>
+          <Text>Test</Text>
+        </View>
       </Modal>
     </View>
   );
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    borderTopWidth: 0.75,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(104, 146, 179, 0.25)',
   },
   buttonRight: {
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0)',
     paddingHorizontal: 22,
     paddingVertical: 10,
-    borderLeftWidth: 0.75,
+    borderLeftWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(104, 146, 179, 0.25)',
   },
   buttonLeft: {
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
   },
   addPhotoContainer: {
     flexDirection: 'row',
-    // backgroundColor: 'red',
   },
   addPhoto: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, View, Button } from 'react-native';
+import { StyleSheet, Image, View, Button, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo';
 import PropTypes from 'prop-types';
 import Loader from '../common/loader';
@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
 
 const LoginView = ({ _handlePressAsync, disableButton, _handlePressDemo }) => (
   <View style={[styles.box]}>
+    <StatusBar
+      // backgroundColor="blue"
+      barStyle="dark-content"
+    />
     <LinearGradient
       colors={['rgba(0,96,255,0.09)', 'transparent']}
       style={{

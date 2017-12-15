@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform, Image, Text } from 'react-native';
+import { View, ScrollView, StatusBar, Image, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
-import { postFavorite } from '../actions/favorite-action';
+import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 import Trip from '../components/trip-component';
 import getUserPhotosAction from '../actions/getUserPhotos-action';
+
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
@@ -18,17 +19,20 @@ const cacheImages = images => images.map(image => {
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
-    header: null,
+    header: () => (<View style={styles.header}><Text style={styles.title}>Routes</Text></View>),
   });
 
   static propTypes = {
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
     getUserLocation: PropTypes.func.isRequired,
+    getUserPhotos: PropTypes.func.isRequired,
     addFavorite: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
+    favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
+    deleteFavorite: PropTypes.func.isRequired,
   };
 
   state = {
@@ -49,13 +53,23 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, addFavorite
-  } = this.props;
+      navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite,  deleteFavorite,
+    } = this.props;
     return (
-      <View style={styles.homeScreenView}>
-
-        <ScrollView>
+      <View style={{flex: 1}}>
+        <StatusBar
+          barStyle="light-content"
+        />
+        <ScrollView
+          style={{
+            flex: 1,
+            backgroundColor: appColorsTransparency(0.8).navyBlue,
+          }}
+          contentContainerStyle={{flexGrow: 1, flexDirection: 'column'}}
+        >
           <Trip
+            deleteFavorite={deleteFavorite}
+            favorites={favorites}
             user={user}
             addFavorite={addFavorite}
             navigate={navigate}
@@ -73,6 +87,7 @@ function mapStateToProps(state) {
     userLocation: state.userLocation,
     user: state.user,
     trips: state.trips.trips,
+    favorites: state.favorites.favorites,
   };
 }
 
@@ -86,39 +101,29 @@ const mapDispatchToProps = dispatch => ({
   addFavorite: (userId, routeId) => {
     dispatch(postFavorite(userId, routeId));
   },
+
   getUserPhotos: (userId) => {
     dispatch(getUserPhotosAction(userId));
+  },
+
+  deleteFavorite: (userId, routeId) => {
+    dispatch(removeFavorite(userId, routeId));
   },
 });
 
 const styles = {
   title: {
+    padding: 10,
+    paddingTop: 25,
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: appColors.midLightBlue,
     textAlign: 'center',
-    marginTop: 10,
-    backgroundColor: 'lightblue',
-    borderWidth: 2,
-  },
-  imageStyle: {
-    marginLeft: 10,
-    width: 40,
-    height: 40,
-  },
-  imageStyle2: {
-    marginRight: 10,
-    width: 40,
-    height: 40,
+    backgroundColor: appColors.navyBlue,
   },
   homeScreenView: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-  },
+    backgroundColor: appColorsTransparency(0.8).navyBlue,
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

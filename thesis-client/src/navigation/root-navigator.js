@@ -7,6 +7,7 @@ import HomeStack from './home-stack';
 import MapStack from './map-stack';
 import ProfileStack from './profile-stack';
 import FavoriteStack from './favorite-stack';
+import { appColors } from '../constants';
 
 const tabBarHomeIcon = ({ tintColor, focused }) => (
   <Ionicons
@@ -76,10 +77,10 @@ const RootNavigator = TabNavigator(
     tabBarPosition: 'bottom',
     swipeEnabled: false,
     tabBarOptions: {
-      activeTintColor: '#2242CC',
-      activeBackgroundColor: '#fff',
-      inactiveTintColor: '#000',
-      inactiveBackgroundColor: '#fff',
+      activeTintColor: appColors.begonia,
+      activeBackgroundColor: appColors.navyBlue,
+      inactiveTintColor: appColors.aquamarine,
+      inactiveBackgroundColor: appColors.navyBlue,
       labelStyle: {
         fontSize: 13,
       },
@@ -87,7 +88,7 @@ const RootNavigator = TabNavigator(
         // Currently there is no great way to center two tab icons, so we do
         // it manually here by assuming that each tab icon is about 125 points wide
         paddingHorizontal: (Dimensions.get('window').width - 225) / 2,
-        backgroundColor: '#fff',
+        backgroundColor: appColors.navyBlue,
         height: 55,
       },
     },
@@ -105,6 +106,11 @@ tabBarMapIcon.propTypes = {
 };
 
 tabBarProfileIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired,
+  focused: PropTypes.string.isRequired,
+};
+
+tabBarFavoriteIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
   focused: PropTypes.string.isRequired,
 };
