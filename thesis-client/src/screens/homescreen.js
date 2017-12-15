@@ -9,6 +9,7 @@ import { postFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
+import getUserPhotosAction from '../actions/getUserPhotos-action';
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
@@ -36,6 +37,7 @@ class HomeScreen extends Component {
 
   componentWillMount() {
     this.props.getUserLocation();
+    this.props.getUserPhotos(this.props.user.id);
     this._loadAssetsAsync();
   }
 
@@ -83,7 +85,10 @@ const mapDispatchToProps = dispatch => ({
   },
   addFavorite: (userId, routeId) => {
     dispatch(postFavorite(userId, routeId));
-  }
+  },
+  getUserPhotos: (userId) => {
+    dispatch(getUserPhotosAction(userId));
+  },
 });
 
 const styles = {

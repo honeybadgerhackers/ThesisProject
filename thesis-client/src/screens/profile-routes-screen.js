@@ -5,14 +5,12 @@ import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
 // import { STATUS_BAR_HEIGHT } from '../constants';
-import ProfileStats from "../components/profile-stats-component";
 import ProfileRoutes from "../components/profile-routes-component";
 
 class ProfileRoutesScreen extends Component {
   static propTypes = {
     showTripLocation: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
-    getUserSessions: PropTypes.func.isRequired,
     getUserRoutes: PropTypes.func.isRequired,
     //eslint-disable-next-line
     user: PropTypes.object.isRequired,
@@ -23,7 +21,7 @@ class ProfileRoutesScreen extends Component {
   };
 
   static navigationOptions = {
-    title: "Routes"
+    title: "Routes",
   };
 
   componentWillMount() {

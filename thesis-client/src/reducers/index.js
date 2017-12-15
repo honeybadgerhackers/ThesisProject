@@ -12,8 +12,10 @@ import routeCoords from './update-route-coords';
 import userRoutes from './user-route-reducer';
 import userSessions from './user-session-reducer';
 import favorites from './user-favorite-reducer';
+import userPhotos from './user-photos-reducer';
 
 export default combineReducers({
+  userPhotos,
   favorites,
   userRoutes,
   userSessions,

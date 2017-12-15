@@ -6,19 +6,23 @@ import Swiper from "react-native-swiper";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
 import UserInfo from "../components/profile-user-component";
-import UserStats from "../components/profile-stats2-component";
-import UserPhotos from "../components/profile-photos-components";
-import UserRoutes from "../components/profile-routes-components";
+import UserStats from "../components/profile-stats-link";
+import UserPhotos from "../components/profile-photos-link";
+import UserRoutes from "../components/profile-routes-link";
 
 class ProfileScreen2 extends Component {
   state = {
 
   }
   render() {
+    const {userPhotos} = this.props;
     return (
       <View style={styles.container}>
         <UserInfo />
-        <TouchableOpacity style={styles.allContainers}>
+        <TouchableOpacity 
+          style={styles.allContainers}
+          onPress={() => this.props.navigation.navigate('Photos', {name: 'Lucy'})}
+        >
           <UserPhotos />
         </TouchableOpacity>
         <TouchableOpacity
@@ -43,6 +47,7 @@ function mapStateToProps(state) {
     user: state.user,
     routes: state.userRoutes.routes,
     sessions: state.userSessions.sessions,
+    userPhotos: state.userPhotos.userPhotos,
   };
 }
 

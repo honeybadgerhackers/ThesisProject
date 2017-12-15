@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import mapIcon from '../assets/icons/mapIcon.png'; 
 
+
 const ProfileRoutes = ({routes, showTripLocation, navigate}) => {  
   const goToMap = () => {
     navigate('Map');
