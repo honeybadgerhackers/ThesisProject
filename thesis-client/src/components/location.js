@@ -11,7 +11,6 @@ import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-
 import { saveSession, cancelSaveSession } from '../actions/save-session-action';
 import { createPolyline } from '../utilities/processors';
 import { appColors } from '../constants';
-import { juliaToSoniat } from '../testing/long-route';
 
 const starIcons = {
   filled: require('../assets/icons/star_filled.png'),
@@ -52,10 +51,10 @@ class WayPoint extends Component {
   }
 
   state = {
-    speed: null,
+    speed: 0,
     followUserLocation: true,
     showsUserLocation: true,
-    wayPoints: juliaToSoniat,
+    wayPoints: [],
     speedCounter: 1,
     topSpeed: 0,
     avgSpeed: 0,
@@ -99,6 +98,7 @@ class WayPoint extends Component {
   closeModal = () => {
     this.setState({
       visibleModal: 0,
+      speed: 0,
       secondCounter: 0,
       minuteCounter: 0,
     });
@@ -182,7 +182,10 @@ class WayPoint extends Component {
       });
     }
     clearInterval(this.state.timer);
-    if (this.state.wayPoints.length > 1) { this._processTrip(); } else { Alert.alert('Cancelled'); }
+    if (this.state.wayPoints.length > 1) { this._processTrip(); } else {
+      Alert.alert('Cancelled');
+      this.closeModal();
+    }
     this.setState({
       visibleModal: 1,
     });
@@ -362,8 +365,10 @@ class WayPoint extends Component {
             <TouchableOpacity
               style={styles.button}
               disabled={!this.state.buttonStart}
-              onPress={() => this.goToHomeScreen()
-              }
+              onPress={() => {
+                this.closeModal();
+                this.goToHomeScreen();
+              }}
             >
               <Text style={this.state.buttonStart ? null : styles.buttonDisabled}>Cancel</Text>
             </TouchableOpacity>

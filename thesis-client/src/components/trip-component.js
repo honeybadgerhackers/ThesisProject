@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Platform, View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Rating from 'react-native-rating';
@@ -87,7 +87,14 @@ const Trip = ({
               <TouchableOpacity
                 onPress={() => showTripLocation(trip, goToMap)}
               >
-                <Image source={mapIcon} showIcon style={styles.imageStyle} />
+                <Image
+                  source={
+                    { uri: 'https://maps.googleapis.com/maps/api/staticmap?size=140x200&path=weight:3|color:red|enc:cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE&key=AIzaSyDD6Cyoh0Kh8yhPXLh411ZzhwtM7Jaf81A'}
+                    // mapIcon
+                  }
+                  showIcon
+                  style={styles.imageStyle}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.favoriteContainer}>
@@ -144,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.transparent,
     color: appColors.lightBlue,
     textAlign: 'left',
-    fontFamily: 'GurmukhiMN-Bold',
+    fontFamily: Platform.OS === 'ios' ? 'GurmukhiMN-Bold' : null,
   },
   startingAddress: {
     marginTop: 3,
@@ -190,6 +197,9 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     alignSelf: 'center',
+    borderColor: appColors.spanishBlue,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 4,
     marginTop: 5,
     height: 75,
     width: 75,

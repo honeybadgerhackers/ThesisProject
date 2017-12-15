@@ -53,8 +53,8 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite, deleteFavorite,
-  } = this.props;
+      navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite,  deleteFavorite,
+    } = this.props;
     return (
       <View style={{flex: 1}}>
         <StatusBar

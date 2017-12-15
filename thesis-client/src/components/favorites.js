@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Platform, View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Rating from 'react-native-rating';
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.transparent,
     color: appColors.lightBlue,
     textAlign: 'left',
-    fontFamily: 'GurmukhiMN-Bold',
+    fontFamily: Platform.OS === 'ios' ? 'GurmukhiMN-Bold' : null,
   },
   startingAddress: {
     marginTop: 3,
@@ -151,20 +151,20 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 148,
     width: 50,
     backgroundColor: appColors.transparent,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   actionContainer: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     margin: 9,
     borderRadius: 100,
     paddingTop: 5,
     backgroundColor: appColors.transparent,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   favoriteContainer: {
     flexDirection: 'row',

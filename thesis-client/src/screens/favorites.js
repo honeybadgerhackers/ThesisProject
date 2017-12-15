@@ -50,7 +50,8 @@ class FavoriteScreen extends Component {
           <ScrollView
             style={{
               flex: 1,
-              backgroundColor: appColorsTransparency(0.8).navyBlue }}
+              backgroundColor: appColorsTransparency(0.8).navyBlue
+            }}
             contentContainerStyle={{
               flexGrow: 1,
               flexDirection: 'column',
@@ -81,7 +82,7 @@ class FavoriteScreen extends Component {
               flexDirection: 'column',
             }}
           >
-            <Text style={styles.header}>
+            <Text style={styles.noFavoritesFont}>
             No Favorites
             </Text>
           </ScrollView>
@@ -124,7 +125,7 @@ const styles = {
     textAlign: 'center',
     backgroundColor: appColors.navyBlue,
   },
-  header: {
+  noFavoritesFont: {
     padding: 10,
     paddingTop: 25,
     fontSize: 20,
