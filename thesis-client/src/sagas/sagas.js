@@ -196,10 +196,10 @@ const getActiveTripAsync = function* (action) {
         latitude: Number(waypoint.lat),
         longitude: Number(waypoint.lng),
       };
-    });    
+    });
     activeTrip['coords'] = coords;
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });  } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -256,6 +256,7 @@ const saveTripAsync = function* ({payload}) {
   try {
     const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
     yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
+    yield put({ type: 'GET_USER_PHOTOS', payload: tripData.userId});
   } catch (error) {
     console.error(error);
   }
@@ -395,6 +396,10 @@ const watchUserTrips = function* () {
   yield takeLatest(GET_USER_TRIPS, getUserTrips);
 };
 
+const watchUserTripsSuccess = function* () {
+  yield takeLatest(CREATE_TRIP_SUCCESS, getUserTrips);
+};
+
 const watchUserSessions = function* () {
   yield takeLatest(GET_USER_SESSIONS, getUserSessions);
 };
@@ -435,7 +440,8 @@ const rootSaga = function* () {
     watchGetFavorite(),
     watchRemoveFavorite(),
     watchGetUserPhotos(),
+    watchUserTripsSuccess(),
   ]);
 };
 
-export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite };
+export { rootSaga, watchGetTrips, watchGetUserLocation, watchGetDirections, watchUserTrips, watchUserSessions, watchPostFavorite, watchGetFavorite, watchRemoveFavorite, watchUserTripsSuccess  };
