@@ -37,29 +37,57 @@ class FavoriteScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, showTripLocation, favorites, userLocation, deleteFavorite, user,
-  } = this.props;
-    return (
-      <View style={{flex: 1}}>
-        <ScrollView
-          style={{
-            flex: 1,
-            backgroundColor: appColorsTransparency(0.8).navyBlue }}
-          contentContainerStyle={{
-            flexGrow: 1,
-            flexDirection: 'column',
-          }}
-        >
-          <Favorite
-            user={user}
-            deleteFavorite={deleteFavorite}
-            navigate={navigate}
-            favorites={favorites}
-            showTripLocation={showTripLocation}
-          />
-        </ScrollView>
-      </View>
-    );
+      navigation: { navigate },
+      showTripLocation,
+      favorites,
+      // userLocation,
+      deleteFavorite,
+      user,
+    } = this.props;
+    if (favorites.length) {
+      return (
+        <View style={{flex: 1}}>
+          <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor: appColorsTransparency(0.8).navyBlue }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              flexDirection: 'column',
+            }}
+          >
+            <Favorite
+              user={user}
+              deleteFavorite={deleteFavorite}
+              navigate={navigate}
+              favorites={favorites}
+              showTripLocation={showTripLocation}
+            />
+          </ScrollView>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor: appColorsTransparency(0.8).navyBlue
+            }}
+            contentContainerStyle={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexGrow: 1,
+              flexDirection: 'column',
+            }}
+          >
+            <Text style={styles.header}>
+            No Favorites
+            </Text>
+          </ScrollView>
+        </View>
+      )
+    }
   }
 }
 
@@ -95,6 +123,15 @@ const styles = {
     color: appColors.midLightBlue,
     textAlign: 'center',
     backgroundColor: appColors.navyBlue,
+  },
+  header: {
+    padding: 10,
+    paddingTop: 25,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: appColors.midLightBlue,
+    textAlign: 'center',
+    // backgroundColor: appColors.navyBlue,
   },
   homeScreenView: {
     backgroundColor: appColors.navyBlue,
