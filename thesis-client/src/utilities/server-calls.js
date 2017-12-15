@@ -9,7 +9,7 @@ const axiosRequest = (params) => (
     return response.data;
   })
   .catch((err) => {
-    console.log(typeof err);
+    console.error(err);
     // throw new Error(err);
     // const test = err.response.data
     // throw new Error('UnauthorizedError: No authorization token was found');
