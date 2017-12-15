@@ -9,6 +9,7 @@ import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
+import getUserPhotosAction from '../actions/getUserPhotos-action';
 
 
 const cacheImages = images => images.map(image => {
@@ -39,6 +40,7 @@ class HomeScreen extends Component {
 
   componentWillMount() {
     this.props.getUserLocation();
+    this.props.getUserPhotos(this.props.user.id);
     this._loadAssetsAsync();
   }
 
@@ -54,9 +56,7 @@ class HomeScreen extends Component {
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
-        <Text style={styles.title}>
-            Routes Near You
-        </Text>
+
         <ScrollView>
           <Trip
             deleteFavorite={deleteFavorite}
@@ -92,6 +92,11 @@ const mapDispatchToProps = dispatch => ({
   addFavorite: (userId, routeId) => {
     dispatch(postFavorite(userId, routeId));
   },
+
+  getUserPhotos: (userId) => {
+    dispatch(getUserPhotosAction(userId));
+  },
+
   deleteFavorite: (userId, routeId) => {
     dispatch(removeFavorite(userId, routeId));
   },

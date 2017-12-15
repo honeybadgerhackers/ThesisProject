@@ -339,6 +339,17 @@ const getFavorite = function* ({payload: {userId}}) {
   }
 };
 
+const getUserPhotosAsync = function* ({payload: {userId}}) {
+  try {
+    const filter = {
+      'id_user_account': userId,
+    };
+    const userPhotos = yield call(dbSecureGET, 'user_account&photos', filter);
+    yield put({type: 'GET_USER_PHOTOS_SUCCESS', payload: userPhotos});
+  } catch (error) {
+    console.error(error);
+  }
+};
 const watchCreateTrip = function* () {
   while (true) {
     const initiateAction = yield take(CREATE_TRIP);
@@ -396,6 +407,10 @@ const watchGetActiveTrip = function* () {
   yield takeEvery('GET_ACTIVE_TRIP', getActiveTripAsync);
 };
 
+const watchGetUserPhotos = function* () {
+  yield takeEvery('GET_USER_PHOTOS', getUserPhotosAsync);
+}
+
 const rootSaga = function* () {
   yield all([
     watchGetTrips(),
@@ -411,6 +426,7 @@ const rootSaga = function* () {
     watchPostFavorite(),
     watchGetFavorite(),
     watchRemoveFavorite(),
+    watchGetUserPhotos(),
   ]);
 };
 
