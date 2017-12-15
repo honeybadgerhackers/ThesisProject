@@ -100,17 +100,27 @@ export default class AddPhoto extends Component {
     let { image } = this.state;
 
     return (
-      <View style={{
-        flexDirection: "row",
-        alignItems: "flex-start",
-        justifyContent: "space-around",
+      <View>
+        <View style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "space-around",
+          }}
+        >
+          <Button onPress={this._pickImage} title="Upload Photo" />
+          <Button onPress={this._takePhoto} title="Take Photo" />
+        </View>
+        <View style={{
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
         }}
-      >
-        <Button onPress={this._pickImage} title="Upload Photo" />
-        <Button onPress={this._takePhoto} title="Take Photo" />
-
-        {this._maybeRenderImage()}
-        {this._maybeRenderUploadingOverlay()}
+        >
+          <View style={{width: 150, height: 60, flexDirection: 'row', justifyContent: 'center'}}>
+            {this._maybeRenderImage()}
+          </View>
+          {this._maybeRenderUploadingOverlay()}
+        </View>
       </View>
     );
   }

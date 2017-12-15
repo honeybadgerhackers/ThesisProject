@@ -86,10 +86,10 @@ class WayPoint extends Component {
     });
   }
 
-  getTripName = (routeName) => {
-    this.setState({
-      routeName,
-    })
+  getRouteName = (routeName) => {
+      this.setState({
+        routeName,
+      });
   }
 
   //*  Modals  *//
