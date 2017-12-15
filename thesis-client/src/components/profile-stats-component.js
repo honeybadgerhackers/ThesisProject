@@ -26,7 +26,7 @@ const ProfileStats = ({ sessions }) => {
         <Text style={styles.headerTextRight}>Average</Text>
       </View>
       <View style={styles.allStatsContainer}>
-        <View style={styles.statsContainer}>
+        <View style={styles.statsContainerDistance}>
           <View style={styles.labelContainer}>
             <Text style={styles.textBox}>
               {total.total_distance || 0}
@@ -34,8 +34,8 @@ const ProfileStats = ({ sessions }) => {
           </View>
           <View style={styles.labelContainer}>
             <View style={styles.profilePicWrap}>
-              <Image 
-                style={styles.profilePic} 
+              <Image
+                style={styles.distancePic}
                 source={require("../assets/stats-icons/totaldistance.png")} 
               />
             </View>
@@ -47,7 +47,7 @@ const ProfileStats = ({ sessions }) => {
             </Text>
           </View>
         </View>
-        <View style={styles.statsContainer}>
+        <View style={styles.statsContainerCalories}>
           <View style={styles.labelContainer}>
             <Text style={styles.textBox}>
               {total.total_calories || 0}
@@ -56,7 +56,7 @@ const ProfileStats = ({ sessions }) => {
           <View style={styles.labelContainer}>
             <View style={styles.profilePicWrap}>
               <Image
-                style={styles.profilePic} 
+                style={styles.caloriesPic} 
                 source={require("../assets/stats-icons/totalcalories.png")} 
               />
             </View>
@@ -68,7 +68,7 @@ const ProfileStats = ({ sessions }) => {
             </Text>
           </View>
         </View>
-        <View style={styles.statsContainer}>
+        <View style={styles.statsContainerTime}>
           <View style={styles.labelContainer}>
             <Text style={styles.textBox}>
               {total.total_time || 0}
@@ -77,7 +77,7 @@ const ProfileStats = ({ sessions }) => {
           <View style={styles.labelContainer}>
             <View style={styles.profilePicWrap}>
               <Image
-                style={styles.profilePic}
+                style={styles.timePic}
                 source={require("../assets/stats-icons/totaltime.png")}
               />
             </View>
@@ -102,7 +102,23 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0,0,0,0.3)",
     borderWidth: 16,
   },
-  profilePic: {
+  distancePic: {
+    flex: 1,
+    width: null,
+    alignSelf: "stretch",
+    borderRadius: 40,
+    borderColor: appColors.begonia,
+    borderWidth: 3,
+  },
+  caloriesPic: {
+    flex: 1,
+    width: null,
+    alignSelf: "stretch",
+    borderRadius: 40,
+    borderColor: appColors.citrine,
+    borderWidth: 3,
+  },
+  timePic: {
     flex: 1,
     width: null,
     alignSelf: "stretch",
@@ -125,6 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: appColorsTransparency(0.1).spanishBlue,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "white",
@@ -146,12 +163,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: appColorsTransparency(1).navyBlue,
   },
-  statsContainer: {
+  statsContainerDistance: {
     flex: 1,
     flexDirection: 'row',
     borderColor: "white",
     alignItems: "center",
     justifyContent: "space-around",
+    backgroundColor: appColorsTransparency(0.45).spanishBlue,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "white",
+  },
+  statsContainerCalories: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: appColorsTransparency(0.45).spanishBlue,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "white",
+  },
+  statsContainerTime: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: appColorsTransparency(0.45).spanishBlue,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "white",
   },
