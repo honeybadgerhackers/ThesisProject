@@ -8,7 +8,7 @@ import getUserLocation from '../actions/getUserLocation-action';
 import { getUserFavorites } from '../actions/getUserInfo-action';
 import { removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 import Favorite from '../components/favorites';
 
 const cacheImages = images => images.map(image => {
@@ -18,7 +18,7 @@ const cacheImages = images => images.map(image => {
 
 class FavoriteScreen extends Component {
   static navigationOptions = () => ({
-    header: null
+    header: () => (<View style={styles.header}><Text style={styles.title}>Favorites</Text></View>),
   });
 
   static propTypes = {
@@ -37,14 +37,26 @@ class FavoriteScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, showTripLocation, favorites, userLocation, deleteFavorite, user,
-  } = this.props;
-    return (
-        <View style={styles.homeScreenView}>
-          <Text style={styles.title}>
-              Favorited
-          </Text>
-          <ScrollView>
+      navigation: { navigate },
+      showTripLocation,
+      favorites,
+      // userLocation,
+      deleteFavorite,
+      user,
+    } = this.props;
+    if (favorites.length) {
+      return (
+        <View style={{flex: 1}}>
+          <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor: appColorsTransparency(0.8).navyBlue
+            }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              flexDirection: 'column',
+            }}
+          >
             <Favorite
               user={user}
               deleteFavorite={deleteFavorite}
@@ -54,7 +66,29 @@ class FavoriteScreen extends Component {
             />
           </ScrollView>
         </View>
-    );
+      );
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor: appColorsTransparency(0.8).navyBlue
+            }}
+            contentContainerStyle={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexGrow: 1,
+              flexDirection: 'column',
+            }}
+          >
+            <Text style={styles.noFavoritesFont}>
+            No Favorites
+            </Text>
+          </ScrollView>
+        </View>
+      )
+    }
   }
 }
 
@@ -83,31 +117,25 @@ const mapDispatchToProps = dispatch => ({
 
 const styles = {
   title: {
+    padding: 10,
+    paddingTop: 25,
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: appColors.midLightBlue,
     textAlign: 'center',
-    marginTop: 10,
-    backgroundColor: 'lightblue',
-    borderWidth: 2,
+    backgroundColor: appColors.navyBlue,
   },
-  imageStyle: {
-    marginLeft: 10,
-    width: 40,
-    height: 40,
-  },
-  imageStyle2: {
-    marginRight: 10,
-    width: 40,
-    height: 40,
+  noFavoritesFont: {
+    padding: 10,
+    paddingTop: 25,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: appColors.midLightBlue,
+    textAlign: 'center',
+    // backgroundColor: appColors.navyBlue,
   },
   homeScreenView: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
+    backgroundColor: appColors.navyBlue,
   },
 };
 

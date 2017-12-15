@@ -3,9 +3,9 @@ import HomeScreen from '../screens/homescreen';
 
 const HomeStack = StackNavigator({
   Home: {
-    screen: HomeScreen
+    screen: HomeScreen,
   }
-}, { headerMode: 'screen' });
+}, /*{ headerMode: 'screen' }*/);
 
 export default HomeStack;
 

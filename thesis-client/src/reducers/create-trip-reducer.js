@@ -42,6 +42,7 @@ export default (state = initialState, { payload, type }) => {
           distance: payload.text,
           wayPoints: payload.via_waypoint,
           userId: payload.userId,
+          route_preview: payload.route_preview,
         },
       };
     case CREATE_TRIP_SAVE:

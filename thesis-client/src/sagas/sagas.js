@@ -5,7 +5,13 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST, dbSecureDELETE } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
+import {
+  getRedirectUrl,
+  facebookAuth,
+  googleDirectionsCall,
+  getGoogleRouteImage,
+  getSmallGoogleRouteImage,
+} from '../utilities/api-calls';
 import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
@@ -173,7 +179,7 @@ const getActiveTripAsync = function* (action) {
   let filter = {
     'id_route': action.payload.id,
   };
-  try { 
+  try {
     const activeTrip = yield call(dbSecureGET, 'route&location', filter);
     const activeTripWaypoints = activeTrip.waypoints;
     yield put({
@@ -190,7 +196,8 @@ const getActiveTripAsync = function* (action) {
         latitude: Number(waypoint.lat),
         longitude: Number(waypoint.lng),
       };
-    });    activeTrip['coords'] = coords;
+    });    
+    activeTrip['coords'] = coords;
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });  } catch (error) {
     console.log(error);
   }
@@ -232,9 +239,10 @@ const createTripAsync = function* (payload) {
       const routeTitle = `${start_address.split(',')[0]} to ${end_address.split(',')[0]}`;
       const mapImage = yield call(getGoogleRouteImage, points);
       yield put({ type: RETRIEVED_MAP_IMAGE, payload: { mapImage, routeTitle } });
+      const route_preview = yield call(getSmallGoogleRouteImage, points);
       yield put({
         type: RETRIEVED_TRIP_DATA, payload: {
-          text, routeTitle, via_waypoint, userId,
+          text, routeTitle, via_waypoint, userId, route_preview,
         },
       });
     }
