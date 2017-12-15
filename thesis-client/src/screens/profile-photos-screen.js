@@ -4,11 +4,12 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-nat
 import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
-import { appColors } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: appColorsTransparency(0.8).navyBlue,
   },
   header: {
     height: 38,
@@ -31,9 +32,11 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   photoWrap: {
-    margin: 2,
+    margin: 0,
     height: 120,
-    width: (Dimensions.get("window").width / 2) - 4,
+    width: (Dimensions.get("window").width / 3),
+    borderWidth: 1,
+    borderColor: appColorsTransparency(1).navyBlue,
   },
   photo: {
     flex: 1,

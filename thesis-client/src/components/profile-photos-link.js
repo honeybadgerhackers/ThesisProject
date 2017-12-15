@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     paddingBottom: 36,
     fontSize: 30,
     color: "#fff",
-    backgroundColor: appColorsTransparency(0.3).navyBlue,
+    backgroundColor: appColorsTransparency(0.1).navyBlue,
     fontWeight: "bold",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: appColors.midLightBlue,
