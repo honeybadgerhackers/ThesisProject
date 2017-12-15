@@ -5,11 +5,12 @@ import PropTypes from 'prop-types';
 import Expo from 'expo';
 import { getActiveTrip } from '../actions/activeTrip-action';
 import getUserLocation from '../actions/getUserLocation-action';
-import { postFavorite } from '../actions/favorite-action';
+import { postFavorite, removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
 import { STATUS_BAR_HEIGHT } from '../constants';
 import Trip from '../components/trip-component';
 import getUserPhotosAction from '../actions/getUserPhotos-action';
+
 
 const cacheImages = images => images.map(image => {
     if (typeof image === 'string') { return Image.prefetch(image); }
@@ -27,8 +28,10 @@ class HomeScreen extends Component {
     getUserLocation: PropTypes.func.isRequired,
     addFavorite: PropTypes.func.isRequired,
     navigation: PropTypes.shape({}).isRequired,
+    favorites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     trips: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     showTripLocation: PropTypes.func.isRequired,
+    deleteFavorite: PropTypes.func.isRequired,    
   };
 
   state = {
@@ -49,13 +52,15 @@ class HomeScreen extends Component {
 
   render() {
     const {
-   navigation: { navigate }, trips, showTripLocation, userLocation, user, addFavorite
+   navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite, deleteFavorite,
   } = this.props;
     return (
       <View style={styles.homeScreenView}>
 
         <ScrollView>
           <Trip
+            deleteFavorite={deleteFavorite}
+            favorites={favorites}
             user={user}
             addFavorite={addFavorite}
             navigate={navigate}
@@ -73,6 +78,7 @@ function mapStateToProps(state) {
     userLocation: state.userLocation,
     user: state.user,
     trips: state.trips.trips,
+    favorites: state.favorites.favorites,
   };
 }
 
@@ -86,8 +92,13 @@ const mapDispatchToProps = dispatch => ({
   addFavorite: (userId, routeId) => {
     dispatch(postFavorite(userId, routeId));
   },
+
   getUserPhotos: (userId) => {
     dispatch(getUserPhotosAction(userId));
+  },
+
+  deleteFavorite: (userId, routeId) => {
+    dispatch(removeFavorite(userId, routeId));
   },
 });
 
