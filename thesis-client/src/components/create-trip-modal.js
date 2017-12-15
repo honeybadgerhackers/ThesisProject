@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text, Image, Easing, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Button, View, Text, Image, Easing, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
@@ -25,6 +25,8 @@ const ModalView = ({
   starIcons,
   getImage,
   imageBase64,
+  routeName,
+  getRouteName,
 }) => {
   return (
     <View>
@@ -97,8 +99,15 @@ const ModalView = ({
               height: 600,
             }}
           />
-          <Text style={styles.header}>Rate Your Ride</Text>
+          <Text style={styles.header}>Ride Info</Text>
           <View style={styles.modalBody}>
+            <TextInput
+              style={styles.routeNameInput}
+              onChangeText={getRouteName}
+              placeholder="Route Name"
+              placeholderTextColor="white"
+            />
+            <AddPhoto getImage={getImage} />
             <View style={styles.ratingContainer}>
               <View style={styles.rating}>
                 <Rating
@@ -118,9 +127,6 @@ const ModalView = ({
                 />
               </View>
             </View>
-            <View style={styles.addPhotoContainer}>
-              <AddPhoto style={styles.addPhoto} getImage={getImage} />
-            </View>            
           </View>
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
@@ -134,6 +140,7 @@ const ModalView = ({
                       avgSpeed,
                       rating,
                       imageBase64,
+                      routeName,
                     }, tripData);
                     closeModal();
                   }
@@ -156,37 +163,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   header: {
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: "rgba(0,0,0,0)",
     color: appColors.lightBlue,
-    fontSize: 20,
+    fontSize: 25,
     paddingBottom: 10,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center"
   },
   paragraph: {
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: "rgba(0,0,0,0)",
     padding: 15,
   },
   text: {
     color: appColors.lightBlue,
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center"
   },
   modalContent: {
     backgroundColor: appColors.navyBlue,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingTop: 15,
     borderRadius: 10,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor: "rgba(0, 0, 0, 0.1)",
   },
   modalBody: {
-    backgroundColor: 'rgba(0,0,0,0)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   image: {
     zIndex: 1,
@@ -197,57 +204,66 @@ const styles = StyleSheet.create({
     borderColor: appColors.logoBlue,
   },
   imageLoading: {
-    position: 'absolute',
+    position: "absolute",
     zIndex: 0,
     width: 340,
     height: 330,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageInnerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   ratingContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0,0,0,0)',
+    flexDirection: "row",
+    backgroundColor: "rgba(0,0,0,0)",
   },
   rating: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingBottom: 5,
   },
   addPhotoContainer: {
-    flexDirection: 'row',
-    // backgroundColor: 'red',
+    // flexDirection: "row"
   },
   addPhoto: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 5,
   },
   buttons: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
+    flexDirection: "row",
+    alignItems: "stretch",
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(104, 146, 179, 0.25)',
+    borderColor: "rgba(104, 146, 179, 0.25)",
   },
   buttonRight: {
     flex: 2,
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: "rgba(0,0,0,0)",
     paddingHorizontal: 22,
     paddingVertical: 10,
     borderLeftWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(104, 146, 179, 0.25)',
+    borderColor: "rgba(104, 146, 179, 0.25)",
   },
   buttonLeft: {
     flex: 2,
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: "rgba(0,0,0,0)",
     paddingHorizontal: 22,
     paddingVertical: 10,
+  },
+  routeNameInput: {
+    textAlign: 'center',
+    height: 40,
+    width: 225,
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 5,
+    color: 'white',
+    fontSize: 25,
   },
 });
 
