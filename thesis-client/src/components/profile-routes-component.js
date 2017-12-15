@@ -19,7 +19,6 @@ const ProfileRoutes = ({routes, showTripLocation, navigate}) => {
         <View style={styles.imageContainer}>
           <Text style={styles.imageContainerText}>{trip.type}</Text>
           <TouchableOpacity
-            // key={trip.id_user_account}
             onPress={() => showTripLocation(trip, goToMap)}
           >
             <Image source={mapIcon} style={styles.imageStyle} />

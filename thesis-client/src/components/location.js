@@ -152,10 +152,10 @@ class WayPoint extends Component {
   //*  Custom Trips  *//
 
   customTripStartOrEnd = () => {
-      if (this.state.buttonStart) {
-        this._trackLocationAsync();
-        this.startTimer();
-      } else {
+    if (this.state.buttonStart) {
+      this._trackLocationAsync();
+      this.startTimer();
+    } else {
       this._stopTrackLocation();
     }
   };
@@ -389,7 +389,6 @@ class WayPoint extends Component {
     }
   }
 }
-
 
 function mapStateToProps(state) {
   return {
