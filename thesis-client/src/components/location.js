@@ -10,7 +10,7 @@ import getDirections from '../actions/getDirections-action';
 import { createTrip, createTripSave, cancelCreateTrip } from '../actions/create-trip-action';
 import { saveSession, cancelSaveSession } from '../actions/save-session-action';
 import { createPolyline } from '../utilities/processors';
-import { appColors } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 
 const starIcons = {
   filled: require('../assets/icons/star_filled.png'),
@@ -134,9 +134,8 @@ class WayPoint extends Component {
     const wayPoints = this.state.wayPoints.slice();
     wayPoints.push(wayPoint);
     this.setState({
-      // wayPoints,
+      wayPoints,
     });
-    // console.log(this.state.wayPoints);
   };
 
   _trackLocationAsync = async () => {
@@ -148,9 +147,6 @@ class WayPoint extends Component {
       { distanceInterval: 5, timeInterval: 3000, enableHighAccuracy: true },
       this._handlePositionChange,
     );
-    // this.trackHeading = await Location.watchHeadingAsync((heading) => {
-    //   console.log(heading);
-    // });
   };
 
   //*  Custom Trips  *//
@@ -182,13 +178,15 @@ class WayPoint extends Component {
       });
     }
     clearInterval(this.state.timer);
-    if (this.state.wayPoints.length > 1) { this._processTrip(); } else {
+    if (this.state.wayPoints.length > 1) {
+      this._processTrip();
+      this.setState({
+        visibleModal: 1,
+      });
+    } else {
       Alert.alert('Cancelled');
       this.closeModal();
     }
-    this.setState({
-      visibleModal: 1,
-    });
   };
 
   //*  Sessions  *//
@@ -286,12 +284,16 @@ class WayPoint extends Component {
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.button}
+              style={this.state.buttonStart ? styles.button : styles.buttonEnd}
               onPress={() =>
                 this.customTripStartOrEnd()
               }
             >
-              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
+              <Text style={
+                this.state.buttonStart ? styles.buttonText : styles.buttonEndText
+                }
+              >{this.state.buttonStart ? "Start" : "End"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -355,22 +357,31 @@ class WayPoint extends Component {
           />
           <View style={styles.cancelButtonContainer}>
             <TouchableOpacity
-              style={styles.button}
+              style={this.state.buttonStart ? styles.button : styles.buttonEnd}
               onPress={() =>
                 this.sessionStartOrEnd()
               }
             >
-              <Text>{this.state.buttonStart ? "Start" : "End"}</Text>
+              <Text style={this.state.buttonStart ? styles.buttonText : styles.buttonEndText}>
+                {this.state.buttonStart ? "Start" : "End"}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.button}
-              disabled={!this.state.buttonStart}
+              style={styles.buttonCancel}
               onPress={() => {
+                if (!this.state.buttonStart) {
+                  this.track.remove();
+                  clearInterval(this.state.timer);
+                  this.setState({
+                    buttonStart: true,
+                    followUserLocation: false,
+                  });
+                }
                 this.closeModal();
                 this.goToHomeScreen();
               }}
             >
-              <Text style={this.state.buttonStart ? null : styles.buttonDisabled}>Cancel</Text>
+              <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -440,11 +451,37 @@ const styles = StyleSheet.create({
   button: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.7)",
+    backgroundColor: appColorsTransparency(0.90).aquamarine,
     borderRadius: 20,
     padding: 12,
     width: 160,
     marginBottom: 5,
+  },
+  buttonEnd: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: appColorsTransparency(0.85).begonia,
+    borderRadius: 20,
+    padding: 12,
+    width: 160,
+    marginBottom: 5,
+  },
+  buttonCancel: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: appColorsTransparency(0.85).logoBlue,
+    borderRadius: 20,
+    padding: 12,
+    width: 160,
+    marginBottom: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonEndText: {
+    color: appColors.lightBlue,
+    fontWeight: 'bold',
   },
   buttonDisabled: {
     color: appColors.logoBlue,

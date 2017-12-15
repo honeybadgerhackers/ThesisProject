@@ -97,6 +97,9 @@ const SessionModalView = ({
             </View>
           </View>
         </View>
+        <View style={styles.test}>
+          <Text>Test</Text>
+        </View>
       </Modal>
     </View>
   );
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
   },
   addPhotoContainer: {
     flexDirection: 'row',
-    // backgroundColor: 'red',
   },
   addPhoto: {
     flex: 1,

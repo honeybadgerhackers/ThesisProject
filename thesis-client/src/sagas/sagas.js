@@ -5,7 +5,13 @@ import Polyline from '@mapbox/polyline';
 import { all, call, put, takeEvery, takeLatest, take, fork, cancel } from 'redux-saga/effects';
 import { dbPOST, dbSecureGET, dbSecurePOST, dbSecureDELETE } from '../utilities/server-calls';
 import { storeItem } from '../utilities/async-storage';
-import { getRedirectUrl, facebookAuth, googleDirectionsCall, getGoogleRouteImage } from '../utilities/api-calls';
+import {
+  getRedirectUrl,
+  facebookAuth,
+  googleDirectionsCall,
+  getGoogleRouteImage,
+  getSmallGoogleRouteImage,
+} from '../utilities/api-calls';
 import {
   INITIATE_LOGIN_DEMO,
   INITIATE_LOGIN,
@@ -233,9 +239,10 @@ const createTripAsync = function* (payload) {
       const routeTitle = `${start_address.split(',')[0]} to ${end_address.split(',')[0]}`;
       const mapImage = yield call(getGoogleRouteImage, points);
       yield put({ type: RETRIEVED_MAP_IMAGE, payload: { mapImage, routeTitle } });
+      const route_preview = yield call(getSmallGoogleRouteImage, points);
       yield put({
         type: RETRIEVED_TRIP_DATA, payload: {
-          text, routeTitle, via_waypoint, userId,
+          text, routeTitle, via_waypoint, userId, route_preview,
         },
       });
     }
@@ -246,10 +253,8 @@ const createTripAsync = function* (payload) {
 
 const saveTripAsync = function* ({payload}) {
   const { tripData, tripStats } = payload;
-  console.log(tripData, tripStats);
   try {
     const result = yield call(dbSecurePOST, 'route', { tripData, tripStats });
-    console.log(result);
     yield put({ type: CREATE_TRIP_SUCCESS, payload: result });
   } catch (error) {
     console.error(error);

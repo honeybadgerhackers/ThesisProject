@@ -129,7 +129,12 @@ const ModalView = ({
                   if (rating === 0) {
                     Alert.alert('Please Rate Your Trip');
                   } else {
-                    saveTrip({ speedCounter, avgSpeed, rating, imageBase64 }, tripData);
+                    saveTrip({
+                      speedCounter,
+                      avgSpeed,
+                      rating,
+                      imageBase64,
+                    }, tripData);
                     closeModal();
                   }
                 }}

@@ -52,6 +52,7 @@ const Trip = ({
       current_rating,
       display_name,
       favorite_count,
+      route_preview,
     } = trip;
 
     let action = favoriteId[id] ? () => deleteFavorite(user.id, id) : () => addFavorite(user.id, id);
@@ -89,8 +90,9 @@ const Trip = ({
               >
                 <Image
                   source={
-                    { uri: 'https://maps.googleapis.com/maps/api/staticmap?size=140x200&path=weight:3|color:red|enc:cywuDvzvdPz@Nw@xFqBnNsAnJZHZ?dAMt@E~@Jb@Dv@d@pChBh@^XRZR|CvBhGbE|CpBjGjEzGhE|@`@nE|HaG~EmDtCRp@NjA@|@Gr@Sv@_@tAIlA@|@NtAVn@hH|OzCnG}DjCtA`Dt@tAPLj@t@PTLTRh@^vAdAbEBVt@nGXvCZ`Kv@tUl@bRMxK_KQsO]uCE&key=AIzaSyDD6Cyoh0Kh8yhPXLh411ZzhwtM7Jaf81A'}
-                    // mapIcon
+                    route_preview ?
+                    { uri: route_preview} :
+                    mapIcon
                   }
                   showIcon
                   style={styles.imageStyle}
