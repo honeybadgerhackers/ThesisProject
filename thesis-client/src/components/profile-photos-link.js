@@ -1,23 +1,36 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import { appColors, appColorsTransparency } from '../constants';
 
 export default class UserStats extends Component {
   state = {};
   render() {
+    const { background } = this.props;
     return (
-      <View>
+      <ImageBackground
+        style={styles.imageBackground}
+        source={background ? {uri: background} : require('../assets/images/default_photo.jpg')}
+      >
         <Text style={styles.text}>Photos</Text>
-      </View>
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  imageBackground: {
+    height: 104,
+  },
   text: {
-    marginTop: 25,
-    marginLeft: 20,
+    paddingTop: 36,
+    paddingLeft: 20,
+    paddingBottom: 36,
     fontSize: 30,
     color: "#fff",
-    fontWeight: "bold"
-  }
+    backgroundColor: appColorsTransparency(0.1).navyBlue,
+    fontWeight: "bold",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: appColors.midLightBlue,
+    borderRadius: 2,
+  },
 });

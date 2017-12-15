@@ -4,8 +4,34 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
-// import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors } from '../constants';
 import ProfileRoutes from "../components/profile-routes-component";
+
+const styles = StyleSheet.create({
+  wrapper: {},
+  header: {
+    height: 38,
+    // padding: 10,
+    // paddingTop: 25,
+    backgroundColor: appColors.navyBlue,
+  },
+  headerText: {
+    paddingBottom: 6,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: appColors.midLightBlue,
+  },
+  back: {
+    color: appColors.aquamarine,
+  },
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
 
 class ProfileRoutesScreen extends Component {
   static propTypes = {
@@ -22,6 +48,9 @@ class ProfileRoutesScreen extends Component {
 
   static navigationOptions = {
     title: "Routes",
+    headerTitleStyle: styles.headerText,
+    headerStyle: styles.header,
+    headerBackTitleStyle: styles.back,
   };
 
   componentWillMount() {
@@ -31,7 +60,6 @@ class ProfileRoutesScreen extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.title}>Your Routes</Text>
         <ScrollView>
           <ProfileRoutes
             routes={this.props.routes}
@@ -61,25 +89,6 @@ const mapDispatchToProps = dispatch => ({
   },
   getUserRoutes: userId => {
     dispatch(getUserRoutes(userId));
-  }
-});
-
-const styles = StyleSheet.create({
-  wrapper: {},
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black",
-    textAlign: "center",
-    marginTop: 10,
-    backgroundColor: "lightblue",
-    borderWidth: 2
-  },
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center"
   }
 });
 

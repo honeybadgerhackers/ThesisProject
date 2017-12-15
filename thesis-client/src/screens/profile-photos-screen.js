@@ -4,12 +4,53 @@ import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-nat
 import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
-// import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: appColorsTransparency(0.8).navyBlue,
+  },
+  header: {
+    height: 38,
+    // padding: 10,
+    // paddingTop: 25,
+    backgroundColor: appColors.navyBlue,
+  },
+  headerText: {
+    paddingBottom: 6,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: appColors.midLightBlue,
+  },
+  back: {
+    color: appColors.aquamarine,
+  },
+  photoGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  photoWrap: {
+    margin: 0,
+    height: 120,
+    width: (Dimensions.get("window").width / 3),
+    borderWidth: 1,
+    borderColor: appColorsTransparency(1).navyBlue,
+  },
+  photo: {
+    flex: 1,
+    width: null,
+    alignSelf: "stretch",
+  },
+});
 
 class ProfilePhotosScreen extends Component {
   static navigationOptions = {
     title: "Photos",
+    headerTitleStyle: styles.headerText,
+    headerStyle: styles.header,
+    headerBackTitleStyle: styles.back,
   };
 
   componentWillMount() {
@@ -17,10 +58,15 @@ class ProfilePhotosScreen extends Component {
 
   organizePhotos = () => {
     const { userPhotos } = this.props;
-    return userPhotos.map((photo) => {
+    return userPhotos.map((photo, index) => {
+
       if (photo.photo_url !== '') {
         return (
-          <View style={styles.photoWrap}>
+          <View
+          // eslint-disable-next-line
+            key={`photo_${index}`}
+            style={styles.photoWrap}
+          >
             <Image
               style={styles.photo}
               source={{uri: photo.photo_url}}
@@ -62,26 +108,6 @@ const mapDispatchToProps = dispatch => ({
   },
   getUserRoutes: userId => {
     dispatch(getUserRoutes(userId));
-  }
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  photoGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  photoWrap: {
-    margin: 2,
-    height: 120,
-    width: (Dimensions.get("window").width / 2) - 4,
-  },
-  photo: {
-    flex: 1,
-    width: null,
-    alignSelf: "stretch",
   }
 });
 

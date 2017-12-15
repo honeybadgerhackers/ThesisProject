@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   textContainer: {
-    flex: 4,
+    flex: 5,
     borderRadius: 2,
     padding: 5,
     margin: 10,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   actionContainer: {
-    flex: 1,
+    flex: 2,
     margin: 9,
     borderRadius: 100,
     paddingTop: 5,

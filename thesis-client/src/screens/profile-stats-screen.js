@@ -4,14 +4,32 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
-// import { STATUS_BAR_HEIGHT } from '../constants';
+import { appColors } from '../constants';
 import ProfileStats from "../components/profile-stats-component";
 import ProfileRoutes from "../components/profile-routes-component";
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    height: 38,
+    backgroundColor: appColors.navyBlue,
+  },
+  headerText: {
+    paddingBottom: 6,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: appColors.midLightBlue,
+  },
+  back: {
+    color: appColors.aquamarine,
+  },
+});
+
 class ProfileStatsScreen extends Component {
   static propTypes = {
-    showTripLocation: PropTypes.func.isRequired,
-    navigation: PropTypes.shape({}).isRequired,
     getUserSessions: PropTypes.func.isRequired,
     getUserRoutes: PropTypes.func.isRequired,
     //eslint-disable-next-line
@@ -23,7 +41,10 @@ class ProfileStatsScreen extends Component {
   };
 
   static navigationOptions = {
-    title: "Stats"
+    title: "Stats",
+    headerTitleStyle: styles.headerText,
+    headerStyle: styles.header,
+    headerBackTitleStyle: styles.back,
   };
 
   componentWillMount() {
@@ -57,12 +78,6 @@ const mapDispatchToProps = dispatch => ({
   },
   getUserRoutes: userId => {
     dispatch(getUserRoutes(userId));
-  }
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
   }
 });
 
