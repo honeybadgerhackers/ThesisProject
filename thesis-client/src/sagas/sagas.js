@@ -196,7 +196,7 @@ const getActiveTripAsync = function* (action) {
         latitude: Number(waypoint.lat),
         longitude: Number(waypoint.lng),
       };
-    });    
+    });
     activeTrip['coords'] = coords;
     yield put({ type: 'GET_ACTIVE_TRIP_SUCCESS', payload: activeTrip });  } catch (error) {
     console.error(error);
