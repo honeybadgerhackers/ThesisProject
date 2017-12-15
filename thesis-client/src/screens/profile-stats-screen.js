@@ -65,7 +65,7 @@ function mapStateToProps(state) {
   return {
     user: state.user,
     routes: state.userRoutes.routes,
-    sessions: state.userSessions.sessions
+    sessions: state.userSessions.sessions,
   };
 }
 
