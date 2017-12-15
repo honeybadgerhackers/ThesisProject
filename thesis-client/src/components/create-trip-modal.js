@@ -55,8 +55,7 @@ const ModalView = ({
               </View>
             </View>
             <View style={styles.paragraph}>
-              <Text style={styles.text}>{tripName}</Text>
-              <Text style={styles.tripData}>{tripName}</Text>
+              <Text style={styles.text}>{tripData ? tripData.routeTitle : null}</Text>
             </View>
           </View>
           <View style={styles.buttons}>
