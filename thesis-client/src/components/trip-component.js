@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Image, ImageBackground, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import mapIcon from '../assets/icons/mapIcon.png';
 import Rating from 'react-native-rating';
+import mapIcon from '../assets/icons/mapIcon.png';
 import { appColors, appColorsTransparency } from '../constants';
 
 const starIcons = {
@@ -35,7 +35,7 @@ const BackgroundHeartIcon = ({favorite}) => (
 );
 
 const Trip = ({
-   navigate, trips, showTripLocation, addFavorite, user, favorites, deleteFavorite
+   navigate, trips, showTripLocation, addFavorite, user, favorites, deleteFavorite,
 }) => {
   const goToMap = () => {
     navigate('Map');
@@ -100,7 +100,6 @@ const Trip = ({
                 <HeartIcon
                   favorite={favoriteId[id]}
                 />
-                {/* <Image source={heartIcon} showIcon style={styles.imageStyle} /> */}
               </TouchableOpacity>
               <Text style={styles.favoriteCount}>{favorite_count}</Text>
             </View>

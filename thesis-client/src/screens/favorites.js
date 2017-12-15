@@ -8,7 +8,7 @@ import getUserLocation from '../actions/getUserLocation-action';
 import { getUserFavorites } from '../actions/getUserInfo-action';
 import { removeFavorite } from '../actions/favorite-action';
 import icon from '../assets/icons/bikeIcon.png';
-import { appColors } from '../constants';
+import { appColors, appColorsTransparency } from '../constants';
 import Favorite from '../components/favorites';
 
 const cacheImages = images => images.map(image => {
@@ -40,8 +40,16 @@ class FavoriteScreen extends Component {
    navigation: { navigate }, showTripLocation, favorites, userLocation, deleteFavorite, user,
   } = this.props;
     return (
-      <View style={styles.homeScreenView}>
-        <ScrollView>
+      <View style={{flex: 1}}>
+        <ScrollView
+          style={{
+            flex: 1,
+            backgroundColor: appColorsTransparency(0.8).navyBlue }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            flexDirection: 'column',
+          }}
+        >
           <Favorite
             user={user}
             deleteFavorite={deleteFavorite}
@@ -88,11 +96,8 @@ const styles = {
     textAlign: 'center',
     backgroundColor: appColors.navyBlue,
   },
-  header: {
-    height: 80,
-  },
   homeScreenView: {
-    flex: 1,
+    backgroundColor: appColors.navyBlue,
   },
 };
 

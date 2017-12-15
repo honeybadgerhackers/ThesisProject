@@ -56,12 +56,15 @@ class HomeScreen extends Component {
    navigation: { navigate }, trips, showTripLocation, userLocation, user, favorites, addFavorite, deleteFavorite,
   } = this.props;
     return (
-      <View style={styles.homeScreenView}>
+      <View style={{flex: 1}}>
         <StatusBar
           barStyle="light-content"
         />
-        <ScrollView 
-          style={{ backgroundColor: appColorsTransparency(0.8).navyBlue}}
+        <ScrollView
+          style={{
+            flex: 1,
+            backgroundColor: appColorsTransparency(0.8).navyBlue,
+          }}
           contentContainerStyle={{flexGrow: 1, flexDirection: 'column'}}
         >
           <Trip
@@ -118,12 +121,9 @@ const styles = {
     textAlign: 'center',
     backgroundColor: appColors.navyBlue,
   },
-  header: {
-
-  },
   homeScreenView: {
-    // flex: 1,
-  },
+    backgroundColor: appColorsTransparency(0.8).navyBlue,
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
