@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   textContainer: {
-    flex: 4,
+    flex: 5,
     borderRadius: 2,
     padding: 5,
     margin: 10,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.transparent,
   },
   actionContainer: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 9,

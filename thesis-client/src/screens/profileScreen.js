@@ -9,21 +9,49 @@ import UserInfo from "../components/profile-user-component";
 import UserStats from "../components/profile-stats-link";
 import UserPhotos from "../components/profile-photos-link";
 import UserRoutes from "../components/profile-routes-link";
+import { appColors } from '../constants';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: appColors.navyBlue,
+  },
+  header: {
+    height: 38,
+    backgroundColor: appColors.navyBlue,
+  },
+  headerText: {
+    paddingBottom: 6,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: appColors.midLightBlue,
+  },
+  allContainers: {
+    flex: 1,
+    alignSelf: "stretch",
+  },
+});
 
 class ProfileScreen2 extends Component {
-  state = {
-
-  }
+  static navigationOptions = {
+    title: "Profile",
+    headerTitleStyle: styles.headerText,
+    headerStyle: styles.header,
+  };
   render() {
-    const {userPhotos} = this.props;
+    const {userPhotos, user} = this.props;
+    const backgroundPhoto = userPhotos.filter(({photo_url}) => photo_url !== '');
     return (
       <View style={styles.container}>
-        <UserInfo />
+        <UserInfo 
+          user={user}
+        />
         <TouchableOpacity 
           style={styles.allContainers}
           onPress={() => this.props.navigation.navigate('Photos', {name: 'Lucy'})}
         >
-          <UserPhotos />
+          <UserPhotos background={backgroundPhoto[0] ? backgroundPhoto[0].photo_url : null} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Stats', {name: 'Lucy'})}
@@ -61,21 +89,6 @@ const mapDispatchToProps = dispatch => ({
   getUserRoutes: (userId) => {
     dispatch(getUserRoutes(userId));
   },
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "gray"
-  },
-  allContainers: {
-    flex: 1,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(0,0,0,0.4)",
-    borderWidth: 1,
-    borderColor: "white",
-    borderRadius: 5
-  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen2);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { appColors } from "../constants"
+import { View, Text, StyleSheet, Image, Platform } from 'react-native';
+import { appColors, appColorsTransparency } from "../constants";
 
 
 const ProfileStats = ({ sessions }) => {
@@ -27,145 +27,145 @@ const ProfileStats = ({ sessions }) => {
       </View>
       <View style={styles.allStatsContainer}>
         <View style={styles.statsContainer}>
-          <Text style={styles.textBox}>
-            {total.total_distance || 0}
-          </Text>
-          <View style={styles.profilePicWrap}>
-            <Image 
-              style={styles.profilePic} 
-              source={require("../assets/stats-icons/totaldistance.png")} 
-            />
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.total_distance || 0}
+            </Text>
           </View>
-          <Text style={styles.textBox}>
-            {total.average_distance || 0}
-          </Text>
+          <View style={styles.labelContainer}>
+            <View style={styles.profilePicWrap}>
+              <Image 
+                style={styles.profilePic} 
+                source={require("../assets/stats-icons/totaldistance.png")} 
+              />
+            </View>
+            <Text style={styles.text}>Distance</Text>
+          </View>
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.average_distance || 0}
+            </Text>
+          </View>
         </View>
         <View style={styles.statsContainer}>
-          <Text style={styles.textBox}>
-            {total.total_calories || 0}
-          </Text>
-          <View style={styles.profilePicWrap}>
-            <Image
-              style={styles.profilePic} 
-              source={require("../assets/stats-icons/totalcalories.png")} 
-            />
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.total_calories || 0}
+            </Text>
           </View>
-          <Text style={styles.textBox}>
-            {total.average_calories || 0}
-          </Text>
+          <View style={styles.labelContainer}>
+            <View style={styles.profilePicWrap}>
+              <Image
+                style={styles.profilePic} 
+                source={require("../assets/stats-icons/totalcalories.png")} 
+              />
+            </View>
+            <Text style={styles.text}>Calories</Text>
+          </View>
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.average_calories || 0}
+            </Text>
+          </View>
         </View>
         <View style={styles.statsContainer}>
-          <Text style={styles.textBox}>
-            {total.total_time || 0}
-          </Text>
-          <View style={styles.profilePicWrap}>
-            <Image 
-              style={styles.profilePic} 
-              source={require("../assets/stats-icons/totaltime.png")} 
-            />
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.total_time || 0}
+            </Text>
           </View>
-          <Text style={styles.textBox}>
-            {total.average_time || 0}
-          </Text>
+          <View style={styles.labelContainer}>
+            <View style={styles.profilePicWrap}>
+              <Image
+                style={styles.profilePic}
+                source={require("../assets/stats-icons/totaltime.png")}
+              />
+            </View>
+            <Text style={styles.text}>Time</Text>
+          </View>
+          <View style={styles.labelContainer}>
+            <Text style={styles.textBox}>
+              {total.average_time || 0}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
-    // <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //       Total Distance: {total.total_distance || 0}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //     Total Time: {total.total_time || 0}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //     Total calories: {total.total_calories || 0}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //     Average Distance: {total.average_distance || 0}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //     Average Time: {total.average_time || 0}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.title}>
-    //     <Text style={styles.textBox}>
-    //     Average Calories: {total.average_calories || 0}
-    //     </Text>
-    //   </View>
-    // </View>
   );
 };
 
- const styles = StyleSheet.create({
-   profilePicWrap: {
-     width: 110,
-     height: 110,
-     borderRadius: 50,
-     borderColor: "rgba(0,0,0,0.4)",
-     borderWidth: 16
-   },
-   profilePic: {
-     flex: 1,
-     width: null,
-     alignSelf: "stretch",
-     borderRadius: 35,
-     borderColor: "#fff",
-     borderWidth: 4
-   },
-   allStatsContainer: {
-     flex: 9,
-     alignItems: "stretch",
-     justifyContent: "center"
-   },
-   header: {
-     flex: 1,
-     flexDirection: "row",
-     alignItems: "center",
-     justifyContent: "space-between",
-     borderBottomWidth: StyleSheet.hairlineWidth,
-     borderBottomColor: "white",
-   },
-   headerTextLeft: {
-     marginLeft: 30,
-     fontSize: 35,
-     fontWeight: "bold",
-     color: "white"
-   },
-   headerTextRight: {
-     marginRight: 10,
-     fontSize: 35,
-     fontWeight: "bold",
-     color: "white"
-   },
-   mainContainer: {
-     flex: 1,
-     backgroundColor: appColors.navyBlue
-   },
-   statsContainer: {
-     flex: 1,
-     flexDirection: 'row',
-     borderColor: "white",
-     //  borderWidth: 2,
-     alignItems: "center",
-     justifyContent: "space-around",
-     borderBottomWidth: StyleSheet.hairlineWidth,
-     borderBottomColor: "white"
-   },
-   textBox: {
-     fontSize: 16,
-     fontWeight: "bold",
-     color: "white",
-   }
- });
+const styles = StyleSheet.create({
+  profilePicWrap: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    borderColor: "rgba(0,0,0,0.3)",
+    borderWidth: 16,
+  },
+  profilePic: {
+    flex: 1,
+    width: null,
+    alignSelf: "stretch",
+    borderRadius: 40,
+    borderColor: appColors.aquamarine,
+    borderWidth: 3,
+  },
+  allStatsContainer: {
+    flex: 9,
+    alignItems: "stretch",
+    justifyContent: "center",
+  },
+  labelContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "white",
+    borderTopColor: "white",
+  },
+  headerTextLeft: {
+    marginLeft: 30,
+    fontSize: 35,
+    color: "white",
+    fontFamily: Platform.OS === 'ios' ? 'GurmukhiMN' : null,
+  },
+  headerTextRight: {
+    marginRight: 10,
+    fontSize: 35,
+    color: "white",
+    fontFamily: Platform.OS === 'ios' ? 'GurmukhiMN' : null,
+  },
+  mainContainer: {
+    flex: 1,
+    backgroundColor: appColorsTransparency(1).navyBlue,
+  },
+  statsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "space-around",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "white",
+  },
+  textBox: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "white",
+  },
+  text: {
+    paddingTop: 8,
+    color: 'white',
+    fontSize: 18,
+  },
+});
 
 ProfileStats.propTypes = {
   //eslint-disable-next-line

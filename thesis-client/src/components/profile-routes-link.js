@@ -1,23 +1,35 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, ImageBackground} from "react-native";
+import { appColors, appColorsTransparency } from '../constants';
 
 export default class UserStats extends Component {
   state = {};
   render() {
     return (
-      <View>
+      <ImageBackground
+        style={styles.imageBackground}
+        source={require('../assets/images/default.jpg')}
+      >
         <Text style={styles.text}>Routes</Text>
-      </View>
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  imageBackground: {
+    height: 104,
+  },
   text: {
-    marginTop: 25,
-    marginLeft: 20,
+    paddingTop: 36,
+    paddingLeft: 20,
+    paddingBottom: 35.5,
     fontSize: 30,
     color: "#fff",
+    backgroundColor: appColorsTransparency(0.6).navyBlue,
     fontWeight: "bold",
-  }
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: appColors.midLightBlue,
+    borderRadius: 2,
+  },
 });
