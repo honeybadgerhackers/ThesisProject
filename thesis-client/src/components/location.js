@@ -65,6 +65,7 @@ class WayPoint extends Component {
     secondCounter: 0,
     minuteCounter: 0,
     imageBase64: '',
+    routeName: '',
   };
 
   componentDidMount = () => {
@@ -83,6 +84,12 @@ class WayPoint extends Component {
     this.setState({
       imageBase64,
     });
+  }
+
+  getTripName = (routeName) => {
+    this.setState({
+      routeName,
+    })
   }
 
   //*  Modals  *//
@@ -242,6 +249,7 @@ class WayPoint extends Component {
       }, 1000);
     this.setState({timer});
   }
+
   render() {
     const {secondCounter, minuteCounter, imageBase64} = this.state;
     console.log('LocationJS', imageBase64);
@@ -279,6 +287,8 @@ class WayPoint extends Component {
             starIcons={starIcons}
             getImage={this.getImage}
             imageBase64={this.state.imageBase64}
+            routeName={this.state.routeName}
+            getRouteName={this.getRouteName}
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity

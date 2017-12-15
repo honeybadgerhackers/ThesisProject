@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text, Image, Easing, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Button, View, Text, Image, Easing, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { LinearGradient } from 'expo';
 import Modal from 'react-native-modal';
 import Rating from 'react-native-rating';
@@ -25,6 +25,8 @@ const ModalView = ({
   starIcons,
   getImage,
   imageBase64,
+  routeName,
+  getRouteName
 }) => {
   return (
     <View>
@@ -120,7 +122,12 @@ const ModalView = ({
             </View>
             <View style={styles.addPhotoContainer}>
               <AddPhoto style={styles.addPhoto} getImage={getImage} />
-            </View>            
+            </View>
+            <TextInput
+              style={{height: 20, borderColor: 'gray', borderWidth: 1}}
+              // onChangeText={(text) => this.props.getTripName(text)}
+              value={'Route Name'}
+            />            
           </View>
           <View style={styles.buttons}>
             <View style={styles.buttonLeft}>
