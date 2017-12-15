@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Share } from "react-native";
+import Modal from "react-native-modal";
 import { connect } from "react-redux";
 import { getUserRoutes, getUserSessions } from "../actions/getUserInfo-action";
 import { getActiveTrip } from "../actions/activeTrip-action";
 import { appColors, appColorsTransparency } from '../constants';
+import PhotoModal from "../components/enlargePhotoModal";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,8 +15,6 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 38,
-    // padding: 10,
-    // paddingTop: 25,
     backgroundColor: appColors.navyBlue,
   },
   headerText: {
@@ -53,27 +53,49 @@ class ProfilePhotosScreen extends Component {
     headerBackTitleStyle: styles.back,
   };
 
-  componentWillMount() {
+  state = {
+    visibleModal: 0,
+    photo: '',
+  };
+
+  componentWillMount() {}
+  
+  getPhoto = (photo) => {
+    this.setState({ photo });
+    this.setState({ visibleModal: 1});
   }
 
   organizePhotos = () => {
+    console.log('in function')
     const { userPhotos } = this.props;
     return userPhotos.map((photo, index) => {
-
-      if (photo.photo_url !== '') {
+      if (photo.photo_url !== "") {
         return (
-          <View
-          // eslint-disable-next-line
+          <TouchableOpacity
+            // eslint-disable-next-line
             key={`photo_${index}`}
             style={styles.photoWrap}
+            onPress={() => this.getPhoto(photo.photo_url)}
           >
-            <Image
-              style={styles.photo}
-              source={{uri: photo.photo_url}}
-            />
-          </View>
+            <PhotoModal visibleModal={this.state.visibleModal} photo={this.state.photo} closeModal={this.closeModal} share={this.share} />
+            <Image style={styles.photo} source={{ uri: photo.photo_url }} />
+          </TouchableOpacity>
         );
       }
+    });
+  };
+
+  share = () => {
+    Share.share({
+      message: "New Route on BIKE MAP NOLA!",
+      title: "Check out this photo",
+      url: this.state.photo,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      visibleModal: 0,
     });
   }
 
@@ -81,9 +103,7 @@ class ProfilePhotosScreen extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <View style={styles.photoGrid}>
-            {this.organizePhotos()}     
-          </View>     
+          <View style={styles.photoGrid}>{this.organizePhotos()}</View>
         </ScrollView>
       </View>
     );

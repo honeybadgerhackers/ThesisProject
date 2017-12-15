@@ -11,6 +11,7 @@ import {
   View
 } from "react-native";
 import Exponent, { Constants, ImagePicker, registerRootComponent } from "expo";
+import { appColors } from "../constants";
 
 export default class AddPhoto extends Component {
   state = {
@@ -49,6 +50,8 @@ export default class AddPhoto extends Component {
         shadowOpacity: 0.2,
         shadowOffset: { width: 4, height: 4 },
         shadowRadius: 5,
+        alignItems: "center",
+        justifyContent: "center",
       }}
       >
         <TouchableHighlight onPress={() => this._share()}>
@@ -62,7 +65,7 @@ export default class AddPhoto extends Component {
     Share.share({
       message: "New Route on BIKE MAP NOLA!",
       title: "Check out this photo",
-      url: this.state.image
+      url: this.state.image,
     });
   };
 
@@ -107,8 +110,8 @@ export default class AddPhoto extends Component {
           justifyContent: "space-around",
           }}
         >
-          <Button onPress={this._pickImage} title="Upload Photo" />
-          <Button onPress={this._takePhoto} title="Take Photo" />
+          <Button color={appColors.aquamarine} onPress={this._pickImage} title="Upload Photo" />
+          <Button color={appColors.aquamarine} onPress={this._takePhoto} title="Take Photo" />
         </View>
         <View style={{
           flexDirection: 'column',
@@ -116,7 +119,13 @@ export default class AddPhoto extends Component {
           alignItems: 'center',
         }}
         >
-          <View style={{width: 150, height: 60, flexDirection: 'row', justifyContent: 'center'}}>
+          <View style={{
+            width: 150,
+            height: 60,
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+          >
             {this._maybeRenderImage()}
           </View>
           {this._maybeRenderUploadingOverlay()}

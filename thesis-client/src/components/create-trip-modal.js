@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   text: {
     color: appColors.lightBlue,
     fontSize: 18,
-    textAlign: "center"
+    textAlign: "center",
   },
   modalContent: {
     backgroundColor: appColors.navyBlue,

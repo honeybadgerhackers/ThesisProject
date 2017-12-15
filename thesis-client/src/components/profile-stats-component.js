@@ -19,6 +19,12 @@ const ProfileStats = ({ sessions }) => {
     return prev;
   }, {});
 
+  if (String(total.total_distance)[0] === '0') {
+    total.total_distance = total.total_distance.substring(1);
+  }
+  if (String(total.total_time)[0] === '0') {
+    total.total_time = total.total_time.substring(1);    
+  }
   return  (
     <View style={styles.mainContainer}>
       <View style={styles.header}>

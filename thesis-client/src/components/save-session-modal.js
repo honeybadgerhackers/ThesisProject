@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: 'rgba(0,0,0,0)',
     color: appColors.lightBlue,
-    fontSize: 20,
+    fontSize: 25,
     paddingBottom: 10,
     fontWeight: 'bold',
     textAlign: 'center',
