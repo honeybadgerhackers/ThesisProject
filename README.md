@@ -1,7 +1,9 @@
 # __bikeMap__
 
-##### *A bike route mapping app*
+<img src="thesis-client/src/assets/images/bikemap_logo.png" style="width: 400px;"/>
 
+##### *A bike route mapping app*
+  
 ### Features:
 * Creates routes based on user movement
 * Displays the availible routes near the user's location

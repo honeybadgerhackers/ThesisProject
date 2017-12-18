@@ -3,24 +3,27 @@ import { StyleSheet, Image, View, Button, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo';
 import PropTypes from 'prop-types';
 import Loader from '../common/loader';
+import { appColors, appColorsTransparency } from '../constants';
 
 const styles = StyleSheet.create({
   box: {
     flex: 10,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: appColorsTransparency(0.15).spanishBlue,
   },
   boxImage: {
-    flex: 5.5,
+    flex: 10,
     alignItems: "center",
     justifyContent: "flex-end",
   },
   boxButton: {
     flex: 4.5,
-    justifyContent: "center",
+    paddingTop: 10,
+    justifyContent: "flex-start",
   },
   image: {
-    flex: 0.5,
+    flex: 0.7,
     resizeMode: "contain",
   },
   loader: {
@@ -60,11 +63,13 @@ const LoginView = ({ _handlePressAsync, disableButton, _handlePressDemo }) => (
     <View style={[styles.boxButton]}>
       <Button
         title="Login with Facebook"
+        // color={appColors.spanishBlue}
         onPress={() => _handlePressAsync()}
         disabled={disableButton}
       />
       <Button
         title="Demo"
+        // color={appColors.spanishBlue}
         onPress={() => _handlePressDemo()}
         disabled={disableButton}
       />
