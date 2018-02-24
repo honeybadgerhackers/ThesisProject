@@ -33,5 +33,5 @@ export const getGoogleRouteImage = coords => (
 );
 
 export const getSmallGoogleRouteImage = coords => (
-  `https://maps.googleapis.com/maps/api/staticmap?size=600x600&path=weight:4|color:red|enc:${coords}&key=${GOOGLE_API_KEY}`
+  `https://maps.googleapis.com/maps/api/staticmap?size=160x185&path=weight:4|color:red|enc:${coords}&key=${GOOGLE_API_KEY}`
 );
